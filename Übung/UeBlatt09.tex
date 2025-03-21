@@ -1,0 +1,60 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\spec}{spec}
+\DeclareMathOperator*{\diag}{diag}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 9}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Aufgabe 21]
+Charakterisieren Sie alle 1-normalen Operatoren gemäß Definition 12.3 der Vorlesung.
+ \medskip
+ 
+\item[Aufgabe 22]
+Sei $\langle \cdot , \cdot \rangle_*$ ein Innenprodukt auf $\mathbb{C}$. Zeigen Sie, dass ein $B \in \mathbb{C}^{n\times n}$, $B$ hpd mit
+\begin{equation*}
+\langle x, y\rangle_* = \langle x, By \rangle
+\end{equation*}
+existiert, wobei $\langle \cdot , \cdot \rangle$ das übliche Skalarprodukt ist.
+\medskip
+ 
+\item[Aufgabe 23] (Isometrisches Arnoldi-Verfahren) \\
+Sei $A \in \mathbb{C}^{n \times n}$ unitär, also $A A^H = I$. Die Vektoren $v^1, \ldots, v^k$ seien die Vektoren aus dem Arnoldi-Prozess, also die Vektoren, die eine Orthonormalbasis von $K_{k}(A,r^0)$ bilden.
+\begin{itemize}
+\item[(i)] Zeigen Sie, dass die Vektoren $Av^1, \ldots, Av^k$ eine Orthonormalbasis von $A K_{k}(A,r^0)$ bilden.
+\item[(ii)] Nach (i) existiert für jedes $k$ ein Vektor $w^k$ so, dass
+${w^k, Av^1, \ldots, Av^{k-1}}$ eine Orthonormalbasis von $K_{k}(A,r^0)$ ist. Bestimmen Sie eine Aufdatierungsvorschrift, die $w^{k+1}$ alleine aus $w^{k}$ und $Av^{k}$ bestimmt.
+\item[(iii)] Zeigen Sie, dass man den nächsten Arnoldi-Vektor $v^{k+1}$ alleine aus $Av^k$ und $w^{k+}$ bestimmen kann.
+\item[(iv)] Formulieren Sie eine Variante des Arnoldi-Prozesses, der im Fall $AA^H = I$ mit einer kurzen Rekursion auskommt.
+\end{itemize}
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Vorlesung am ~17.06.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

@@ -1,0 +1,56 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\spec}{spec}
+\DeclareMathOperator*{\diag}{diag}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 8}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Aufgabe 18]
+Implementieren Sie die Restarted-Full-Orthogonalisation-Methode so, dass sie gleichzeit die FOM-Iterierte für das Sytem $Ax = b$ und $(A + \alpha I)x = b$, mit $\alpha \in \mathbb{C}$ berechnet, wobei der Arnoldi-Prozess aber nur einmal durchgeführt wird. Testen Sie mit der Matrix $A$ aus Modellproblem II (S. 46ff im Skript).\\
+Für den Arnodli-Prozess können Sie entweder die Matlabroutine oder die Funktion aus der Übung vom ~07.05. nutzen. (Auf Moodle in der entsprechenden Übung zum Download: \href{https://moodle.uni-wuppertal.de/pluginfile.php/1382550/mod_folder/content/0/arnoldi.m?forcedownload=1}{\textit{arnoldi.m}})
+ \medskip
+ 
+\item[Aufgabe 19]
+Sei $A\neq A^H$, aber mit folgenden Eigenschaften:
+\begin{itemize}
+\item $A^H = \overline{A} \in \mathbb{C}^{n \times n}$ (z.B. bei der Diskretisierung der Maxwell-Gleichungens in der Elektrodynamik)
+\item $A^H J = J^H A, \quad J\in \mathbb{C}^{n\times n}, \quad J = J^H$ (man nennt $A$ dann auch \textit{J-hermitesch}
+\item $A^T J = J^T A, \quad J \in \mathbb{C}^{n\times n}$ (man nennt $A$ dann auch \textit{J-symmetrisch})
+\end{itemize}
+Zeigen Sie jeweils: Für geeignete Wahl von $\tilde{r}^0$ (bzw. $w^0$) kann man den unsymmetrischen Lanczos-Prozess mit nur einer Matrix-Vektor-Multiplikation mit $A$ (und eventuell einer zusätzlichen mit $J$) durchführen. Wie überträgt sich das auf BiCG?
+\medskip
+ 
+\item[Aufgabe 20]
+Vergleichen Sie die Konvergenz des relativen Residuums von BiCG mit CGS für die Matrix aus Modellproblem II aus Aufgabe 19. Verwenden Sie die Matlab-Funkton \textit{bicg.m} und \textit{cgs.m}.
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~11.06.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

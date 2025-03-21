@@ -1,0 +1,67 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 6}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Aufgabe 12] Die Matrix $A$ sei diagonalisierbar, $A = X\Lambda X^{-1}$ mit $\Lambda = \text{diag}(\lambda_1, \ldots, \lambda_n )$. Zeigen Sie: Für die \textit{m}-te GMRES-Iterierte $x^m$ mit Residuum $r^m$ gilt
+\begin{equation*}
+||r^m||_2 \leq \kappa(X) \cdot \min_{p \in \overline{\Pi}_m} \max_{\lambda \in \text{spec}(A)} |p(\lambda)| \cdot ||r^0||_2
+\end{equation*}
+Dabei ist $\kappa(X) = ||X||_2||X^{-1}||_2$ die Kondition der Eigenvektormatrix $X$. Diskutieren Sie die Aussagekraft dieses Ergebnisses. Wie kann man hier konkreter werden, wenn bekannt ist, dass das Spektrum in einer gegebenen Ellipse, einem gegebenen Intervall enthalten ist?
+
+\item[Aufgabe 13] Es sei $A$ symmetrisch und positiv definit mit Eigenwerten $\lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_n$. Mit $\kappa_r$ bezeichnen wir die reduzierte Konditionszahl $\kappa_r = \frac{\lambda_n}{\lambda_r}$, $r = 1, 2, \ldots, n$.
+\begin{enumerate}
+\item Zeigen Sie, dass für $m \geq r$ für die Residuen $r^m$ der Iterierten $x^m$ des MINRES-Verfahrens die Abschätzungen 
+\begin{equation*}
+||r^m|| \leq \prod_{j = 1}^r \Bigl| 1-\frac{\lambda_n}{\lambda_j} \Bigr|\cdot \frac{2}{c_r^{m-r} + c_r^{-(m-r)}} \leq \prod_{j = 1}^r \Bigl| 1-\frac{\lambda_n}{\lambda_j} \Bigr| \cdot 2 c_r^{m-r} ,
+\end{equation*}
+mit $c_r = \frac{\sqrt{\kappa_r}-1}{\sqrt{\kappa_r}+1}$ gelten.
+
+\item Die Matrix $A$ des Laplace-Modellproblems hat die Eigenwerte $4-2\cos(\pi ih) - 2\cos(\pi jh)$, \\
+$i,j = 1,\ldots, N$, $h = 1/(N+1)$. Plotten Sie für $N = 50$ die oberen Schranken aus a) für $r = 1,\ldots,10$ sowie das (relative) GMRES Residuum für eine zufällige rechte Seite. Interpretieren Sie ihre Beobachtungen.
+\end{enumerate}
+
+
+
+ \item[Aufgabe 14] Der Satz von Crouzeix-Palencia besagt, dass für eine beliebige quadratische Matrix, ein beliebiges Polynom $p$ und den numerischen Wertebereich $F(A)$ gilt
+ \begin{equation*}
+ ||p(A)||_2 \leq (1+\sqrt{2}) \max_{z\in F(A)} |p(z)| .
+ \end{equation*}
+ \begin{enumerate}
+ \item Kann man die Konstante $(1 + \sqrt{2})$ im hermiteschen Fall verbessern?
+ \item Verwenden Sie den Satz, um eine Abschätzung für das GMRES-Residuum zu erhalten, in der die Eigenvektormatrix $X$ nicht vorkommt. Vergleichen Sie mit den Abschätzungen aus Aufgabe 12.
+ \end{enumerate}
+ 
+       
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~28.05.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

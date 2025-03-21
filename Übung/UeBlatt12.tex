@@ -1,0 +1,75 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\spec}{spec}
+\DeclareMathOperator*{\diag}{diag}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 12}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Aufgabe 29] (Polynomielle Präkonditionierung)
+\begin{enumerate}
+\item $A$ sei hpd mit $\spec(A) \subset [a,b]$.  Zeigen Sie, dass $q_{m-1}(A)$ hpd f"ur die "uber die Tschebyscheff-Polynome definierten Polynome $q_{m-1}$.
+\item Ist f"ur allgemeines $A$ f"ur die "uber Interpolation in den Ritz-Werten definierten Polynome $q_{m-1}$ gesichert, dass $q_{m-1}(A)$ regul"ar ist?
+\end{enumerate}
+\medskip
+ 
+\item[Aufgabe 30] (Eisenstat-Trick)
+Das CG-Verfahren mit einem Schritt SGS-Präkonditionierung kann mit zum unpräkonditionierten Verfahren vergleichbarem Aufwand implementiert werden.
+ Um dies herzuleiten, betrachten wir für $M = ST^{-1}S^H$
+\begin{align}
+&\text{ präk.\ CG für $Ax = b$ mit Präkonditionierer $M = ST^{-1}S^H$}, \\
+&\text{ präk.\ CG für $\hat A \hat x = \hat b$ mit $\hat A = S^{-1}AS^{-H}, \hat b = S^{-1}b$, Präkonditionierer $\hat M = T^{-1}$}.
+\label{CG_dach:eq}
+\end{align}
+
+\begin{itemize}
+\item Für die jeweiligen Startwerte gelte $S^Hx_0 = \hat x_0$. Zeigen Sie, dass dann (Bez.\ analog Algorithmus 14.3 im Skript) gilt
+\[
+S^Hp_k = \hat p_k, \; q_k = S \hat q_k, \; S^H x_k = \hat x_k, \;  r_k = S \hat r_k, \; S^H \tilde{r}_k =  \tilde{\hat{r}}_k
+\]
+sowie
+\[
+\gamma_k = \frac{\langle r_k, \tilde{r}_k \rangle}{\langle q_k, p_k \rangle} =
+\hat \gamma_k = \frac{\langle \hat r_k, \tilde{\hat{r}}_k \rangle}{\langle \hat q_k, \hat p_k \rangle}, \enspace
+\epsilon_k = \frac{\langle r_{k+1},\tilde{r}_{k+1}\rangle}{\langle r_{k},\tilde{r}_{k}\rangle} =
+\hat \epsilon_k = \frac{\langle \hat r_{k+1},\tilde{\hat r}_{k+1}\rangle}{\langle \hat r_{k},\tilde{\hat r \rangle}_{k}}.
+\]
+\item Bei einem Schritt SGS-Präkonditionierung ist $S=(D-L), T = D^{-1}$ (für $A = D-L-L^H$ wie üblich). Zeigen Sie, dass man
+$\hat A \hat p$ berechnen kann über eine MVM mit $(D-L)$, eine mit $(D-L^H)$ und eine mit $D$. Wie groß ist der Mehraufwand von präk. CG für \eqref{CG_dach:eq} dann im Vergleich zu nicht-präk. CG?
+\item Formulieren Sie das pr"akonditionierte CG-Verfahren f"ur $\hat A$ schließlich noch so um, dass statt $\hat x_k$ immer $x_k$ berechnet wird.
+\end{itemize}
+\medskip
+ 
+\item[Aufgabe 31] (ILU) \\
+Machen Sie sich mit den von Matlab angebotenen Varianten der ILU vertraut. Testen Sie dann die resultierenden Präkonditionierer für die Matrizen aus Modellproblem I und II. Betrachten Sie dabei auch verschiedenen Permutationen der Matrix $A$.
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~09.07.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

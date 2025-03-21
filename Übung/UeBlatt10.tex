@@ -1,0 +1,57 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\spec}{spec}
+\DeclareMathOperator*{\diag}{diag}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 10}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Aufgabe 24]
+Zeigen Sie:
+\begin{itemize}
+\item[i)] Ist $A$ hermitesch und $B$ spd, so besitzen $AB$ und $BA$ nur reelle Eigenwerte.
+\item[ii)] Ist $A$ sogar hpd, so sind alle Eigenwerte von $AB$ und $BA$ positiv.
+\end{itemize}
+ \medskip
+ 
+\item[Aufgabe 25]
+Es seien $A$ und $B \in \mathbb{C}^{n\times n}$ hpd und $C = B^{-1}A$.
+\begin{itemize}
+\item [i)] Zeigen Sie, dass $C$ selbstadjungiert ist bezüglich $\langle \; , \; \rangle_B$. 
+\item [ii)] Zeigen Sie, dass $C$ positiv definit ist bezüglich $\langle \; , \; \rangle_B$.
+\item [iii)] Formulieren Sie das CG-Verfahren für $C$ unter Verwendung von $\langle \; , \; \rangle_B$ als Innenprodukt so, dass keine Matrix-Vektor-Multiplikationen mit $B$ auftauchen.
+\item [iv)] Zeigen Sie, dass dieses CG-Verfahren äquivalent zum CG-Verfahren mit Standard-Innenprodukt und der Matrix $\hat{C} = \hat{B}^{-1} A \hat{B}^{-H}$ ist, wobei $B = \hat{B}\hat{B}^H$ gilt.
+\item[v)] Welche Implikationen ergeben sich aus iv) für die Konvergenzgeschwindigkeit von CG?
+\end{itemize}
+
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~25.06.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

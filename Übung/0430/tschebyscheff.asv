@@ -1,0 +1,26 @@
+function [sol, res] = tschebyscheff(x0, A, b, maxiter, tol){
+% initial guess x0, Matrix A, RHS b, maximum number of iterations maxiter,
+% maximum precision tol
+% solution sol, array of residuum norm res 
+
+xlast = x0;
+rlast = b - A*x0;
+
+
+xcurr = xlast - alphacurr * rlast;
+rcurr = alphacurr * A * rlast + rlast;
+
+iter = 0; %counter for iterations
+res = zeros(1,maxiter); %contains norms of residuals
+while(norm(rcurr) > tol && iter < maxiter)
+    xnext = alphanext* betanext* xcurr  + (1-alphanext * betanext) * xlast - alphanext * rcurr;
+    rnext = b - A * xnext;
+
+    xlast = xcurr;
+    xcurr = xnext;
+    rlast = rcurr;
+    rcurr = rnext;
+end
+
+} 
+end

@@ -1,0 +1,68 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 2}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+    \item[Aufgabe 3] Bestimmen Sie jeweils die asymptotisch optimale Lösung der MinMax-Aufgabe 
+    \begin{equation*}
+    \min_{p_m \in \overline{\Pi}_m} \max_{\lambda \in E}|p(\lambda)|
+    \end{equation*}
+    und den zugehörigen Wert des Minimums für die Fälle:
+    \begin{enumerate}
+    \item $E = a+bE_\rho$, wobei $a,b > 0$ und $a-b\cdot\frac{1}{2}(\rho + \frac{1}{\rho}) > 0$\\
+\begin{tikzpicture}
+\draw[->] (-2,0) -- (6,0);
+\draw[->] (0,-1) -- (0,1);
+\draw (3,0) ellipse (2 and 0.75);
+\draw (3,-0.75) -- (3,0.75);
+\end{tikzpicture}\\
+
+\item $E = a + b e^{i\frac{\pi}{2}}E_\rho$, wobei $a,b > 0$ und $a-b\cdot\frac{1}{2}(\rho + \frac{1}{\rho}) > 0$\\
+\begin{tikzpicture}
+\draw[->] (-2,0) -- (6,0);
+\draw[->] (0,-2) -- (0,2);
+\draw (3,0) ellipse (0.75 and 2);
+\draw (3,-2) -- (3,2);
+\end{tikzpicture}\\
+
+\item $E_\rho$ ist ein Geradenstück parallel zur reellen Achse von $-a$ bis $+a$ mit Achsenabschnitt $b$ auf der imaginären Achse.\\
+\begin{tikzpicture}
+\draw[->] (-3,0) -- (3,0);
+\draw[->] (0,-1) -- (0,2);
+\draw (-2,1) -- (2,1);
+\draw (-2,1) node[anchor=north]{$-a$};
+\draw (2,1) node[anchor=north]{$+a$};
+\draw (0,1) node[anchor=north west]{$b$};
+\end{tikzpicture}\\
+
+
+    \end{enumerate}
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~23.04.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

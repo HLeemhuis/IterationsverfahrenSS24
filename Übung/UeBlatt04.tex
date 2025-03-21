@@ -1,0 +1,101 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 4}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+    \item[Aufgabe 7] Programmieraufgaben zur Erzeugung von Basen für Krylov-Unterräume
+    \begin{enumerate}
+    	\item Implementieren Sie für das 2D-Laplace Modelproblem das Lanczos-Verfahren gemäß Alg. 6.5 und 6.6 des Skripts. Die Eingabe soll aus der Matrix $A$, einem zufälligen Startvektor $r$, sowie einer Dimension $m$ bestehen. Ausgegeben werden dann die Matrizen $V_{m+1}$ und $T_{m+1 \times m}$\\
+   In exakter Arithmetik wäre $V_m^H V_m = I$, in der numerischen Rechnung ist das jedoch nicht der Fall. Visualiseren Sie die Grüße der Einträge in $V_m^H V_m$ mit Hilfe der Matlab-Funktion \textit{heatmap.m}.
+   
+		\item Implementieren Sie in analoger Weise das Arnoldi-Verfahren gemäß Alg. 6.3 des Skripts für die beiden nachfolgenden Fälle. Visualisieren Sie wie zuvor die Orthogonalität der Arnoldi-Vektoren.
+	\begin{enumerate}[label=(\roman*)]
+		\item das 2D-Laplace Modelproblem mit Matrix $A_L$, welche über die Matlab-Funktion \textit{gallery.m} erhältlich ist.
+		\item ein 2D Problem mit unsymmetrischer Matrix mit:
+		\begin{align*}		
+		\Delta u + \epsilon u_x & = f \quad \text{für} \quad (x,y) \in \Omega = (0,1) \times (0,1)\\
+		u & = g \quad \text{für} \quad (x,y) \in \partial \Omega		
+		\end{align*}
+		
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}
+  \foreach \x in {0,1,...,4}{% Two indices running over each
+      \foreach \y in {0,1,...,4}{% node on the grid we have drawn 
+        \node[draw,circle,inner sep=1pt,fill] at (1*\x,1*\y) {};
+            % Places a dot at those points
+      }
+    }
+    \draw (2,1) -- (2,3);
+    \draw (1,2) -- (3,2);
+    \draw (1,2) node[anchor=north]{$-1 - \epsilon\frac{h}{2}$};
+    \draw (2,1) node[anchor=north]{$-1$};
+    \draw (3,2) node[anchor=north]{$-1 + \epsilon\frac{h}{2}$};
+    \draw (2,3) node[anchor=north west]{$-1$};
+    \draw (2,2) node[anchor=south west]{$+4$};
+    
+  \end{tikzpicture}
+  \caption{5-Punkte-Stern für die Konvektions-Diffusionsgleichung}
+  \label{figure:solving-CVP-bad-basis}
+\end{figure}
+
+Die zugehörige Matrix $A_{KD}$ ergibts sich also als\\
+\begin{equation*}
+A_{KD} = A_L + \epsilon \frac{h}{2} 
+\begin{bmatrix}
+C &&&\\
+& C &&\\
+&& \ddots &\\
+&&& C
+\end{bmatrix}
+\qquad \text{mit} \qquad C = \begin{bmatrix}
+0 & 1 &&\\
+-1 & \ddots & \ddots &\\
+&\ddots && 1\\
+&&-1 & 0
+\end{bmatrix}
+\end{equation*}
+		Siehe hierzu die Funktion \textit{konv\_diff.m} auf Moodle.
+		\end{enumerate}
+    \item Implementieren Sie das Arnoldi Verfahren mit Re-Orthogonalisierung und visualisieren Sie die Orthogonalität der Arnoldi-Vektoren wie zuvor.    
+    \end{enumerate}
+    \newpage
+    
+    \item[Aufgabe 8] Zusätzlich zur Matrix $A$ wird nun auch die Matrix $\hat{A} = A + \alpha I$ mit $\alpha \in \mathbb{C}$ betrachtet. Was kann man bei gleichem Startvektor über 
+    \begin{enumerate}
+    \item die Lanczos-Vektoren und die zugehörige Tridiagonalmatrix,
+    \item Vektoren des unsymmetrischen Lanczos-Verfahrens und die zugehörige Tridiagonalmatrix,
+    \item die Arnodli-Vektoren und die zugehörige obere Hessenberg-Matrix
+    \end{enumerate}
+    aussagen? 
+    
+\end{description}
+
+\begin{hinweis}{
+}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Ihre Programme senden Sie bitte bis zum ~07.05.24, ~14:00 Uhr an \href{mailto:frommer@uni-wuppertal.de}{frommer@uni-wuppertal.de} und \href{mailto:leemhuis@uni-wuppertal.de}{leemhuis@uni-wuppertal.de} --- \\
+%Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~07.05.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

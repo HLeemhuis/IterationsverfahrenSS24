@@ -1,0 +1,68 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\spec}{spec}
+\DeclareMathOperator*{\diag}{diag}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 11}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Aufgabe 26] (Konvergenz von SOR und SSOR)
+Beweisen Sie, dass SOR- und SSOR-Verfahren f\"ur $\omega \in (0,2)$ konvergieren, wenn die Matrix hpd ist.
+ \medskip
+ 
+\item[Aufgabe 27] (Symmetrisches Gauß-Seidel-Verfahren)
+Das symmetrische Gauß-Seidel-Verfahren beruht auf der Zerlegung $A = P-Q$ mit
+\begin{eqnarray*}
+P &=& (D-L)^{-1}D^{-1}(D-U) \\
+Q &=& (D-L)D^{-1}L(D-L)^{-1}U
+\end{eqnarray*}
+
+\begin{enumerate}
+\item Begr\"unden Sie, weshalb die Matrizen $D^{-1}L, (I-D^{-1}L)$ und $(I-D^{-1}L)^{-1}$ alle kommutieren und zeigen Sie damit $Q = LD^{-1}U$.
+\item Zeigen Sie, dass der Rechenaufwand des symmetrisierten Gau\ss{}-Seidel-Verfahrens nicht (wesentlich) h\"oher ist als bei Gau\ss{}-Seidel, wenn man geeignete Zwischenresultate abspeichert. \\
+{\em Hinweis}: Betrachten Sie zwei aufeinanderfolgende Iterationen.
+\end{enumerate}
+\medskip
+ 
+\item[Aufgabe 28] (Wilson-Dirac-Matrix in der QCD) \\
+Laden Sie eine der in der SuiteSparse Matrix Collection hinterlegten QCD-Matrizen in Matlab und konstruieren Sie daraus eine Wilson-Dirac-Matrix $D$.
+Die Matrix
+\[
+\Gamma_5 = I_{n/12} \otimes \begin{pmatrix} I_6 & 0 \\ 0 & -I_6 \end{pmatrix}
+\]
+symmetrisiert $D$, d.h.\ $Q = \Gamma_5 D$ ist hermitesch.
+\begin{enumerate}
+\item Vergleichen Sie die Konvergenz von GMRES für $D$ und MINRES für $Q$, indem Sie Residuenplots für dieselbe Aufgabenstellung erstellen.
+\item Approximieren Sie $(Q^2)^{-1/2}b$ mit dem Lanczos-Verfahren und vergleichen Sie mit einem ``exakten'' Wert, bei dem die Matlab-Funktion \texttt{sqrtm.m} verwendet wird.
+\end{enumerate}
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Vorlesung am ~02.07.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

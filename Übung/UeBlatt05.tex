@@ -1,0 +1,58 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 5}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Aufgabe 9] Die Matrix $A$ sei hermitesch mit der Eigenzerlegung $A = Q\Lambda Q^H$ wie üblich. 
+ \begin{enumerate}
+ \item[a)] Zeigen Sie: Die Lanczos-Vektoren $v_1,v_2,\ldots$ für den Krylov-Unterraum $\mathcal{K}_m(A,r)$ und die Lanczos-Vektoren $\hat v_1,\hat v_2,\ldots$ für  $\mathcal{K}_m(\Lambda,\hat r)$ mit $\hat r = Q^Hr$ erfüllen die Beziehung $\hat v_i = Q^H v_i$. Insbesondere gilt für jeden Vektor $x = p_m(A,r)$ mit $p_m \in \Pi_m$ die Beziehung $p_m(A)r = Qp_m(\Lambda)Q^Hr$ und damit $\|x\|_2 = \| p_m(\Lambda)\hat r\|_2$. 
+ \item[b)] Diskutieren Sie, wie man dies zu experimentellen Untersuchungen des Verhaltens von KUVs in Abhängigkeit von der Eigenwertverteilung von $A$ nutzen kann. 
+ \item[c)] Gilt eine analoge Aussage, wenn $A$ nicht hermitesch ist und der Arnoldi-Prozess betrachtet wird?
+ \end{enumerate} 
+ 
+\item[Aufgabe 10] Das MR-Verfahren ist eine Variante der Methode des steilsten Abstiegs: In jedem Schritt berechnet man zu $x^k$ das Residuum $r^k = b-Ax^k$ und bestimmt dann $\omega_k$ als 
+ \[
+ \omega_k = \argmin_{\omega \in \mathbb{C}} \|x^k - \omega r^k\|_2.
+ \]
+ \begin{enumerate}
+ \item[a)] Bestimmen Sie $\omega_k$.
+ \item[b)] Finden Sie eine Klasse von Matrizen, für welche das MR-Verfahren konvergiert. Was können Sie über die Konvergenzgeschwindigkeit aussagen?
+ \item[c)] Konstruieren Sie ein Beispiel, für das MR nicht konvergiert.
+ \end{enumerate}
+
+ \item[Aufgabe 11] Die Eigenwerte der Matrix $H_m$ aus dem Arnolid-Prozess approximieren Eigenwerte von $A$. Verifizieren Sie das experimentell für die Matrix  \url{https://sparse.tamu.edu/QCD/conf5_0-4x4-26} aus der SuiteSparse Matrix Collection. Plotten Sie dazu in einer Abbildung alle Eigenwerte von $A$ und dann dazu die Eigenwerte von $H_m$ für zunehmendes $m$.
+ 
+ 
+       
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~14.05.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

@@ -1,0 +1,122 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\spec}{spec}
+\DeclareMathOperator*{\diag}{diag}
+\newcommand{\mathC}{\mathbb{C}}
+\newcommand{\mathR}{\mathbb{R}}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 9}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Lösung zu Aufgabe 21]
+Charakterisieren Sie alle 1-normalen Operatoren gemäß Definition 12.3 der Vorlesung.
+ \medskip
+ \vspace{2cm}
+ Sei A 1-normal $\Rightarrow A^H = a I + b A$ mit $a, b \in \mathC$. Dann gilt (für $a \neq 0$):
+ \begin{equation*}
+ A^H - b A = a I \Leftrightarrow \left(\frac{1}{\overline{a}}A\right)^H - \frac{b \overline{a}}{a}\left(\frac{1}{\overline{a}} A\right) = I
+ \end{equation*}
+ Mit $B = \frac{1}{\overline{a}} A$ und $s = \frac{b \overline{a}}{a}$ ergibt sich also:
+ \begin{equation}
+ \label{eq:Bs}
+ B^H - s B = I \Leftrightarrow B - \overline{s} B^H = I
+ \end{equation}
+ und es folgt: $((1+s)B)^H = (1+s)B$.\\
+ Also:
+ \begin{itemize}
+ \item [a)] $A = \overline{a} B = \frac{\overline{a}}{1+s} C$ mit $C = (1+s)B$ hermetisch, falls $s \neq -1$
+ \item [b)] Falls $s = -1$ folgt aus \autoref{eq:Bs}: $B^H +B = I$, also 
+ \begin{align*}
+ B & = \frac{1}{2}(B^H + B) + \frac{1}{2}(B^H - B)\\
+ & = \frac{1}{2} I + J \text{, mit } J^H = -J\\
+ & = \frac{1}{2} I + i C \text{, mit } C = -iJ, C^H = C
+ \end{align*}
+ Also:
+ \begin{equation}
+ A = \overline{a} (I + iC) = (-\overline{a}i)(iI + \hat{C}) \text{, mit } \hat{C} = \hat{C}^H
+ \end{equation}
+ \end{itemize}
+ Wir müssen noch den Fall $a = 0$ diskutieren:\\
+ Dann gilt $A^H - bA = 0 = A - \overline{b}A^H$ und wir erhalten wie zuvor ($A$ statt $B$ und $b$ statt $s$):
+ \begin{equation}
+ A = iI+\hat{C} \text{, mit } \hat{C} = \hat{C}^H \text{ und } b\neq 0
+ \end{equation}
+ Nun kann man die Fälle zusammenfassend aufschreiben, wenn man beachtet, dass reelle Vielfache von $C = C^H$ wieder hermetisch sind. Hierfür verwendet man für den komplexe Skalar Polarkoordinaten und es ergibt sich:
+ \begin{equation}
+ A = e^{i\Theta}( \sigma i I + C)
+ \end{equation}
+ wobei $\Theta$ der zugehörige Winkel und $\sigma$ die entsprechnde Länge des zur komplexen Zahl zugehörigen Vektors ist. Hier ist $\sigma \in \mathR$, $\Theta \in [0,2\pi)$ und es gilt $C = C^H$.
+
+
+\item[Lösung zu Aufgabe 22]
+Sei $\langle ,\rangle_*$ ein Innenprodukt auf $\mathbb{C}$. Zeigen Sie, dass ein $B \in \mathbb{C}^{n\times n}$, $B$ hpd mit 
+\begin{equation*}
+\langle x, y\rangle_* = \langle x, By \rangle
+\end{equation*}
+existiert, wobei $\langle , \rangle$ das übliche Skalarprodukt ist.
+\medskip
+ \vspace{2cm}
+Sei $e_i$ der i-te Einheitsvektor, dann ist $x = \sum \xi_i e_i$ und $y = \sum \eta_j e_j$. Es gilt:
+\begin{align*}
+\langle x, y\rangle_* & = \langle \sum \xi_i e_i, \sum \eta_j e_j\rangle_*\\
+& = \sum \sum \xi_i \overline{\eta}_j \langle e_i, e_j\rangle_*
+\end{align*}
+Nun wählen wir ein $B = (b_{i,j})$ mit $b_{i,j} = \langle e_i, e_j\rangle_* = \overline{b}_{j,i}$.
+Dann gilt: 
+\begin{align*}
+	\langle x,y\rangle_* &= \sum\sum \xi_i \overline{\eta}_j b_{i,j} = \langle B x, y\rangle\\
+	& = \sum\sum \xi_i \overline{\eta}_j \overline{b}_{j,i} = \langle x, B y\rangle
+\end{align*}
+ Desweiteren gilt per Definition einen Innenprodukts:
+ \begin{align*}
+ \langle x, x \rangle_* > 0 \text{ für } x\neq 0\\
+ \Leftrightarrow \sum \sum \xi_i \overline{\eta}_j b_{i,j} > 0\\
+ \Leftrightarrow \langle B x , x\rangle > 0 \\
+ \Leftrightarrow B \text{ ist pos. def.}
+ \end{align*}
+ $B$ ist hermetisch.
+ \begin{align*}
+ \langle x, y\rangle_* = \langle x, B y\rangle = \langle B^H x, y\rangle \quad \forall x, y\\
+\Leftrightarrow B = B^H
+ \end{align*}
+\item[Lösung zu Aufgabe 23]
+Sei $A \in \mathbb{C}^{n \times n}$ unitär, also $A A^H = I$. Die Vektoren $v^0, \ldots, v^k$ seien die Orthonormalbasis in $K_{k+1}(A, r^0)$. \\
+Zeigen Sie, dass die Vektoren $Av^0, \ldots, Av^k$ eine Orthonormalbasis von $A K_{k+1}(A,r0)$ sind.\\
+Dann ist ${w^k, Av^0, \ldots, Av^{k-1}}$ bei geeingneter Wahl von $w^k$ eine Orthonormalbasis von $K_{k+1}(A,r0)$. Wie muss $w^k$ gewählt werden? 
+Was ergibt sich hieraus für die Arnoldi-Vektoren $v^k$? 
+
+\medskip
+ \vspace{2cm}
+ Siehe Vorlesung, Section 12.17
+
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Vorlesung am ~17.06.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

@@ -1,0 +1,97 @@
+
+%% Encodings %%
+\usepackage{ucs} % support for using UTF-8 as input encoding
+\usepackage[utf8x]{inputenc} % trans­late in­put en­cod­ings into TeX's base en­cod­ing
+\usepackage[T1]{fontenc} % se­lect output font en­cod­ing
+
+%% Typography %%
+\usepackage[ngerman]{babel} % man­age ty­po­graph­i­cal rules and hy­phen­ation pat­terns
+
+%% Symbols and math %%
+\usepackage[sumlimits,intlimits,reqno]{amsmath} % provides enhancements for mathematical formulas
+\usepackage{amssymb} % extended symbol collection
+\usepackage{amsxtra} % AMS extra stuff
+\usepackage{latexsym} % LaTeX symbol font
+\usepackage{marvosym} % extra symbols (e.g. euro symbol)
+\usepackage{textcomp} % for \textquotesingle
+\usepackage{wasysym} % extra symbols (e.g. Venus and Mars for female and male)
+
+%% Fonts %%
+\usepackage[scaled=.92]{helvet} % Hel­vetica (or one of its clones)
+\usepackage{courier} % Courier as monospace font
+\usepackage{mathptmx} % use Times as default text font, with math support
+
+%% Content %%
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor} % driver-independent color extensions
+\usepackage{graphicx} % enhanced support for graphics
+\usepackage{url} % ver­ba­tim with URL-sen­si­tive line breaks
+\usepackage{makeidx} % standard LaTeX package for creating indexes
+\usepackage{empheq} % EMPHasizing EQuations, vi­sual markup ex­ten­sion to ams­math
+\usepackage{enumitem} % control layout of itemize, enumerate, description
+\usepackage{icomma} % intelligent commas for decimal numbers
+
+%% Environments %%
+\usepackage{alltt} % everything in tt font, but obey commands and line endings
+\usepackage{theorem} % the­o­rem en­vi­ron­ment, deprecated
+\usepackage{multicol} % type­set text in mul­ti­ple columns
+\usepackage{multirow} % tabular cells spanning multiple rows
+\usepackage{listings} % typeset source code listings
+\usepackage{longtable} % tables that flow over page boundaries
+\usepackage{tabularx} % best table-package with X columns and ability to flow over page boundaries
+\usepackage{array}
+
+%% Algorithms %%
+%\usepackage{myalgorithmic}
+\usepackage{etoolbox}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+  % add tightalgo environment since the algorithm environment spans the whole width of the page
+  % this is from http://tex.stackexchange.com/questions/23296/setting-caption-rule-width-in-algorithm2e-algs
+  \newlength{\tightalgowidth}
+  \newlength{\tightalgoremainder}
+  \newenvironment{tightalgo}[2][]
+  { \setlength{\tightalgowidth}{#2}
+    \setlength{\tightalgoremainder}{\linewidth-\tightalgowidth}
+    \begin{algorithm}[#1] }
+  { \end{algorithm} }
+
+  \makeatletter
+  \patchcmd{\@algocf@start}{%
+    \begin{lrbox}{\algocf@algobox}%
+  }{%
+    \rule{0.5\tightalgoremainder}{\z@}%
+    \begin{lrbox}{\algocf@algobox}%
+    \begin{minipage}{\tightalgowidth}%
+  }{}{}
+  \patchcmd{\@algocf@finish}{%
+    \end{lrbox}%
+  }{%
+    \end{minipage}%
+    \end{lrbox}%
+  }{}{}
+  \makeatother
+
+%% Drawing %%
+\usepackage{tikz} % create PostScript and PDF graphics in TeX
+\usetikzlibrary{arrows,positioning,shapes,snakes,calc}
+
+% Some TikZ libraries
+% 
+% arrows -- Provides various new arrow tips.
+% automata -- Finite state automata and Turing Machines.
+% backgrounds -- Defines background for tikzpictures.
+% calc -- Make complex coordinate caculations.
+% calendar -- Display calendars.
+% chains -- Align nodes on chains.
+% er -- Entity Relationship Diagram Library
+% intersections -- Calculate intersections of paths.
+% mindmap -- Well, mind maps.
+% matrix -- Matrices are defined as in math mode, each item is a node.
+% folding -- Paper folding.
+% patterns -- Defines patterns for filling areas.
+% petri -- Draw Petri Nets.
+% plothandlers -- TikZ loads this library automatically.
+% plotmarks -- Used to define additional styles for plots.
+% shapes -- Define shapes other than rectangle, circle and co-ordinate.
+% snakes -- Curved lines between nodes or as a border to a shape.
+% topaths -- Used to define paths between two points; loaded automatically.
+% trees -- Each point on the tree is defined as a node, with children.

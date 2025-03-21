@@ -1,0 +1,59 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\spec}{spec}
+\DeclareMathOperator*{\diag}{diag}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 7}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+\item[Aufgabe 15] Bei GMRES hatten wir gezeigt: Die Nullstellen der Residuenpolynome sind die harmonischen Ritzwerte der Matrix $A$  bzgl.\ des Krylov-Unterraums $K_m(A,r^0)$. Zeigen Sie auf analoge Weise, dass für FOM gilt: Die Nullstellen $\xi_i^m, i=1,\ldots,m$ des $m$-ten Residuenpolynoms $p_m$ sind die gewöhnlichen Ritzwerte von $A$ bzgl.\ des Krylov-Unterraums, d.h.\ sie sind die Eigenwerte der Matrix $H_m = V_m^HAV_m$.
+ \medskip
+ 
+\item[Aufgabe 16] Zur Iterierten $x^m = x_0 + q_{m-1}(A)r^0$ eines KUV gehört das Residuum $r^m = p_m(A)r^0$. Zeigen Sie: $q_{m-1}$ ist das Polynom vom Grad $m-1$, das die Funktion $f(z) = \frac{1}{z}$ in den Nullstellen von $p_m$ interpoliert. Interpretieren Sie diese Aussage im Zusmmenhang mit Aufgabe~15.
+ \medskip
+
+ \item[Aufgabe 17] Es sei
+ \[
+ A = \frac{1}{n} \begin{bmatrix} 1 & \cdots & 1 \\
+ \vdots & \ddots & \vdots \\
+   1 & \cdots & 1
+   \end{bmatrix} + \alpha I \in \mathbb{C}^{n \times n}, \enspace \alpha > 0.
+   \]
+ \begin{itemize}
+ \item[a)] Zeigen Sie, dass $A$ hpd ist.
+ \item[b)] Führen Sie das CG-Verfahren durch für verschiedene Wahlen von rechten Seiten $b$ und $\alpha$.
+ \item[c)] Wieviele Iterationen, abhängig von der rechten Seite $b$,  braucht das CG-Verfahren, um die exakte Lösung zu bestimmen?  (Begründung!)
+ \item[d)] Welche maximale Zahl an Iterationen sagt der Konvergenzsatz für CG aus der Vorlesung vorher, um die $A$-Norm des Fehlers um einen Faktor $10^{-12}$ zu reduzieren für die Fälle $\alpha = 1, \alpha = 10^{-2}$?
+ \end{itemize}
+ 
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~04.06.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

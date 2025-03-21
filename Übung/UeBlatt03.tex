@@ -1,0 +1,56 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 3}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+    \item[Aufgabe 4] Implementieren Sie das Tschebyscheff-Verfahren gemäß Alg. 4.5 des Skripts in Matlab. Nutzen Sie für die Bestimmung der Koeffizienten $c_i$ die Formel 4.2 des Skriptes. Damit erhalten wir die Polynome:\\
+\begin{equation*}
+p_0(z) = 1\\
+\end{equation*}
+\begin{equation*}
+p_1(z) = - \frac{1}{b}(z-b)\\
+\end{equation*}
+\begin{equation*}
+p_{m+1}(z) = \frac{1}{c_{m+1}}\left(\frac{2}{a} (z-b) c_m p_m(z) - c_{m-1} p_{m-1}(z)\right), \qquad \text{für} \qquad m \geq 1
+\end{equation*} 
+     Wenden Sie Ihre Implementation auf das 2D-Laplace Model-Problem an. Ist dieses Verfahren immer stabil?
+     
+    \item[Aufgabe 5] Verbessern Sie Ihre Implementation des Tschebyscheff-Verfahrens durch die Implementierung von Alg. 4.7 des Skripts. \\
+\begin{enumerate}
+\item Was passiert, wenn der größte Eigenwert zu groß abgeschätzt wird? (z.B. Faktor 2)
+\item Was passiert, wenn der größte Eigenwert zu klein abgeschätzt wird? (z.B. $\hat{\lambda}_{max} = \lambda_{max} - \lambda_{min}$)
+\item Was passiert, wenn der kleinste Eigenwert zu groß abgeschätzt wird? (z.B. $\hat{\lambda}_{min} = \lambda_{min} + 10 \cdot h^2$, oder $\hat{\lambda}_{min} = \frac{\lambda_{min} + \lambda_{max}}{2}$)
+\item Was passiert, wenn der kleinste Eigenwert zu klein abgeschätzt wird? (z.B. $\hat{\lambda}_{min} = \frac{1}{2} \cdot \lambda_{min}$)
+\end{enumerate}
+
+\item[Aufgabe 6] Implementieren Sie das Richardson-Verfahren zweiter Ordnung und vergleichen Sie die Konvergenz mit den Verfahren aus Aufgabe 4 und 5. Verwenden Sie hierfür den optimalen Parameter $\omega_{0} = \frac{2}{1 + \sqrt{1 - \gamma^2}}$ gemäß des Satzes 5.5 der Vorlesung.
+    
+\end{description}
+
+\begin{hinweis}{ Die Eigenwerte der Matrix für das Model-Problem liegen im Intervall $[ 4- 4\cos(\pi h), 4 + 4\cos(\pi h)]$ für $h = \frac{1}{N+1}$
+}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~30.04.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

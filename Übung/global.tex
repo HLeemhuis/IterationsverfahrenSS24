@@ -1,0 +1,49 @@
+\newcommand{\hinweis}[1]{%
+\noindent%
+\textbf{Hinweis:} \emph{#1}
+}
+
+\newcommand{\definition}[1]{%
+\noindent%
+\textbf{Definition:} \emph{#1}
+}
+
+\newenvironment{hinweise}{%
+\noindent%
+\textbf{Hinweise:}%
+\begin{itemize}%
+\itshape%
+}{%
+\end{itemize}%
+}
+
+\newenvironment{hinweiseNum}{%
+\noindent%
+\textbf{Hinweise:}%
+\begin{enumerate}[label=\roman*)]%
+\itshape%
+}{%
+\end{enumerate}%
+}
+
+\newcommand{\pagefeed}{%
+	\vfill
+	\begin{center}
+		\textbf{--- Fortsetzung auf der nächsten Seite ---}
+	\end{center}
+	\newpage%
+}
+
+%% TikZ styles for DEAs
+\def\nodesize{25pt}
+\def\nodedist{3cm}
+
+\tikzset{aidea/.style={->,>=stealth',shorten >=1pt,auto,node distance=\nodedist}}
+
+\tikzset{snode/.style={node distance=.5*\nodedist,inner sep=0pt,fill=none,draw=none,minimum height=0pt,minimum width=0pt}}
+
+\tikzset{cnode/.style={circle,fill=white,draw,font=\large\bfseries,minimum height=\nodesize,minimum width=\nodesize,inner sep=0pt}}
+
+\tikzset{rnode/.style={rectangle,fill=white,draw,font=\large\bfseries,minimum height=\nodesize,minimum width=\nodesize,inner sep=0pt}}
+
+\tikzset{label/.style={midway,font=\small,text centered,inner sep=3pt}}

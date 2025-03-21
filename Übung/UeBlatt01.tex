@@ -1,0 +1,59 @@
+\documentclass[a4paper,11pt]{scrartcl}
+
+\input{conf}
+\input{\BASEPATH/kopf}
+
+%\usepackage{amsthm}	%for defintions
+%\theoremstyle{definition}
+%\newtheorem{definition*}{Definition}
+\begin{document}
+
+\aihead
+
+\begin{center}
+  {\large\textbf{Übungsblatt 1}}
+\end{center}
+
+
+\begin{description}
+%    \item[Short] This is a shorter item label, and some text that talks about it. The text is wrapped into a paragraph, with successive lines indented.
+    \item[Aufgabe 1] Sei $A \in \mathbb{C}^{n\times n}$ hermitesch positiv definit mit $Spec(A) \subseteq [\lambda_{min},\lambda_{max}]$ und $0 < \lambda_{min} \leq \lambda_{max}$. Dann ist die \textit{gewichtete Richardson Iteration} für die Gleichung $A x = b$ gegeben durch:\\
+\begin{equation*}
+	x^{(m+1)} = (I - \alpha A)x^{(m)} + \alpha \cdot b
+\end{equation*}
+
+\begin{enumerate}
+\item Welche Werte muss $\alpha$ annehmen, damit das gewichtete Richardson Verfahren konvergiert?
+\item Bestimmen Sie $\alpha^*$ so, dass die Iterationsmatrix $H_\alpha = (I - \alpha A)$ den kleinst möglichen Spektralradius aufweist.
+\end{enumerate}
+
+    \item[Aufgabe 2] Zur Wiederholung von Satz 2.3 der Vorlesung:\\
+    Sei $\rho > 0$, $\gamma \in \mathbb{C}$ mit $|\gamma| > \rho$. Dann löst das Polynom
+    \begin{equation*}
+    p_m(z) = \frac{z^m}{\gamma^m}
+    \end{equation*}
+    die Aufgabe 
+    \begin{equation*}
+    \min_{p_m\in \Pi_m \text{\quad } p_m(\gamma) = 1}   \quad \max_{\lambda \in D(0, \rho)} |p_m(\lambda)| 
+    \end{equation*}
+
+%KOMMENTAR: Diese Aufgabe kann/soll in der nächsten Version so modifiziert werden, dass der Kreis mit Radius rho nicht nur um "+1" verschoben wird, sondern um ein beliebiges alpha (aus den Komplexen Zahlen).
+	Finden Sie die Lösung von \\
+	    \begin{equation*}
+	    \min_{p_m \in \overline{\Pi}_m} \max_{\lambda \in D(1, \rho)} |p_m(\lambda)| 
+	    \end{equation*}
+\end{description}
+
+%\begin{hinweis}{
+%}\end{hinweis}
+
+\begin{description}
+\item[Abgabe:] --- Keine, die Aufgaben werden in der Übung besprochen ---\\
+Dieses Übungsblatt wird in der Übung am ~16.04.24 besprochen.
+%\item[Abgabe:] Mo.,~19.06.2023, bis~12:15~Uhr.
+
+% Ihre Lösungen laden Sie bitte auf \href{https://moodle.uni-wuppertal.de/course/view.php?id=24186&section=4}{Moodle} hoch. Weitere Hinweise zu den Abgaben finden Sie auf Übungsblatt 1.
+
+\end{description}
+
+\end{document}

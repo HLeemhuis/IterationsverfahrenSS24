@@ -1,0 +1,70 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Header-stuff
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{\BASEPATH/packages}
+\usepackage[pdftex,bookmarks=false]{hyperref}
+
+\hyperbaseurl{\aibaseurl}
+
+
+\usepackage{tikz}
+
+
+% Global definitions
+\input{\BASEPATH/global}
+
+\newcommand{\aihead}{
+\noindent
+\includegraphics*[scale=1.1]{\BASEPATH/BUW_Logo.pdf}
+\hfill
+\parbox[b]{10cm}{%
+  Fakultät für Mathematik und Naturwissenschaften \\
+  \ainames}
+\hfill
+%\includegraphics*[scale=.0578]{\BASEPATH/AI_Logo.pdf}
+ 
+\begin{center}
+  {\Large\textbf{Iterationsverfahren}} \\[3mm]
+  \aisemester \\[5mm]
+\end{center}
+}
+
+\newcommand{\raisedrule}[2][0em]{\leavevmode\leaders\hbox{\rule[#1]{1pt}{#2}}\hfill\kern0pt}
+\newcommand{\blankrule}{\noindent\raisedrule[0.3em]{0.5pt}}
+\newcommand{\headerrule}[1]{\noindent\raisedrule[0.3em]{0.5pt}\quad{\Large\textit{#1}}\quad\raisedrule[0.3em]{0.5pt}}
+
+
+\typearea{18}
+
+\pagestyle{empty}
+\definecolor{linkcol}{rgb}{0.00,0.00,0.50}
+\definecolor{urlcol}{rgb}{0.50,0.00,0.00}
+\PrerenderUnicode{Üü}
+\hypersetup{%
+	pdftitle={Übungsblatt zu Iterationsverfahren, \aisemesterPDF},
+	pdfauthor={\ainamesPDF},
+	pdfpagemode=UseThumbs,
+	colorlinks=true,
+	linkcolor=linkcol,
+	urlcolor=urlcol,
+}
+\pdfpkresolution=1200
+
+\renewcommand{\theenumi}{\alph{enumi}}
+\renewcommand{\labelenumi}{\theenumi)}
+
+\newcounter{aufgabennummer}
+\newcounter{aufgabennummerA}
+\newcounter{aufgabennummerB}
+\newcounter{aufgabennummerVA}
+
+
+% Dummy - do nothing
+\newcommand{\variation}[2]{}
+\newcommand{\solution}[2]{}
+\newcommand{\comment}[2]{}
+\newcommand{\internal}[2]{}
+
+\newcommand{\exclude}[1]{}
+\newcommand{\nexclude}[1]{#1}
