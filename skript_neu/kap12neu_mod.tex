@@ -1,0 +1,162 @@
+% Dieses Kapitel habe ich im Sommer 2007 neu geschrieben,
+% weil mit dem Paper von Liessen, Faber und Tichy nun ein besserer
+% Beweis fr den Faber-Manteuffel-Satz vorliegt
+%
+% Andreas Frommer, 22.6.2007
+
+
+\newcommand{\kernel}{\mbox{Kern}}
+\section{Minimales Residuum vs kurze Rekursion}
+
+Das zentrale Resultat dieses Kapitels ist der Satz von Faber und Manteuffel,
+Satz~\ref{faber:sa}. Zur Vorbereitung wiederholen wir ein paar 
+Tatsachen "uber lineare Operatoren auf endlich-dimensionalen R"aumen, wie man sie aus
+den Anf"angervorlesungen zur Linearen Algebra kennt. $A$ bezeichnet einen 
+linearen Operator auf einem solchen Raum $V$ "uber $\MathC$, der mit einem Innenprodukt
+$\langle \cdot, \cdot \rangle$ ausgestattet ist.
+
+\begin{defn} 
+ Die Adjungierte $A^*$ zu $A$ bez"uglich $\langle \cdot , \cdot \rangle$ ist die Matrix mit
+\[
+ \langle Ax , y  \rangle = \langle x, A^*y\rangle \quad \forall \; x,y \in V.
+\]
+\end{defn}
+
+\begin{lem} \label{normal_eq:lem}
+Die folgenden Bedingungen sind "aquivalent:
+\begin{itemize}
+ \item[(i)] $AA^* =  A^*A $,
+ \item[(ii)] $V$ besitzt eine Orthonormalbasis aus Eigenvektoren $q_i$ von $A$ (zu Eigenwerten $\lambda_i$),
+ \item[(iii)] $A^*=p(A), \quad p \in \Pi_{n-1}$, wobei $n = \dim(V)$.
+\end{itemize}
+\end{lem}
+\begin{proof}
+ (i) $\Leftrightarrow$ (ii) ist bekannt aus LA.
+
+ (ii) $\Longrightarrow$ (iii): Aus $\langle q_j, A^*q_i \rangle = \langle Aq_j, q_i \rangle 
+  = \lambda_j \delta_{ij}$ folgt $A^*q_i = \overline{\lambda}_i q_i$.
+ Daraus folgt $A^* = p(A)$, wobei $p$ das Polynom aus
+$\Pi_k$ ist mit $p(\lambda_i)=\overline{\lambda_i}, \quad i=1, \dots,k$. Dabei sind  $\lambda_1,\dots,\lambda_k$ die {\em verschiedenen}
+Eigenwerte von $A$.
+
+ (iii) $\Longrightarrow$ (i): trivial.
+\end{proof}
+%
+
+\begin{defn} 
+Ein linearer Operator, der eine der drei Bedingungen aus Lemma~\ref{normal_eq:lem}
+erf"ullt, hei"st {\em normal}. $A$ hei"st {\em $s$-normal} ($s \in \mathbb{N}, s < \dim(V)$), falls 
+$s$ der kleinste Grad von allen Polynomen ist, die 
+Lemma~\ref{normal_eq:lem} (iii) erf"ullen.
+\end{defn}
+\medskip
+
+Beispiel: $A$ selbstadjungiert $\Rightarrow$ $A$ ist 1-normal.
+\medskip
+
+\begin{aufg} Charakterisiere alle 1-normalen Operatoren.
+\end{aufg}
+
+\begin{defn}
+$\mu_A$ und $d_A$ bezeichnen das Minimalpolynom von $A$ und dessen Grad. 
+\\
+F"ur $v \in V$ bezeichnen $\mu_v$ und $d_v$ das Minimalpolynom von $v$ bzgl.\ $A$
+und dessen Grad. D.h., $\mu_v$ ist das Polynom kleinsten Grades mit 
+$\mu_v(A)v = 0$, normiert auf H"ochstkoeffizient 1.
+\end{defn}
+
+\begin{lem} Gilt $p(A)v = 0$, so folgt $\mu_v \mid p$. Insbesondere
+gilt $\mu_v \mid \mu_A$.
+\end{lem}  
+\begin{proof} Alle Polynome mit $p(A)v = 0$ bilden ein Ideal. Weil
+der Polynomring ein Hauptidealring ist, liegen sie alle in dem 
+von $\mu_v$ erzeugten Hauptideal.
+\end{proof}
+
+\begin{defn} Der von $v \in V$ erzeugte {\em zyklische Unterraum} ist
+\[
+   K(A,v) = K_{d_v}(A,v).
+\]
+Beachte: $d_v$ ist der Stufenindex, ab dem $K_m(A,v)$ stagniert.
+\end{defn}
+
+\begin{lem} \label{normal_tat1:lem}
+Tatsachen "uber zyklische Unterr"aume:
+\begin{itemize}
+\item[(i)] $\hat{A}: K(A,v) \to K(A,v), \, w \to Aw$ ist linearer Operator auf $K(A,v)$.
+\item[(ii)] F"ur $ w \in K(A,v)$ ist $K(A,w) \subseteq K(A,v)$. Gleichheit gilt genau dann,
+          wenn $w = p(A)v$ mit $p$ ist teilerfremd zu $\mu_v$. 
+\item[(iii)] Eigenr"aume in $K(A,v)$ haben immer Dimension 1.
+\end{itemize}
+\end{lem}
+\begin{proof}
+(i) ist klar; ebenso der erste Teil von (ii). F"ur $w = p(A)v$ gilt wegen $K(A,w) \subseteq 
+K(A,v)$  einerseits $\mu_w \mid \mu_v$. Andererseits gilt
+ $\mu_v \mid p \cdot \mu_w$. Dies beweist den Rest von (ii). Ein Eigenvektor $p(A)v$ zum Eigenwert $\lambda$
+erf"ullt $(Ap(A)-\lambda p(A))v = 0$ mit $\deg p \leq d_v-1$. Also ist sogar $\mu_v = \alpha \cdot (t-\lambda) \cdot p(t)$,
+was den Eigenvektor bis auf skalare Vielfache eindeutig festlegt.
+\end{proof}
+
+\begin{lem} \label{normal_tat2:lem}
+Weitere Tatsachen:
+\begin{itemize}
+\item[(i)] Mit $\mu_A(t) = \prod_{i=1}^\ell (t-\lambda_i)^{e_i}$ gilt
+\[
+V = \oplus_{i=1}^\ell \kernel(A-\lambda_i I)^{e_i}
+\]
+\item[(ii)] Zu jedem $p \in \Pi$ mit $p \mid \mu_A$ existiert $u \in V$ mit $\mu_u = p$.
+\end{itemize}
+\end{lem}
+\begin{proof} (i) ist bekannt. In (ii) nimmt man f"ur $p = \prod_{i=1}^\ell (t-\lambda_i)^{f_i}$ mit $f_i 
+\leq e_i$ den Vektor $u = \sum_{f_i > 0} u_i$ mit $u_i \in \kernel(A-\lambda_i I)^{f_i} -
+ \kernel(A-\lambda_i I)^{f_i-1}$.
+\end{proof}
+\medskip
+
+Wir ben"otigen zwei technische Lemmas. 
+
+\begin{lem} \label{FMproof1:lem}
+$A,B: V \to V$ seien linear, $A$ invertierbar. Weiter sei $s+2 \leq d_A$ und 
+f"ur alle $v \in V$ mit $d_v = d_A$  gelte
+\[
+Bv \in \spann(v,A,\ldots,A^s v).
+\]
+\begin{itemize}
+\item[(i)] Dann gilt $AB = BA$.
+\item[(ii)] Im Fall $B = A^*$ folgt: $A$ ist $t$-normal mit $t \leq s$.
+\end{itemize} 
+%Im Fall $B = A^*$ gilt sogar, dass dann $A$ $t$-normal ist
+%mit $t \leq s$.
+\end{lem}
+\begin{proof}
+(i): Sei $d_v = d_A$. F"ur $\gamma \not \in \spek(A)$ folgt mit $w_\gamma = (A-\gamma I)v$
+aus Lemma~\ref{normal_tat1:lem}, dass $K(A,v) = K(A,w_\gamma)$ und $d_v = d_{w_\gamma}$; insbesondere gilt das f"ur $w_0 = Av$. Nach Voraussetzung existieren Polynome $p_\gamma,
+q,r \in \Pi_s$ mit
+\begin{equation} \label{BAs:eq}
+   Bw_\gamma = p_\gamma(A)w, \; B(Av) = q(A)(Av), \; Bv = r(A)v,
+\end{equation}
+also
+\[
+Bw_\gamma = (p_\gamma(A)\cdot(A -\gamma I))v = B(Av)-\gamma Bv = (q(A)\cdot A - \gamma r(A))v. 
+\]
+F"ur $\gamma \not \in \spek(A)$ erf"ullt das Polynom $\phi_\gamma(t) = t\cdot(p_\gamma(t)-q(t))-\gamma(p_\gamma(t)-r(t)) \in \Pi_{s+1}$ 
+also $\phi_\gamma(A)v = 0$, ist also Vielfaches von $\mu_v$. Wegen $\leq s+1 \leq d_v$
+folgt $\phi_\gamma \equiv 0$. Hieraus folgt 
+\[
+   \gamma(q-r) = (t-\gamma)(p_\gamma - q),
+\]
+d.h.\ jedes $0 \neq \gamma \not \in \spek(A)$ ist Nullstelle von $q-r$,
+also $q=r$ und damit nach \eqnref{BAs:eq} $BAv = q(A)Av = ABv = Ar(A)v$. 
+
+Die Operatoren
+$A$ und $B$  kommutieren also auf allen Vektoren $v$ mit $d_v = d_A$. F"ur einen gegebenen solchen Vektor
+ist $\mbox{dist}(A^{d_v-1}v,\spann(v,\ldots,A^{d_v-2}v)) >0$; aus Stetigkeitsgr"unden 
+gilt das dann auch noch, wenn man $v$ durch ein beliebiges $w$ aus einer gen"ugend kleinen 
+Kugel um $v$ ersetzt. F"ur alle solche $w$ ist also $d_w = d_v$; insbesondere gibt
+es eine Basis $b_1,\ldots,b_n$ von $V$ mit $d_{b_i} = d_v$. Gezeigt wurde bereits
+$ABb_i = BAb_i$, also gilt $AB = BA$. \smallskip \\
+(ii): Nach (i) ist $A$ normal, also $A^* = p(A)$ mit $\deg p \leq d_A-1$. F"ur ein $v$ mit 
+$d_v = d_A$ gilt aber $A^*v = p(A)v \in \spann(v,Av,\ldots,A^sv)$. Weil $v,Av,\ldots,A^{d_A-1}v$
+l.u.\ sind, folgt daraus $\deg p \leq s$.
+\end{proof}
+\medskip

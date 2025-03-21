@@ -1,0 +1,335 @@
+\section{Unvollst"andige LU-Zerlegungen}
+Eine unvollst"andige LU-Zerlegung ( ILU ) wird ben"otig als Pr"akonditionierer.
+Starten wollen wir mit einer zeilenorientierten Variante der Gau"s-Elimination.
+Dazu sei $A\in \cnn$ regul"ar.
+
+\begin{alg}[$ikj$-Form der Gau"s Elimination]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \STATE $a_{i,k} = a_{i,k}/a_{k,k}$
+        \FOR{$ j = k+1, \dots , n$}
+          \STATE $a_{i,j} = a_{i,j} - a_{i,k} a_{k,j}$
+        \ENDFOR
+      \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Nach Terminierung enth"alt das strikte untere Dreieck von $A$ den Faktor $L$;
+der Rest ist $U$.
+\medskip
+
+{\bf Vorteil} der $ikj$-Form: $L$ und $U$ werden zeilenweise berechnet. Dies ist geeignet f"ur die Datenstruktur bei d"unnbesetzten Matrizen.
+
+\medskip
+
+{\bf Idee bei ILU:} Lasse Operationen in der Gau"s-Elimination weg, so dass die Matrizen weniger gef"ullt sind.
+
+\medskip
+
+\subsection{ILU zu einem vorgegebenen Muster}
+
+\begin{defn}
+$E \subseteq \{1,\dots,n \} \times \{1,\dots,n\}$ hei"st {\em Muster}, wenn $\{(i,i) , i=1, \dots ,n\} \subseteq E.$
+\end{defn}
+
+\begin{alg}[$ikj$-Form der ILU zum Muster E]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \IF{$(i,k) \in E$}
+          \STATE $a_{i,k} = a_{i,k}/a_{k,k}$
+          \FOR{$ j = k+1, \dots , n$}
+            \IF{$(i,j) \in E \wedge (k,j) \in E$}
+              \STATE $a_{i,j} = a_{i,j} - a_{i,k} a_{k,j}$
+            \ENDIF
+          \ENDFOR
+        \ENDIF
+      \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+F"ur $U$ und $L$ in der $LU$-Faktorisierung gilt dann
+$$ u_{ij} =
+\begin{cases}
+  a_{i,j}  & \text{falls } (i,j) \in E \text{ und } j \geq i \\
+  0 & \text{sonst}
+\end{cases}
+$$
+und 
+$$ l_{ij} =
+\begin{cases}
+  a_{i,j}  & \text{falls } (i,j) \in E \text{ und } j < i \\
+  0 & \text{sonst}.
+\end{cases}
+$$
+
+\begin{sa}
+Sei $A$ eine H-Matrix, dann existiert die ILU f"ur jedes Muster $E$.
+\end{sa}
+
+{\bf Beweis:} s.\ Vorlesung "`Parallele Algorithmen WS 2005/06"'.
+
+Nun stellt sich nat"urlich die Frage, was geeignete Muster $E$ sind.
+
+\begin{defn}
+Man spricht von ILU(0), falls $ E = \{ (i,j) : a_{ij} \neq 0 \} $.
+\end{defn}
+
+{\bf Frage:} Wie findet man weitere, gr"o"sere geeignete Muster?
+
+\medskip
+
+{\bf Idee:} Wir gehen davon aus, dass $ \diag(A) = I $ und $|a_{i,j}| < \varepsilon$
+f"ur  $i \neq j$ (z.B. $\varepsilon = \frac 14$ bei Modellproblem I). Dann kann man einen "`F"ull-Level-Index"' auf
+folgende Weise vergeben:
+
+\medskip
+
+Initialisierung:
+$$
+\widehat{lev}(i,j) =
+\begin{cases}
+   1 & \text{falls } a_{i,j} \neq 0 \\
+   \infty & \text{falls } a_{i,j} = 0.
+\end{cases}
+$$
+Bei jedem Schritt der (unvollst"andigen) Gau"s-Elimination wird $\widehat{lev}(i,j)$ 
+aufdatiert via
+\begin{equation}\label{aufdatierunglevel}
+a_{i,j} = a_{i,j} - a_{i,k} a_{k,j} \Rightarrow \widehat{lev}(i,j) = \min \{ \widehat{lev}(i,j),\widehat{lev}(i,k) + \widehat{lev}(k,j) \}
+\end{equation}
+Geht man davon aus, dass alle $a_{i,i}$ die Gr"o"senordnung 1 haben, so hat
+$a_{i,j}$ die Gr"o"senordnung ${\cal O}(\varepsilon^{\widehat{lev}(i,j)})$.
+Je gr"o"ser $\widehat{lev}(i,j)$, desto kleiner $a_{i,j}$. In einer ILU
+kann man also das Muster so festlegen, dass die Eintr"age mit gro"sem F"ull-Level
+auf Null gesetzt werden.
+
+In der Standardterminologie wird $lev(i,j) = \widehat{lev}(i,j)-1$ verwendet, d.h. (\ref{aufdatierunglevel}) wird zu
+\begin{equation}\label{aufdatierungstandard}
+lev(i,j) = \min \{lev(i,j) , lev(i,k) + lev(k,j) +1 \}.
+\end{equation}
+
+In der ILU($p$) werden nun die Positionen in das Muster $E$ "ubernommen, f"ur
+die $lev(i,j) \leq p$. Dies ist konsistent mit der Bezeichnung
+ILU(0) von vorher.
+
+\begin{alg}[ikj-Form der ILU(p)]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \IF{$lev(i,k) \leq p$}
+          \STATE $a_{i,k} = a_{i,k}/a_{k,k}$
+          \FOR{$ j = k+1, \dots , n$}
+            \STATE $lev(i,j) = \min \{lev(i,j),lev(i,k) + lev(k,j) + 1\} $
+            \IF{$lev(i,k) \leq p$}
+              \STATE $a_{i,j} = a_{i,j} - a_{i,k} a_{k,j}$
+            \ENDIF
+          \ENDFOR
+        \ENDIF
+      \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{enumerate}
+\item Eine gute Implementierung sollte so sein, dass der Aufwand zur Berechnung der
+Level-Indizes nicht gro"s  wird.
+\item Das entstehende Muster $E$ ist unabh"angig von den numerischen Werten. Es kann also
+eine Datenstruktur von $L$ und $U$ vorweg berechnet werden.
+\end{enumerate}
+
+\begin{aufg}
+Sei $A$ symmetrisch und $G(A) = (V,E)$ der Graph von $A$.
+Zeige:
+\begin{itemize}
+\item[(i)] Bei der normalen Gau"s-Elimination hat die Matrix $(L\setminus U)$ den
+Graphen $\tilde{G} = (V,\tilde{E})$ mit
+\begin{multline*}
+(i,j) \in \tilde{E} \text{ mit } i < j\\ \iff \exists \text{ Kantenzug } (i,i_1, \dots , i_{l-1},j) \text{ mit }
+  i_\nu \in \{1,\dots i-1\}.
+\end{multline*}
+\item[(ii)] Bei ILU($p$) hat die Matrix $(L\setminus U)$ den
+Graphen $\tilde{G} = (V,\tilde{E})$ mit
+\begin{multline*}
+(i,j) \in \tilde{E} \text{ mit } i < j\\ \iff \exists \text{ Kantenzug der L"ange $p$ } (i,i_1, \dots , i_{l-1},j)\\ \text{ mit }
+  i_\nu \in \{1,\dots i-1\}.
+\end{multline*}
+\end{itemize}
+{\em Hinweis:} Verwende Induktion "uber $k$ und formuliere eine geeignete Eigenschaft
+f"ur die Zwischenresultate $A^{(k)}$.
+\end{aufg}
+
+\subsection{Dynamische ILU}
+{\bf Nachteile von ILU(p):} Muster ist "uber ein einfaches Modell, aber ohne
+wirkliche R"ucksicht auf numerische Werte festgelegt. Man h"atte aber gerne
+$$A = LU - R \text{  mit  } R \text{ "`klein"'}. $$
+{\bf Idee:} Lege Muster bei ILU dynamisch fest, d.h w"ahrend der Rechnung.
+
+\medskip
+
+{\bf Typischer Vertreter:} ILUT ("`T"': Threshold = Schwelle )
+
+\begin{defn}
+Eine {\em Nullregel} ist eine Vorschrift, bei der Berechnung einer ILU eine
+ Zahl (oder Teile einer ganzen Zeile ) auf $0$ zu setzen.
+\end{defn}
+Damit ergibt sich folgendes Ger"ust f"ur ILU
+
+\begin{alg}[ikj-Form einer allg. ILU] \label{allgemeineILU}
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}[1]
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \STATE $a_{i,k} = a_{i,k}/a_{k,k}$
+        \STATE wende eine Nullregel auf $a_{i,k}$ an
+        \IF{$a_{i,k} \not = 0$}
+         \FOR{$ j = k+1, \dots , n$}
+          \STATE $a_{i,j} = a_{i,j} - a_{i,k} a_{k,j}$
+        \ENDFOR
+       \ENDIF
+      \ENDFOR
+    \STATE wende eine Nullregel auf $a_{i,\bullet}$ an \{i-te Zeile\}
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{bem}
+ILU($p$) passt in das Schema: Die Nullregeln basieren nur darauf, ob $(i,j) \in E$.
+\end{bem}
+
+\begin{defn}
+ILUT($\tau$,p) verwendet folgende Regeln:
+\end{defn}
+
+{\bf F"ur Zeile 4:}
+$$
+a_{ik} =
+\begin{cases}
+ 0 &\text{falls } |a_{ij}| \leq \tau\\
+ \text{unver"andert } & \text{sonst}
+\end{cases}
+$$
+
+{\bf F"ur Zeile 11:}
+\begin{enumerate}
+\item $a_{i,j} \leftarrow 0 \text{ , falls} |a_{ij}| \leq \tau$
+\item Behalte danach unter den Eintr"agen $a_{i1},\dots,a_{i,i-1}$ ($\simeq L$) nur die $p$ betragsgr"o"sten bei,
+      alle anderen werden $0$. Dito mit den Eintr"agen $a_{i,i+1},\dots,a_{i,n}$
+    ($\simeq U$)
+      ($\Rightarrow \text{max } 2p+1$ Eintr"age der Zeile sind $\neq 0$)
+\item[] {\bf Variante f"ur 2.}\\
+Es bezeichne $l(i),u(i)$ die Anzahl der Nicht-Nullen in Zeile $i$ von $A$ vor bzw. nach der Diagonalen. Behalte dann
+$l(i)+p$ bzw. $u(i) + p$ Eintr"age bei.
+\end{enumerate}
+
+
+\begin{bem}
+ILUT($\tau$,p) ist nicht immer eine ILU zu einem Muster $E$, da in Zeile $4$ und Zeile $7$ unterschiedliche
+Nullregeln angewendet werden.
+\end{bem}
+Es gibt nur schwache Aussagen "uber ILUT, typisch ist die folgende.
+
+\begin{defn}
+$A \in \rnn$ hei"st $\hat{M}$-Matrix, falls gilt:
+\begin{align*}
+& a_{ij}  \leq 0 \text{ f"ur } i\neq j,\\
+& a_{ii}   > 0  \text{ f"ur } i = 1, \dots n-1, \\
+& \forall i < n \hspace{0.3cm} \exists j_i > i \text{ mit }  a_{ij_i} < 0.
+\end{align*}
+\end{defn}
+
+\begin{sa}
+$A$ sei eine diagonal dominante $\hat{M}$-Matrix, d.h.
+$$
+(a_{i,\bullet}) = \sum_{j=1}^n a_{ij} \geq 0 \text{ f"ur } i = 1,\dots n.
+$$
+Die Nullregeln in \ref{allgemeineILU} seien beliebig bis auf die Tatsache, dass sie nie auf $a_{i j_i}$ und $a_{ii}$ angewendet werden. 
+Dann ist Algorithmus~\ref{allgemeineILU} durchf"uhrbar und es gilt nach Terminierung des Algorithmus:
+\begin{align*}
+a_{ii} & > 0 \text{ f"ur } i = 1,\dots ,n,\\
+a_{nn} & \geq 0, \\
+\sum_{j=1}^n a_{ij} & \geq 0 \text{ f"ur } i = 1,\dots ,n. \\
+\end{align*}
+\end{sa}
+
+{\bf Beweis:}
+Wir ben"otigen Bezeichnungen f"ur die Zwischenwerte in Algorithmus~\ref{allgemeineILU}
+und formulieren ihn deshalb nochmal.
+
+\begin{alg}[ikj-Form einer allg. ILU mit Zwischenwerten]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \STATE $l_{i,k} = a_{i,k}^{(k)}/a_{k,k}^{(k)}$
+        \STATE Nullregel
+        \FOR{$ j = k+1, \dots , n$}
+          \STATE $a_{i,j}^{(k+1)} = a_{i,j}^{(k)} - l_{i,k} a_{k,j}^{(k)}$
+        \ENDFOR
+      \ENDFOR
+    \STATE Nullregel
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+Wir zeigen, dass f"ur alle $i$ und $k$ gilt:
+\begin{align*}
+a_{ij}^{(k)} & \leq 0 \text{ f"ur } i\neq j,\\
+a_{ii}^{(k)} &  > 0  \text{ f"ur } i < n, \\
+\sum_{j=1}^n a_{ij}^{(k)} & \geq 0.
+\end{align*}
+
+Der Beweis ist eine Induktion "uber $i$, innerhalb derer eine Induktion
+"uber $k$ gemacht wird. Es reicht deshalb, den Schritt von $k$ nach $k+1$
+bei festem $i$ anzugeben.
+
+$k = 1$: Hier ist die Behauptung identisch mit den Voraussetzungen des
+Satzes.
+
+$k \rightarrow k+1$:
+$$
+a_{ij}^{(k+1)} =
+\begin{cases}
+0 & \text{ falls Nullregel zutrifft}\\
+a_{i,j}^{(k)} - \underbrace{l_{i,k}}_{\leq 0} \underbrace{a_{k,j}^{(k)}}_{\leq 0} & \text{ sonst, insbesondere} \leq 0
+\end{cases} .
+$$
+
+F"ur die Zeilensummen gilt weiter
+$$\sum_{j=i}^n a_{i,j}^{(k+1)} = \sum_{j=i}^n a_{i,j}^{(k)} - l_{i,k} a_{k,j}^{(k)} - r_{ij}^{(k)}
+\overset{(*)}{=} \underbrace{\sum_{j=i}^n a_{i,j}^{(k)}}_{\geq 0} - \underbrace{l_{i,k}}_{\leq 0}
+\underbrace{\sum_{j=i}^n a_{k,j}^{(k)}}_{\geq 0} \underbrace{- r_{ij}^{(k)}}_{\geq 0} \geq 0$$
+Wobei $(*)$ folgt aus
+$$
+r_{ij}^{(k)} =
+\begin{cases}
+0 & \text{ falls Nullregel zutrifft}\\
+a_{i,j}^{(k)} - l_{i,k} a_{k,j}^{(k)} & \text{ sonst, insbesondere} \leq 0
+\end{cases} .
+$$
+Zu zeigen bleibt $a_{ii}^{(k+1)} > 0$. Wir wissen 
+$$a_{ii}^{(k+1)} \geq \sum_{j=i+1}^n -a_{ij}^{(k+1)} \geq - a_{ij_i}^{(k+1)} = -(a_{ij_i}^{(k)} - l_{i,k} a_{kj_i}^{(k)})
+\geq a_{ij_i}^{(k)} > 0.
+$$
+
+

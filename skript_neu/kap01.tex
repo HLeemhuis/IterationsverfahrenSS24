@@ -1,0 +1,301 @@
+
+\section{Krylov-Unterräume}
+
+\begin{defn}\label{KU_def}
+Zu $r\in\mathbb{C}^n\setminus\{0\}$ und $A\in\cnn$ definieren wir den \emph{Krylov-Unterraum} der
+Stufe $m$ als
+\begin{align*}\index{Krylov-Unterraum}
+K_m(A,r)&:=\text{span}\{r,Ar,A^2r,...,A^{m-1}r\}\\
+&=\{y\in\mathbb{C}^n:\ y=\sum\limits_{j=0}^{m-1}\alpha_j A^j r\}\\
+&=\{y\in\mathbb{C}^n:\ y=p_{m-1}(A)r, \quad p_{m-1}\in \Pi_{m-1}\},
+\end{align*}
+wobei $\Pi_{m-1}$ der Vektorraum der Polynome vom Höchstgrad $m-1$ ist, d.h.
+\[\Pi_{m-1}:=\left\{p:\ p=\sum\limits_{j=0}^{m-1}a_jx^j\right \}.\]
+\end{defn}
+
+Krylov-Unterräume sind geschachtelt. Da sie alle Teilräume von $\mathbb{C}^n$ sind,
+werden sie irgendwann nicht mehr größer werden. Wir untersuchen dies genauer. 
+
+\begin{lem}\label{min_lem}
+Zu $r\in\mathbb{C}^n$ existiert ein minimales $m^*\in\mathbb{N}_0$, $m^*\le n$ und ein Polynom
+$p_{m^*}\ne 0$ vom Grad $m^*$ mit
+\begin{enumerate}
+\item $p_{m^*}(A)r=0$ (dieses Polynom ist bis auf skalare Vielfache eindeutig;
+alle Polynome $p$ mit $p(A)r = 0$ bilden ein Ideal).
+\item Es gilt
+\begin{align*}
+\dim(K_{m}(A,r))&\le \dim(K_{m+1}(A,r)), \quad  m=1,\ldots,m^*,\\
+\dim(K_{\hat m}(A,r))&=\hat m, \quad \hat m=1,...,m^*,\\
+K_{m^*}(A,r) &=K_{m^*+1}(A,r)=K_{m^*+2}(A,r)=\ldots .
+\end{align*}
+\end{enumerate}
+\end{lem}
+\begin{proof}
+\begin{enumerate}
+\item Das Minimalpolynom $p_A$ von $A$  erfüllt $p_A(A)r=0$, also existiert auch ein Polynom minimalen Grades
+mit der geforderten Eigenschaft.
+\item Es ist klar, dass
+\[\dim(K_{m}(A,r))\le \dim(K_{m+1}(A,r))\le \dim(K_{m}(A,r))+1\]
+gilt, da
+\[K_{m+1}(A,r)=K_{m}(A,r)+\left\langle A^mr\right\rangle .\]
+\begin{itemize}
+\item Für
+\[
+p_{m^*}(t)=\sum\limits_{j=0}^{m^*}c_jt^j, \quad c_{m^*}\ne0
+\]
+folgt sofort aus $p_{m^*}(A)r=0$
+\[
+A^{m^*}r\in K_{m^* }(A,r)\Rightarrow K_{m^*}(A,r) = K_{m^*+1}(A,r).
+\]
+Jedes Polynom $p$ mit $\deg(p) = m > m^* $ besitzt eine Darstellung
+$p = q \cdot p_{m^*} + s$ mit $\deg(s) < m^*$. Also ist $p(A)r = s(A)r$ und
+damit $K_m(A,r) \subseteq K_{m^*}(A,r)$, also $K_m(A,r) = K_{m^*}(A,r)$.
+
+\item Es sei $\widetilde{m}$ der erste Index mit $K_{\widetilde{m}}(A,r)=K_{\widetilde{m}+1}(A,r)$, dann ist
+\begin{align*}
+A^{\widetilde{m}}r\in K_{\widetilde{m}}
+	&\Leftrightarrow\exists\text{ Polynom $p$ vom Grad $\widetilde{m}$ mit }\widetilde{p}(A)r=0\\
+	&\Longrightarrow\widetilde{m}\ge m^*\Rightarrow\widetilde{m}=m^*.
+\end{align*}
+\end{itemize}
+\end{enumerate}
+\end{proof}
+
+\begin{sa}\label{loes_sa}
+Sei $A\in\cnn$ regulär und $x^{0}\in\mathbb{C}^n,\ r^{0}=b-Ax^{0}$. Dann erfüllt die Lösung $x^*=A^{-1}b$ von
+\[
+Ax=b
+\]
+die Beziehung
+\begin{align*}
+x^*&\in x^{0}+K_{m^*}(A,r^{0}),\\
+x^*&\notin x^{0}+K_{m}(A,r^{0}), \quad m<m^*. 
+\end{align*}
+\end{sa}
+\begin{proof}
+Sei $p_{m^*}(t)=\sum\limits_{j=0}^{m^*}c_jt^j$ wie in Lemma \nref{min_lem}.
+Dann ist $c_0\ne 0$, denn sonst gälte
+\[
+\sum\limits_{j=1}^{m^*}c_jA^jr=0
+	\Leftrightarrow A\underbrace{\left(\sum\limits_{j=1}^{m^*}c_jA^{j-1}r \right)}_{\ne 0}=0,
+\]
+im Widerspruch zur Regularität von $A$.
+
+\medskip
+
+Es gilt also
+\begin{alignat*}{3}
+p_{m^*}(A)r^{0}=0
+	&\Leftrightarrow A^{-1}p_{m^*}(A)r^{0}=0\\
+	&\Leftrightarrow A^{-1}\sum\limits_{j=0}^{m^*}c_jA^jr^{0}=0\\
+	&\Leftrightarrow A^{-1}\sum\limits_{j=0}^{m^*}c_jA^j(b-Ax^{0})=0\\
+	&\Longrightarrow x^*=A^{-1}b=x^{0}+\dfrac{1}{c_0}\sum\limits_{j=1}^{m^*}c_jA^{j-1}r^{0}\\
+	&  \phantom{\Longrightarrow x^* }\    \in x^{0}+K_{m^*}(A,r^{0}).
+\end{alignat*}
+Die Annahme $x^*\in x^{0}+K_{m^*-1}(A,r^{0})$ führt auf ein Polynom $p\ne 0$ mit $\deg(p)<m^*$ und
+$p(A)r^{0}=0$, im Widerspruch zur Minimalität von $m^*$.
+\end{proof}
+
+\begin{defn}\label{KUV_def}
+Ein \emph{Krylov-Unterraum-Verfahren} (KUV) zur Lösung von $Ax=b$ ist ein Unterraumverfahren mit Startwert $x^{0}$,
+Startresiduum $r^{0}=b-Ax^{0}$ und
+\[
+x^{m}\in x^{0}+K_m(A,r^{0}).
+\]
+Es ist also $x^{m}=x^{0}+q_{m-1}(A)r^{0},\ \deg(q_{m-1})\le m-1$ und
+\begin{align*}
+r^{m}=b-Ax^{m}&=r^{0}-Aq_{m-1}(A)r^{0}\\
+&=p_m(A)r^{0}, \quad p_m\in \overline{\Pi}_{m}=\{p\in \Pi_{m}:\ p(0)=1\}\\
+& \quad  \in K_{m+1}(A,r^{0}).
+\end{align*}
+$p_m$ und $q_{m-1}$ (mit $p_m(t)=1-t\cdot q_{m-1}(t)$) heißen auch die zum KUV
+gehörigen \emph{Verfahrenspolynome}.
+\end{defn}
+
+Umgekehrt definiert jede Folge von Polynomen $q_{m-1} \in \Pi_{m-1}$ ein
+KUV mit $x^{m} = x^{0} + q_{m-1}(A)r^{0}$ und ebenso jede Folge von Polynomen
+$p_m \in \overline{\Pi}_{m}$  (mit $r^{m} = p_m(A)r^{0}$). Grundsätzlich
+besteht immer der Zusammenhang
+\begin{equation} \label{pqbeziehung_eq}
+p_m(t) = 1 - tq_{m-1}(t).
+\end{equation}
+
+Wir interpretieren nun einfache bekannte Verfahren als KUV.
+
+\medskip
+
+\textbf{Erinnerung:} Es sei $A=(a_{i,j})\in\cnn$, dann sind $D,L,U \in \mathbb{C}^{n \times n}$
+gegeben durch
+\begin{align*}
+D&=\left(\begin{array}{ccccc}
+a_{1,1}\\
+&\ddots\\
+\phantom{-a_{2,1}}&&\ddots&\raisebox{12pt}[-12pt]{\Huge 0}\\
+&\raisebox{-12pt}[12pt]{\Huge 0}&&\ddots\\
+\phantom{-a_{2,1}}&\phantom{-a_{2,1}}&\phantom{\vdots}&\phantom{\vdots}&a_{n,n}
+\end{array}\right)&&\text{(Diagonalteil)}\\\\
+L&=\left(\begin{array}{ccccc}
+0\\
+-a_{2,1}&\ddots\\
+\vdots&&\ddots&\raisebox{12pt}[-12pt]{\Huge 0}\\
+\vdots&&&\ddots\\
+-a_{n,1}&\hdots&\hdots&-a_{n,n-1}&0
+\end{array}\right)&&\text{\parbox{5cm}{(negativer)\\\hfill linker unterer Dreiecksteil}}\\\\
+U&=\left(\begin{array}{ccccc}
+0&-a_{1,2}&\hdots&\hdots&-a_{1,n}\\
+&\ddots&&&\vdots\\
+&&\ddots&&\vdots\\
+&\raisebox{-12pt}[12pt]{\Huge 0}&&\ddots&-a_{n-1,n}\\
+&&&&0
+\end{array}\right)&&\text{\parbox{5cm}{(negativer)\\\hfill rechter oberer Dreiecksteil}}
+\end{align*}
+
+Es ist also $A = D-L-U$.
+
+Wir betrachten nun die drei Standard-Verfahren:
+
+\medskip
+
+\begin{tabular}{ll}
+Jacobi:&$x^{m+1}=D^{-1}((L+U)x^{m}+b)$\\
+Gauß-Seidel:&$x^{m+1}=(D-L)^{-1}(Ux^{m}+b)$\\
+SOR:&$x^{m+1}=(\frac{1}{\omega}D-L)^{-1}((\frac{1-\omega}{\omega}D+U)x^{m}+b), \quad \omega\in\mathbb{R}\setminus\{0\} $
+\end{tabular}
+
+\medskip
+
+und interpretieren sie folgendermaßen als KUV:
+
+\begin{description}
+\item[Jacobi:] Setze $H:=D^{-1}(L+U)$ und $A' = D^{-1}A, \; b' = D^{-1}b$. Mit $r^{0}=b'-A'x^{0}$ erhalten wir
+\begin{align*}
+x^{m+1}&=Hx^{m}+b'\\
+r^{m+1}&=b'-A'x^{m+1}=b'-A'(Hx^{m}+b')\\
+&=b'-A'((I-A')x^{m}+b')\\
+&=b'-A'(x^{m}+r^{m})\\
+&=r^{m}-A'r^{m}=(I-A')r^{m}\\
+\Rightarrow r^{m}&=(I-A')^mr^{0}.
+\end{align*}
+Also ist das Jacobi-Verfahren ein KUV bezüglich $A'x=b'$ mit
+\begin{align*}
+p_m(t)&=(1-t)^m,\\
+q_{m-1}(t)&=\dfrac{1-p_m(t)}{t}=\sum\limits_{j=0}^{m-1}(-1)^{j}\binom{m}{j+1}t^j.
+\end{align*}
+\item[Gauß-Seidel:] ist KUV bezüglich $\underbrace{(D-L)^{-1}A}_{=A'}x=\underbrace{(D-L)^{-1}b}_{b'}$ mit
+\begin{align*}
+p_m(t)&=(1-t)^m, \\
+q_{m-1}(t)&=\dfrac{1-p_m(t)}{t}=\sum\limits_{j=0}^{m-1}(-1)^{j}\binom{m}{j+1}t^j.
+\end{align*}
+\item[SOR:] ist KUV bezüglich $\underbrace{\left(\textstyle\frac{1}{\omega}D-L \right )^{-1}A}_{=A'}x
+					=\underbrace{ \left (\textstyle\frac{1}{\omega}D-L \right )^{-1}b}_{b'}$ mit
+\begin{align*}
+p_m(t)&=(1-t)^m,\\
+q_{m-1}(t)&=\dfrac{1-p_m(t)}{t}=\sum\limits_{j=0}^{m-1}(-1)^{j}\binom{m}{j+1}t^j.
+\end{align*}
+\end{description}
+
+Allgemein gilt folgender
+
+\begin{sa}\label{KUV_sa}
+Ein Iterationsverfahren
+\begin{equation}
+x^{m+1}=Hx^{m}+b' \label{iter_eq}
+\end{equation}
+zur Lösung von $Ax=b$ mit $A=M-N$, $H=M^{-1}N,\ b'=M^{-1}b$ ist ein KUV (bezüglich des
+Systems $A'x=b', \; A' = M^{-1}A$) mit $p_m(t)=(1-t)^m$.
+\end{sa}
+
+\textbf{Bemerkung:} Die Verfahrenspolynome hängen bei diesen einfachen Iterationen
+nicht vom Startresiduum ab.
+
+\begin{defn}\label{S16}
+Ein KUV zur Lösung von $Ax=b$ mit regulärem $A$ heißt \emph{konvergent}, falls 
+\[
+\limk r^{k}=0\Leftrightarrow \limk x^{k}=x^*=A^{-1}b.
+\]
+\end{defn}
+
+\begin{sa}\label{konvergent_sa}
+Ein Iterationsverfahren der Gestalt \eqref{iter_eq} ist konvergent, falls 
+\[
+\rho(I-M^{-1}A)<1
+\]
+gilt.
+\end{sa}
+\begin{proof}
+Es gilt $r^{m}=(I-M^{-1}A)^mr^{0}$, wegen $\rho(I-M^{-1}A)<1$ gilt
+$\limk (I-M^{-1}A)=0$, also $\limk r^{k}=0$.
+\end{proof}
+
+\begin{defn}\label{Richardson1_def}
+Das \emph{Richardson-Verfahren erster Ordnung} zur Lösung von $Ax=b$ ist die Iteration
+\[
+x^{m+1}=(I-A)x^{m}+b=x^{m}+r^{m}.
+\]
+\end{defn}
+
+Die Richardson-Iteration erster Ordnung ist im Fall $D = I$ mit der Jacobi-Iteration identisch. Für die Verfahrenspolynome gilt wieder
+\[
+   p_m(t) = (1-t)^m.
+\]
+
+\begin{cor} \label{RichardsonKonvergenz_sa}
+Das Richardson-Verfahren erster Ordnung zur Lösung von $Ax=b$  konvergiert, 
+falls
+\[
+\rho(I-A)<1,
+\]
+z.B. falls $\text{spek}(A)\subset (0,2)$.
+\end{cor}
+
+\begin{defn}\label{relRichardson_def}
+Das \emph{relaxierte Richardson-Verfahren erster Ordnung} zur Lösung von $Ax=b$ ist die Iteration
+\[
+x^{m+1}=x^{m}+ \alpha r^{m}.
+\]
+Hierbei ist $\alpha \in \co$ ein fester Parameter, der bei geeigneter Wahl die Konvergenz beschleunigt.
+\end{defn}
+
+Die Verfahrenspolynome für das relaxierte Richardson-Verfahren sind
+\begin{equation}\label{prelRichardson_def}
+   p_m(t) = (1-\alpha t)^m.
+\end{equation}
+
+
+\begin{defn}\label{Richardson2_def}
+Das \emph{Richardson-Verfahren zweiter Ordnung} zur Lösung von $Ax=b$ ist bei gegebenem $x^{0}$ die Iteration
+\begin{align*}
+x^{1}&=(I-A)x^{0}+b,\\
+x^{m+1}&=\alpha((I-A)x^{m}+b)+(1-\alpha)x^{m-1},\quad m\ge 1,
+\end{align*}
+mit $\alpha\in \co$ fest.
+\end{defn}
+
+Interpretation als KUV:
+\begin{align*}
+r^{1}&=(I-A)r^{0} \quad \Rightarrow \quad p_1(t)= 1-t\\
+r^{m+1}&=b-Ax^{m+1}\\
+&=b-\alpha A((I-A)x^{m}+b)-(1-\alpha)Ax^{m-1}\\
+&=\alpha r^{m}-\alpha Ar^{m}+(1-\alpha)r^{m-1}\\
+&=\alpha(I-A)r^{m}+(1-\alpha)r^{m-1}\\
+\intertext{also}
+p_{m+1}(t)&=\alpha(1-t)p_m(t)+(1-\alpha)p_{m-1}(t), \quad m\geq 1.
+\end{align*}
+
+Solche \emph{3-Term-Rekursionen} sind typisch für "`fortgeschrittene"' KUV.
+Für eine spätere Analyse halten wir fest, dass gilt
+\begin{equation} \label{matrixrekursion2Richardson_eq}
+\left(\begin{array}{l}
+p_{m+1}(t)\\
+p_m(t)
+\end{array}\right)
+=
+\underbrace{\left(\begin{array}{cc}
+\alpha(1-t)&1-\alpha\\ 1&0
+\end{array}\right)}_{B}
+\cdot
+\left(\begin{array}{l}
+p_m(t)\\
+p_{m-1}(t)
+\end{array}\right).
+\end{equation}

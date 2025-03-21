@@ -1,0 +1,703 @@
+\section{Minimales Residuum vs kurze Rekursion}
+Wir schauen uns normale Matrizen zun"achst genauer an.
+\begin{lem}
+A ist normal, falls eine der folgenden Bedingungen erf"ullt ist:
+\begin{itemize}
+ \item[(i)] $AA^H =  A^HA $
+ \item[(ii)] $A =  Q \Lambda Q^H \quad \text{mit $\Lambda$ diagonal, $Q$ unit"ar} $,
+ \item[(iii)] $A^H=p(A), \quad p \in \Pi_n.$
+\end{itemize}
+\end{lem}
+\begin{proof}
+ (i) $\Leftrightarrow$ (ii) ist bekannt aus LA.
+
+ (ii) $\Longrightarrow$ (iii): $A^H = Q \overline{\Lambda} Q^H = Q p(\Lambda) Q^H = p(A)$,  wobei $p$ das Polynom aus
+$\Pi_k$ ist mit $p(\lambda_i)=\overline{\lambda_i}, \quad i=1, \dots,k$. Dabei sind  $\lambda_1,\dots,\lambda_k$ die {\em verschiedenen}
+Eigenwerte von $A$.
+
+ (iii) $\Longrightarrow$ (i): trivial.
+\end{proof}
+%
+\begin{defn}
+ F"ur $A \in \cnn$ bezeichnet $d(A)$ die Anzahl der verschiedenen Eigenwerte $\lambda_1,\dots,\lambda_{d(A)}$.
+\end{defn}
+%
+\begin{lem}
+ Sei $\langle \; , \; \rangle_*$ ein Innenprodukt auf  $\cn$.
+ Dann existiert ein $B \in \cnn$, $B$ hpd mit
+\[\langle x , y \rangle_* = \langle x,B y \rangle \enspace (\mbox{$\langle \; , \; \rangle$ "ubliches Skalarprodukt).} \]
+\end{lem}
+\begin{proof}
+ "Ubung.
+\end{proof}
+%
+\begin{defn}
+ Die Adjungierte $A^*$ zu $A$ bez"uglich $\langle \; , \; \rangle_*$ ist die Matrix mit
+\[
+ \langle Ax , y  \rangle_* = \langle x, A^*y\rangle_* \quad \forall \; x,y.
+\]
+\end{defn}
+%
+\begin{defn}
+ $A$ ist normal bzgl. $\langle \; , \; \rangle_*$ , falls $A^*A=AA^*$.
+\end{defn}
+%
+\begin{sa}
+ Sei $\langle \; , \; \rangle_*$ gegeben und $B$ hpd mit $\langle x, y \rangle_*$ = $\langle y, By\rangle$. Dann gilt:  $A$ ist normal bzgl.
+$\langle \; , \; \rangle_* \Longleftrightarrow B^{\frac{1}{2}}AB^{-\frac{1}{2}} $ ist normal bzgl. $\langle \; , \; \rangle$.
+\end{sa}
+\begin{proof}
+ \begin{align*}
+  && \langle Ax, y\rangle_*  & = \langle x, A^*y\rangle_* \\
+  & \Longleftrightarrow &  \langle Ax, By\rangle & =  \langle x, BA^*y\rangle \\
+  & \Longleftrightarrow &  \langle BAx, y\rangle & =  \langle x, BA^*y\rangle \quad \forall \; x,y \\
+  & \Longleftrightarrow  & (BA^*)^H   & =  BA   \\
+  & \Longleftrightarrow  & BA^* & =  A^HB  \\
+  & \Longleftrightarrow & A^* & = B^{-1}A^HB.
+ \end{align*}
+Es ist also
+ \begin{align*}
+  && A^*A & =AA^* \\
+  & \Longleftrightarrow & B^{-1}A^HBA  & = AB^{-1} A^HB  \\
+  & \Longleftrightarrow  & B^{-\frac{1}{2}}A^H B^{\frac{1}{2}}B^{\frac{1}{2}}AB^{-\frac{1}{2}}  & = B^{\frac{1}{2}}AB^{-\frac{1}{2}}B^{-\frac{1}{2}}A^HB^{\frac{1}{2}}   \\
+  & \Longleftrightarrow  & \tilde{A}^H \tilde{A}  & = \tilde{A} \tilde{A}^H
+ \end{align*}
+mit $\tilde{A}=B^{\frac{1}{2}}AB^{-\frac{1}{2}}$.
+\end{proof}
+%
+
+\medskip
+
+\textbf{Bezeichnung:} Statt "`$A$ normal bzgl. $\langle \; , \; \rangle_*$"' notieren wir jetzt: "`$A$ ist $B$-normal"' ($B$ ist die zu
+$\langle \; , \; \rangle_*$ geh"orige hpd-Matrix).
+%
+\begin{cor}
+ $A$ ist $B$-normal $\Longleftrightarrow \exists \; p \in \Pi_n$ mit $A^*=p(A)$.
+\end{cor}
+\begin{proof}
+ \begin{align*}
+ A \text{ ist $B$-normal} & \Longrightarrow    & \tilde{A}    &= B^{\frac{1}{2}}AB^{-\frac{1}{2}} \text{ normal} \\
+ & \Longrightarrow        & \tilde{A}^H     &= p(\tilde{A}) = B^{\frac{1}{2}}p(A)B^{-\frac{1}{2}} \\
+ & \Longrightarrow        & B^{\frac{1}{2}}\tilde{A}^HB^{-\frac{1}{2}} &=p(A) \\
+ & \Longrightarrow        & A^*        & = p(A)
+ \end{align*}
+\end{proof}
+%
+\begin{defn}
+ $A$ hei"st $B$-normal$(t)$, falls ein $p \in \Pi_t$ existiert mit $A^*=p(A)$.
+\end{defn}
+%
+\begin{sa}
+ $A$ sei $B$-normal$(t)$ mit minimalem $t>1$.  Dann besitzt das Minimalpolynom $q$ von $A$ den Grad $\deg{(q)}= d{(A)}\leq t^2.$
+\end{sa}
+\begin{proof}
+Die normale Matrix $\tilde{A}$ ist diagonalisierbar und damit auch $A$. Der Grad des Minimalpolynoms von $A$ ist also tats"achlich $d(A)$.
+Sei $A^*=p(A)$, $\deg{(p)} =t > 1$. Dann ist  $\tilde{A}^H=p(\tilde{A})$ mit $\tilde{A}=B^{\frac{1}{2}}AB^{-\frac{1}{2}}$, woraus sich mit
+$\tilde{A} = Q\Lambda Q^H$ die Beziehung
+\[   Q \overline{\Lambda} Q^H = Q p(\Lambda) Q^H
+\]
+ergibt. Also ist $p(\lambda_i)=\overline{\lambda}_i$ f"ur $i=1,\dots,d(A)$. Wegen
+$\overline{p}(\overline{\lambda}_i)=\lambda_i$ folgt      $\overline{p}(p(\lambda_i))=\lambda_i, \quad i=1,\dots,d(A)$.  Das Polynom
+$\tilde{q}(s)=\overline{p}(p(s))-s$ hat den Grad $t^2$      und die Eigenschaft $\tilde{q}(\lambda_i)=0, \quad i=1,\dots,d(A).$  
+
+ Also ist $d(A) \leq \deg{\tilde{q}}=t^2$.\end{proof}
+%
+\begin{sa}
+ $A$ sei $B$-normal(1) und $d(A)>1$. Dann gilt
+ \begin{equation}
+   \tilde{A}=e^{i\theta}\left( \frac{r}{2}I+F \right), \label{V14-1} 
+ \end{equation}
+ wobei  $\theta \in \rr, r \in \rr, F \in \cnn \text{mit } F^H=-F \text{ (schiefsymmetrisch)}$.
+\end{sa}
+\begin{proof}
+Wir merken zun"achst an, dass \eqref{V14-1} "aquivalent formuliert werden kann als
+  \[
+   \tilde{A}=e^{i\theta'} \left( i \frac{r}{2}I+F' \right) \text{ mit } F'=(F')^H, r\in \rr.
+  \]
+ Jetzt sei $\tilde{A}^H=p(\tilde{A})$ mit $\deg{(p)}=1,\; p(s)=as +b$.
+ Wie vorher sei
+  \begin{align*}
+   &\tilde{q}(s) = \overline{p}(p(s))-s=\overline{a}(as+b)+\overline{b}-s=(\overline{a}a-1)s+(\overline{a}b+\overline{b}). 
+  \end{align*}
+ Das Polynom $\tilde{q}(s)$ erf"ullt $\tilde{q}(A)=0$, denn es gilt $\tilde{q}(\lambda_i)=0,\quad i=1,\dots,d(A) $.  Also ist $\tilde{q}\equiv 0$ (da $d(A)>1$ )
+und damit $\overline{a}a-1=0, \quad \overline{a}b+\overline{b}=0.$ 
+
+ Wir erhalten so
+\[
+ a=-\frac{b}{\overline{b}}
+\]
+ und damit (mit $b=re^{i\theta}$)
+\[
+ p(s)=-e^{i\theta}\left( se^{i\theta}-r \right).
+\]
+ Nach Voraussetzung gilt f"ur $i=1,\ldots,d(A)$
+  \begin{align*}
+   && p(\lambda_i)  &=\overline{\lambda}_i, \quad i=1,\dots,d(A)\\
+   &\Longleftrightarrow & -e^{i\theta}\left(\lambda_i e^{i\theta}-r \right)&=\overline{\lambda}_i \\
+   &\Longleftrightarrow & \lambda_i e^{i\theta}-r &=-\overline{e^{i\theta}\lambda_i} \\
+   &\Longleftrightarrow & \lambda_i e^{i\theta}+\overline{e^{i\theta}\lambda_i} &= r \\
+   &\Longleftrightarrow & \Re(\lambda_i e^{i\theta}) &= \frac{r}{2}.  \end{align*}
+ Also sind alle Eigenwerte $\lambda_j$ von der Form
+  \begin{align*}
+   && \lambda_j & =\frac{r}{2}e^{-i\theta}+ie^{-i\theta}\mu_j,\quad \mu_j \in \rr.
+ \end{align*} 
+Wir erhalten somit f\"ur $F = \tilde{A} - \frac{r}{2}e^{-i\theta}I$
+  \begin{align*}
+   && F &= Q^H \Lambda Q \text{  mit } \Lambda=\text{diag}(i\mu_j) \\
+   &\Longrightarrow & F^H &= -F.
+  \end{align*}
+ Also ist
+\[
+ \tilde{A}=e^{i\theta}\left(  \frac{r}{2}I+F\right)
+\]
+ wie behauptet.
+\end{proof}
+
+\bigskip
+
+Wir betrachten jetzt Iterations-Verfahren mit kurzer Rekursion der Gestalt
+\begin{align}
+ x^{k+1} &= x^k+\alpha_k p^k, \label{V14-2}\\
+ p^{k+1} &= Ap^k-\sum_{j=k-s+2}^{k}{\beta_{k,j}p^j} \enspace  \text{ mit } p^0  =r^0=b-Ax^0. \label{V14-3} 
+\end{align}
+ Nach eventueller Umformulierung ist CG von dieser Gestalt $(s=3)$ und MINRES ($s=3$). 
+ Das Verfahren soll minimale Residuen erreichen in einer von einem Innenprodukt $\langle \; , \; \rangle_*$ induzierten Norm.
+ Die zugeh"orige hpd-Matrix sei $B$.  
+
+%
+\textbf{"Uberlegungen:} $K_m(A,r^0)= \text{span} \{ p^0,\dots,p^{m-1} \}$. Es gilt f"ur die Fehler $e^k=x^k-A^{-1}b$
+\begin{equation}
+  e^{k+1}   = e^k+\alpha_kp^k,\quad k=0,1,\dots . \label{V14-4}
+\end{equation} 
+Wegen
+\[
+x^k = x^0 + \sum_{j=0}^{k-1}{\alpha_j p^j}
+\]
+folgt
+\[
+ e^k = e^0 + \underbrace{\sum_{j=0}^{k-1}{\alpha_j p^j}}_{\in K_k(A,r^0)}.
+\]
+Da $e^k$ minimal sein soll, folgt:
+\begin{align}
+ \langle e^k,p_j\rangle_*=0, \quad j=0,\dots,k-1. \label{V14-5}
+\end{align}
+(\ref{V14-4}) in (\ref{V14-5}) gibt:
+\[
+\langle e^{k+1},p_j\rangle_*=\langle e^k+\alpha_kp_k, p_j \rangle_*=0,\quad j=0,\dots,k-1.
+\]
+F"ur $j < k$ folgt 
+\begin{align}
+&\alpha_k \langle p_k,p_j\rangle_* = 0 \nonumber \\
+\Longrightarrow \quad &\alpha_k = 0 \quad \text{oder} \quad \langle p_k,p_j \rangle_*=0 \label{V14-6}
+\end{align}
+F"ur  $j=k$ ergibt sich die definierende Gleichung f"ur $\alpha_k$\[  \langle e^k,p^k\rangle_*+\alpha_k\langle p_k,p_k\rangle_* = 0.\]
+Es ist daher sinnvoll zu fordern:
+\begin{equation}
+\langle p_k,p_j\rangle_*=0, \quad j=1,\dots,k-1, \quad k=0,1,\dots .\label{V14-7}
+\end{equation}
+%\begin{defn}
+%Ein Verfahren der Gestalt (\ref{V14-2}), (\ref{V14-3}), mit Eigenschaft (\ref{V14-7}) f"ur %$k=1,\ldots,m$, wobei $m$ die maximale Dimension der
+%Krylov-Unterr"aume und damit $A^{-1}b \in x^0 + K_m(A,b)$ ist, hei"st {\em $s$-stelliges %CG-Verfahren}.
+%\end{defn}
+
+F"ur eine pr"azise Formulierung des nun anstehenden Satzes von Faber-Man\-teuffel
+ben"otigen wir noch etwas zus"atzliche Notation.
+
+\begin{defn} \label{indmin_def}
+ Sei $A\in \cnn$ gegeben.
+\begin{itemize}
+\item[(i)] $d(A)$ ist Grad des Minimal-Polynoms $\psi \in \overline{\Pi}_{d(A)}$
+      von $A$. Es gilt also $\psi(A)v = 0 $ f"ur alle $v \in \cn$.
+\item[(ii)] Sei $V \subseteq \cn$ Unterraum. Dann ist
+%\[
+%d_V(A), \quad AV \subseteq V \text{(d.h. $V$ ist A-invarianter Unterraum)}
+%\]
+\[
+d_V(A)=\min \{ d \in \mathbb{N}: \text{ex. } p\in \Pi_d \text{ mit } p(A)v=0 \mbox{ f"ur
+     alle } v \in V \}
+\]
+Das zugeh"orige Polynom aus $\overline{\Pi}_{d_V(A)}$ notieren wir $\psi_V$.
+\item[(iii)] Ist speziell $V=\langle v \rangle$ ein-dimensional, so schreiben wir
+\[
+d_v(A) =: d_v \mbox{ and } \psi_{\langle v \rangle} =: \psi_v.
+\]
+\end{itemize}
+\end{defn}
+\textbf{Folgerungen:}
+\begin{itemize}
+  \item[(i)] $K_m(A,v)=K_{m+1}(A,v)$ gilt erstmalig f"ur $m=d_v$.
+  \item[(ii)] $\psi_V$ aus Definition~\ref{indmin_def} (ii) ist Teiler von $\psi$.
+\end{itemize}
+%
+\begin{lem}
+ Sei $V=V_1+V_2, \quad V_1,V_2 \subseteq \cn$ Unterr"aume.
+ Dann gilt
+ \[
+ \psi_V=\text{kgV}\left(\psi_{V_1},\psi_{V_2}\right).
+ \]
+\end{lem}
+%
+\begin{defn}
+ Ein Verfahren der Gestalt
+  \begin{equation} \label{stermcg_def}
+  \left\{
+    \begin{array}{rl}
+    x^{k+1} &= x^k+\alpha_k p^k \\
+    p^{k+1} &= Ap^k-\sum_{j=k-s+2}^{k}{\beta_{k,j}p^j}
+    \end{array}
+    \right.
+\end{equation}
+mit $s \geq 3$ und
+\begin{equation} \label{stermcg_prop}
+ \langle p^k  , p^j \rangle_* =0, \quad j=0,\dots,k-1 \quad k=0,\dots,d_{p^0} -1
+\end{equation}
+ f"ur jede Wahl von $p^0$ (= jede Wahl von $x^0$ in $p^0=b-Ax^0$) hei"st {\em s-Term-CG-Verfahren}
+\end{defn}
+
+Unsere Vor"uberlegungen haben bereits gezeigt:
+\begin{lem}
+Die Iterierten eines $s$-Term-CG-Verfahrens besitzen minimalen Fehler
+\[
+   \| A^{-1}b - x^k \|_* = \min_{x \in x^0 + K_k(A,r^0)} \| A^{-1}b - x \|_*.
+\]
+Au"serdem gilt
+\[  
+\langle e^k,p^k\rangle_*+\alpha_k\langle p_k,p_k\rangle_* = 0.
+\]
+\end{lem}
+
+%
+\begin{sa}[Faber-Manteuffel, 1984] \label{faber_sa}
+Ein $s$-Term-CG-Verfahren (bzgl.\ $\langle \cdot, \cdot \rangle_*$) f"ur $A \in \cnn$ 
+existiert $\Leftrightarrow d(A) \leq s$ oder $A$ ist $B$-normal($s-2$)
+($B\in \cnn \text{ mit } \langle x , y \rangle_* = \langle x , By \rangle $)
+\end{sa}
+\begin{proof}
+"`$ \Longleftarrow$ "' \\
+Setze Verfahren an mit Bauart \eqnref{stermcg_def}. \medskip
+
+1. Fall: $d(A) \leq s$ \\
+Dann ist $d_{p^0} \leq d(A) \leq s$ f"ur alle Anfangsresiduen $p^0$.
+Durch geeignete Bestimmung der $\beta_{k,j}$ in \eqnref{stermcg_def} kann
+(mit Gram-Schmidt) deshalb erreicht werden:
+\[
+\langle p_k , p_j \rangle_*=0 \quad j=0,\dots,k-1 \quad k=0,\dots,d_{p^0}-1.
+\]
+\medskip
+
+2. Fall: $d(A)>s$ und $A$ ist B-normal(s-2). \\
+Induktion "uber $k$. F"ur $k\leq s-2$ kann \eqnref{stermcg_prop} immer erreicht werden
+durch Gram-Schmidt Orthogonalisierung). Sei nun $k \geq s-1$.
+Nun gelte \eqnref{stermcg_prop} bis  $k\geq s-2$.
+Bestimme $\beta_{k+1,j} \quad j=k-s+2,\dots,k$ so, dass $\langle p^{k+1} , p^j \rangle_*=0,\quad j=k-s+2,\dots,k$.
+F"ur $j<k-s+2$ gilt
+\begin{align*}
+\langle p^{k+1} , p^j \rangle_* & = \langle Ap^k , p^j \rangle_* \\
+                                & = \langle p^k , A^* p^j  \rangle_* \\
+                                & = \langle p^k ,\underbrace{q_{s-2}(A)\cdot p^j}_{\substack{\in K_k(A,p^0) \\ =\langle p^0,\dots , p^{k-1} \rangle}}  \rangle_* \\
+                                & = 0 \quad \text{nach Induktions-Annahme.}
+\end{align*}
+Also gilt \eqnref{stermcg_prop} auch f"ur $k+1$.
+\medskip
+
+"`$ \Longrightarrow$ "' (Beweis aufwendig!)\\
+Es existiere ein $s$-Term-CG-Verfahren und es sei $d(A)>s$. Zu zeigen ist: $A$ ist $B$-normal($s-2$).
+Zur Vereinfachung der Notation betrachten wir nur $B=I$, d.h. $\langle \; , \; \rangle=\langle \; , \; \rangle_* $.
+Wir zeigen zuerst, dass $A$ normal, also orthogonal diagonalisierbar ist.
+Nach Voraussetzung existiert $\tilde{p} \in \cnn$ mit $d_{\tilde{p}}=d(A)>s$.
+Also existiert auch $p \in \cn$ mit $d_p=s$, denn ist
+$\psi_{\tilde{p}}(t)= \prod_{i=1}^{d(A)}{t-\lambda_i}$, so nehme man
+$p=\prod_{i=1}^{d(A)-s}{(A-\lambda_i I)\tilde{p}}$.
+Sei $V=K_s(A,p)$. $V$ ist ein $A$-invarianter Unterraum mit $d_V=s$.
+Wir werden zeigen: Eingeschr"ankt auf $V$ist $A$ orthogonal diagonalisierbar.
+Dazu brauchen wir aber zun"achst ein Stetigkeitsresultat "uber die $p^k$ aus
+\eqnref{stermcg_def} als Funktionen
+ \[
+  p^k  =  F_k(p^0)
+\]
+von $p^0$. $F_k(p^0)$ ist zun"achst nur definiert, falls $p^j \not = 0$
+for $j=0,\ldots,k-1$. $d_{p^0} > k$.
+
+%
+%
+%B $\beta_{k,j}=\frac{\langle Ap^k , p^j \rangle}{\langle p^j , p^j \rangle}$.
+%Betrachte (f"ur $k=1,\dots,d(A)-1) \quad p^k = F_k(p^0)$ als Funktion von $p^0$.
+%$F_k$ ist definiert f"ur alle $p^0$ mit $d_{p^0}=d(A)$.
+	\begin{lem}
+	F"ur $k=1,\dots,d(A)-1$ ist $F_k$ stetig fortsetzbar auf ganz $\cn$ und es gilt $F_k(p^0)\leq\parallel A\parallel^k \cdot \parallel p^0 \parallel .$
+	\end{lem}
+	\begin{proof}
+Sei
+\[
+W= \bigcup_{\substack{\psi \mid \psi(A), \\ \deg{(\psi)}<d(A)}} \text{kern}(\psi(A)).
+\]
+	$W$ ist eine endliche Vereinigung von Unterr"aumen mit Dimension kleiner als $n$. Also gilt $\overline{\cn \backslash W}=\cn$.
+	Nun sei $k=1$ und $p^0 \not \in W$. Dann gilt
+	 \[
+      F_1(p^0)=Ap^0-\beta_{1,0}p^0
+        \]
+mit
+	 \[
+	 \| F_1(p^0)\| \leq \| Ap^0\| \leq \| A \| \| p^0\| .
+	 \]
+ 	 Also ist $F_1$ stetig und beschr"ankt auf $\cn \backslash W$ und damit stetig fortsetzbar auf ganz $\cn$. Die Fortsetzung hei"se wieder $F_1$. \\
+F"ur $k >1$ folgt das Lemma per Induktion genauso.
+	\end{proof}
+
+
+	% Vorlesung 17
+%% Dienstag, 24.6.2003
+%% David Fritzsche
+
+Nun sei $Q$ die
+Orthogonalprojektion auf $V=\langle p,
+Ap,\dots,A^{s-1}p\rangle$, insbesondere $Q=Q^H$.
+\begin{equation*}
+ \left( (AQ)^* =  \right) (AQ)^H = QA^H \left( = QA^* \right) .
+\end{equation*}
+Setze $\tilde A =AQ$. Es gilt $d(\tilde A)=s$, da $d_p=s$.
+
+Sei $\tilde p$ irgendein Vektor aus $V$ mit $d_{\tilde p}=s$ und sei
+\begin{align*}
+  f(\tilde p)
+  &= \langle F_{s-1}(\tilde p), {\tilde A}^*\tilde p\rangle
+  \\
+  &= \langle\tilde p^{s-1}, {\tilde A}^*\tilde p\rangle
+  \\
+  &= \langle\tilde p^{s-1}, QA^*\tilde p\rangle
+  \\
+  &= \langle Q\tilde p^{s-1}, A^*\tilde p\rangle
+  \\
+  &= \langle \tilde p^{s-1}, A^*\tilde p\rangle
+\end{align*}
+
+\medskip
+
+\textbf{Zwischenbehauptung:}
+Es ist $f(p)=\langle p^{s-1},p^0\rangle=0$ f\"ur alle $p$
+
+\begin{proof}
+  Da ein $s$-Term-CG-Verfahren existiert, gilt nach
+  \eqref{stermcg_prop}
+  f\"ur $k=s-1$
+  \begin{equation*}
+    \langle p^s,p^0\rangle
+    =
+    \langle Ap^{s-1}-\sum_{j=1}^{s-1}\beta_{kj}p^j,p^0\rangle
+    =
+    0,
+    \qquad
+    \text{falls } d(p)\geq s.
+  \end{equation*}
+  Falls $d(p)\leq s$, kann $f(p)=\langle AF_{s-1}(p),p\rangle$ stetig
+  fortgesetzt werden auf ganz $V$ und ist damit $=0$ auf ganz $V$.
+  Insbesondere gilt also auch $f(p)=0$ f\"ur $d_p=s$.
+\end{proof}
+
+Weiter im Beweis: Es gilt ${\tilde A}^*\tilde p = QA^*\tilde p\in V$.
+Da $\tilde p^0,\dots,\tilde p^{s-1}$ Orthonormalbasis von $V$ ist, gilt
+wegen der Zwischenbehauptung sogar
+\begin{equation} \label{mlf_eq}
+  {\tilde A}^*\tilde p \in  \langle \tilde p^0,\dots,\tilde p^{s-2}\rangle
+  = \langle\tilde p^0,A\tilde p^0,\dots,A^{s-2}\tilde p^0\rangle
+  .
+\end{equation}
+Betrachte
+\begin{equation*}
+  W(p)
+  =
+  p \wedge Ap \wedge \dots \wedge A^{s-2}p \wedge {\tilde A}^*p.
+\end{equation*}
+Als Multilinearform ist $W(p)$ stetig; als alternierende
+Multilinearform erf\"ullt $W$ wegen \eqnref{mlf_eq} die Beziehung $W(p)=0$ f\"ur alle $p$
+mit $d_p=s$.
+Aus Stetigkeitsgr\"unden gilt dies auch f\"ur $d_p<s$.
+Sei speziell $p$ jetzt so, dass $d_p=s-1$.
+Da $p,\dots,A^{s-2}p$ linear unabh\"angig sind, folgt aus $W(p)=0$ also
+\begin{equation}
+  \label{eq:s-term-cg-v16-stern}
+  {\tilde A}^*p \in \langle p,\dots,A^{s-2}p\rangle
+  .
+\end{equation}
+Sei $V_{s-1}\subseteq V$ ein Unterraum der Dimension $s-1$. Da
+$V=\langle p,Ap,\dots,A^{s-1}p\rangle$ existiert ein (neues) $p$ mit
+$V_{s-1}=\langle p,Ap,\dots,A^{s-2}p\rangle$ und $d_p=s-1$.
+
+Sei $b_1,\dots,b_{s-1}$ Basis von $V_{s-1}^{(1)}$ mit $d_{b_i}=s-1$ f\"ur
+$i=1,\dots,s-1$. Es gilt damit nach \eqref{eq:s-term-cg-v16-stern}
+\begin{equation*}
+  {\tilde A}^*b_i \in \langle b_i,\dots, A^{s-2}b_i\rangle
+  =
+  V_{s-1}^{(1)} \;
+  .
+\end{equation*}
+Also ist $V_{s-1}^{(1)}$ ein ${\tilde A}^*$-invarianter Unterraum.
+
+Sei $q$ der (bis auf skalare Vielfache) eindeutige Vektor aus $V$ mit
+$q^1\perp V_{s-1}^{(1)}$. Es gilt
+\begin{equation*}
+  \langle Aq^1,y\rangle
+  =
+  \langle \tilde Aq^1, y\rangle
+  =
+  \langle q^1, {\tilde A}^*y\rangle
+  =
+  0
+  \qquad
+  \text{f\"ur alle }y\in V_{s-1}^{(1)}
+  .
+\end{equation*}
+Also gilt
+\begin{equation*}
+  Aq^1
+  =
+  \tilde Aq^1
+  =
+  \lambda_1q^1
+  \qquad
+  \text{und}
+  \qquad
+  q^1\perp V_{s-1}^{(1)}
+  .
+\end{equation*}
+Damit haben wir einen ersten Eigenvektor von $A$ gefunden.
+
+
+Sei $V_{s-1}^{(2)}$ ein $A$-invarianter Unterraum von $V$ der Dimension $s-1$ mit
+$q^1\in V_{s-1}^{(2)}$. Mit der gleichen Argumentation folgt f\"ur
+$q^2\perp V_{s-1}^{(2)}$
+\begin{equation*}
+  Aq^2=\lambda_2q^2
+  \qquad
+  \text{und}
+  \qquad
+  q^2\perp V_{s-1}^{(2)},
+\end{equation*}
+insbesondere $q^2\perp q^1$.
+
+So fortfahrend erh\"alt man eine Orthonormalbasis $q^1,\dots,q^s$ von $V$
+mit zugeh\"origen Eigenwerten $\lambda_1,\dots,\lambda_s$. So gilt
+$Aq^1=\lambda_iq^i$ f\"ur $i=1,\dots,s$.
+
+Jetzt k\"ummern wir uns noch um ganz $\cn$. Angenommen, es existieren $x$
+und $\lambda\in\co$ mit
+\begin{equation}
+  \label{eq:s-term-cg-v16-**}
+  (A-\lambda I)^2x=0
+  \qquad\text{und}\qquad
+  (A-\lambda I)x\neq 0.
+\end{equation}
+W\"ahle einen invarianten Unterraum $V_s$ mit $s-2$ linear unabh\"angigen
+Eigenvektoren von $A$ (wir wissen bereits, dass es mindestens $s$ gibt) und $x$ und $(A-\lambda I)x$. $V_s$ ist $A$-invariant.
+Es ist $d_{V_s}(A)=s$. Mit der gleichen Argumentation von vorher folgt,
+dass $A$ auf $V_s$ orthogonal diagonalisierbar ist, im Widerspruch zu
+\eqref{eq:s-term-cg-v16-**}.
+
+Also existieren keine Hauptr\"aume der Stufe ${}>1$. Folglich ist $A$
+diagonalisierbar. Sind $q_i,q_j$ Eigenvektoren zu verschiedenen Eigenwerten,
+so erg\"anze sie zu einem $A$-invarianten Unterraum der Dimension $s$.
+Dann folgt nach dem bisherigen $q_i\perp q_j$.
+
+\smallskip
+
+Wir haben damit gezeigt, dass $A$ normal ist.
+Noch zu zeigen ist: $A$ ist normal($s-2$).
+
+\smallskip
+
+Sei dazu mit $d=d(A)$
+\begin{equation*}
+  A^*
+  =
+  q_d(A)
+  =
+  \sum_{i=0}^{d-1}\gamma_iA^i.
+  .
+\end{equation*}
+Ein solches Polynom existiert als dasjenige mit $q(\lambda_j) = \overline{\lambda}_j$
+f"ur die $d$ verschiedenen Eigenwerte $\lambda_j$ von $A$.
+Sei weiter
+\begin{equation*}
+  A^d=\sum_{i=0}^{d-1}\beta_iA^i
+  .
+\end{equation*}
+Wir verwenden
+\begin{equation*}
+  f_i(p)=
+  \langle p^i,A^*p\rangle=0,
+  \qquad
+  s-1\leq i\leq d(A)-2
+  .
+\end{equation*}
+F\"ur $p$ mit $d_p<d$ gilt also
+\begin{equation*}
+  A^*p \in \langle p,p^1,\dots,p^{s-2}\rangle
+  .
+\end{equation*}
+Sei speziell $d_p=d-1$. Alle solche $p$ besitzen Minimalploynome $\psi_p$
+der Gestalt
+\begin{equation*}
+  \psi_p(t)
+  =
+  \prod_{\substack{i=1\\ i\neq j}}^d(t-\lambda_i)
+  \qquad
+  \text{mit $\prod_{i=1}^d(t-\lambda_i)$ Minimalpolynom von $A$}
+  ,
+\end{equation*}
+also
+\begin{equation*}
+  \psi_p(t)
+  =
+  t^{d-1}-\Bigl(\sum_{\substack{i=1\\i\neq j}}^d\lambda_i\Bigr)t^{d-2}
+  +\dots
+  =
+  t^{d-1}+\sum_{i=0}^{d-2}\delta_i t^{i}
+  .
+\end{equation*}
+Die Vektoren $p, Ap, \dots, A^{d-2}p$ sind linear unabh\"angig. Es ist
+\begin{equation*}
+  A^*p=\sum_{i=0}^{d-1}\gamma_iA^{i}p
+  .
+\end{equation*}
+Also gilt
+\begin{align*}
+  A^*p
+  &=
+  \sum_{i=0}^{d-2}(\gamma_i-\delta_i\gamma_{d-1})A^{i}p
+  \\
+  &=
+  \biggl(\gamma_{d-1}\Bigl(\sum_{i\neq j}\lambda_i\Bigr)+\gamma_{d-2}\biggr)
+  A^{d-2}p+\dotsb
+  .
+\end{align*}
+Da $A^*p \in \langle p,\dots,A^{s-2}p\rangle$ folgt
+\begin{equation*}
+  \gamma_{d-1}\Bigl(\sum_{i\neq j}\lambda_i\Bigr)+\gamma_{d-2} = 0
+  \qquad
+  \text{f\"ur alle $j$}
+  .
+\end{equation*}
+Also folgt $\gamma_{d-1}=\gamma_{d-2}=0$. Aus $\gamma_{d-1}=0$ folgt
+aber weiter $\gamma_i=0$ f\"ur $i>s-2$, denn
+$p,\dots,A^{d-2}p$ sind linear unabh\"angig und
+$A^*p\in\langle p,\dots,A^{s-2}p\rangle$.
+\\
+Dies beendet den Beweis zu Satz~\ref{faber_sa}.
+\end{proof}
+
+%% Vorlesung 18
+%% Freitag, 27.6.2003
+%% David Fritzsche
+
+\textbf{Beachte:} Satz~\ref{faber_sa} setzt eine bestimmte Form f\"ur kurze
+Rekursion voraus.
+
+Alternative: z.B.~gekoppelte kurze Rekursion. Dann k\"onnten doch weitere
+Verfahren mit minimalem Residuum und kurzer Rekursion existieren.
+
+\begin{bsp}
+  Sei $A\in\cnn$ unit\"ar, also $AA^H=I$. Es exisitiert eine kurze Rekursion
+  zur Berechnung der Arnoldi-Vektoren
+  \begin{equation*}
+    h_{k,k+1}v^{k+1} = Av^k-\sum_{j=1}^{k}h_{k,j}v^j
+    \qquad
+    \text{mit }
+    \norm{v^k}_2=1
+    \text{ und }
+    v^0=\frac{1}{\norm{r^0}}r^0.
+  \end{equation*}
+Die Vektoren
+  $v^0,\dots,v^k$ sind eine Orthonormalbasis von $K_{k+1}(A,r^0)$ und
+  {$Av^0,\dots,Av^k$} ist Orthonormalbasis von $AK_{k+1}(A,r^0)$.
+
+  Damit ist $w^k,Av^0,\dots,Av^{k-1}$ bei geeigneter Wahl von $w^k$ eine
+  Orthonormalbasis von $K_{k+1}(A,r^0)$.
+  Eine geeignete Wahl ergibt sich induktiv "uber
+  \begin{align*}
+    \tilde w^k
+    &= w^{k-1} - \sum_{j=0}^{k-1}
+    \frac {\langle w^{k-1},Av^j\rangle} {\langle Av^j,Av^j\rangle} Av^j
+    && (\langle Av^j,Av^j\rangle = 1)
+    \\
+    &= w^{k-1} - \sum_{j=0}^{k-1} \langle w^{k-1},Av^j\rangle Av^j
+    && (w^{k-1}\perp Av^j \text{ f\"ur } j=0,\dots,k-2)
+    \\
+    &= w^{k-1} - \langle w^{k-1},Av^{k-1}\rangle Av^{k-1}
+    &&
+    \\
+    w^k
+    &= \frac{1}{\norm{\tilde w^k}}\tilde w^k
+    .
+    &&
+  \end{align*}
+
+  Die Berechnung von $v^{k+1}$ geht jetzt so:
+  \begin{equation*}
+    \tilde v^{k+1} = Av^k -\Bigl(\sum_{j=1}^{k}\beta_{k,j}Av^{j-1}\Bigr)
+    - \beta_{k,0}w^k
+  \end{equation*}
+  \begin{align*}
+    \text{mit}\qquad
+    \beta_{k,j}
+    &= \langle Av^k, Av^{j-1}\rangle = 0
+    &&\text{da } v^k\perp v^{j-1}
+    \\
+    \beta_{k,0}
+    &=
+    \langle Av^k, w^k\rangle
+    &&
+  \end{align*}
+  Wir erhalten also folgenden Algorithmus~\ref{alg:unitaeres-arnoldi-verf}
+  zur Berechnung der Arnoldi-Vektoren.
+
+  \begin{alg}[Unit\"ares Arnoldi-Verfahren]\label{alg:unitaeres-arnoldi-verf}
+    \begin{algorithm}
+      \begin{algorithmic}
+        \STATE $v^0 := \bigl(1/\norm[normal]{r^0}\bigr)r^0$
+        \STATE $w^0 := v^0$
+        \FOR{$k=0,1,2,\dots$}
+          \STATE $\beta_k = \langle Av^k,w^k\rangle$
+          \STATE $\tilde v^{k+1} := Av^k-\beta_k w^k$
+          \STATE $v^{k+1}
+            :=\bigl(1/\norm[normal]{\tilde v^{k+1}}\bigr)\tilde v^{k+1}$
+          \STATE $\tilde w^{k+1} := w^k-\overline{\beta}_k Av^k$
+          \STATE $w^{k+1}
+            :=\bigl(1/\norm[normal]{\tilde w^{k+1}}\bigr)\tilde w^{k+1}$
+        \ENDFOR
+      \end{algorithmic}
+    \end{algorithm}
+  \end{alg}
+
+  Jetzt ist $H_{k,k}$ und $H_{k+1,k}$ aus dem Arnoldi-Prozess nicht
+  mehr explizit gegeben. Man kann aber zeigen (Jagels und Reichel, 1994)
+  \begin{enumerate}
+  \item $H_{k,k}$ wird durch Algorithmus~\ref{alg:unitaeres-arnoldi-verf}
+    in faktorisierter Form (als Produkt von Rotationen) implizit gegeben.
+  \item F\"ur Systeme der Form
+    \begin{equation*}
+      (\zeta I+\rho A)x=b
+    \end{equation*}
+    mit $A^HA=I$ und $\zeta,\rho\in\co$ ist
+    $K_m(\zeta I+\rho A,r^0)=K_m(A,r^0)$ und es existiert auch eine
+    kurze Rekursion zur Bestimmung der Iterierten $x^k$ mit
+    \begin{equation*}
+      \norm[big]{b-(\zeta I+\rho A)x^k}_2
+      =
+      \min_{p_k\in\bar \Pi_k}
+      \norm[big]{p_k(\zeta I+\rho A)b}_2
+      .
+    \end{equation*}
+    Die Herleitung erfolgt wie bei MINRES unter Ausnutzung der faktorisierten
+    Form von $H_{k+1,k}$
+  \end{enumerate}
+
+\end{bsp}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "Iterationsverfahren03"
+%%% End:
+

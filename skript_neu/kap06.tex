@@ -1,0 +1,327 @@
+\section{Basen f\"ur Krylov-Unterr\"aume}
+
+Gegeben: $A \in \cnn$ nicht notwendigerweise hermitesch, $A$ regulär,
+\[
+K_m = \langle r, Ar,...,A^{m-1}r \rangle.
+\]
+
+Gesucht: $v^1,...,v^m$ mit "`sch\"onen Eigenschaften"' und
+\[
+K_m = \langle v^1,...,v^m \rangle.
+\]
+
+{\bf Erinnerung:} Gram-Schmidt-Orthogonalisierung
+
+Gegeben: $y_1,...,y_m \in \cnn$.
+
+\begin{alg}[Gram-Schmidt-Orthogonalisierung, klassisch] \label{Gram-Schmidt-Verfahren instabil}
+~\vspace*{-2\baselineskip}
+\begin{algorithm}
+  \begin{algorithmic}
+    \STATE $v^i = y^i, \; i=1,\ldots,m$
+    \FOR{$i = 1, \dots,m$}
+      \FOR{$j = 1, \dots ,i-1$}
+        \STATE $v^i = v^i - \langle y^i,v^j\rangle v^j$
+      \ENDFOR
+      \STATE $v^i = \frac{1}{\|v^i\|} \cdot v^i$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Es ist bekannt, dass diese Variante aber numerisch nicht stabil ist.
+G"unstiger ist es, wenn man bei der Berechnung der Innenprodukte statt $y_i$
+den aktuellen Vektor $v^i$ verwendet. Dies ist m"oglich, da zu jedem
+Zeitpunkt der $j$-Schleife der Vektor $y^i-v^i \in \langle v^1,
+\ldots,v^{j-1} \rangle$  senkrecht auf $v^j$ steht.
+
+\begin{alg}[modifizierte Gram-Schmidt-Orthogonalisierung] \label{modifizieres Gram-Schmidt-Verfahren}
+~                               % um "x.x Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  %\caption{modifiziertes Gram-Schmidt-Verfahren. }
+  \begin{algorithmic}
+    \STATE $v^i = y^i\; i=1,\ldots,m$
+    \FOR{$i = 1, \dots,m$}
+      \FOR{$j = 1, \dots ,i-1$}
+        \STATE $v^i = v^i - \langle v^i,v^j\rangle v^j$
+      \ENDFOR
+      \STATE $v^i = \frac{1}{\|v^i\|} \cdot v^i$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Unser Ziel ist es, sukzessive eine ONB von $K_m(A,r)$ aufzubauen.
+
+\medskip
+
+{\bf Idee:}
+
+$\langle v^1,...,v^m\rangle$ sei eine ONB in $K_m(A,r)$ mit $v^m \notin K_{m-1}(A,r)$. Dann
+gilt insbesondere $A v^m \in K_{m+1}(A,r)\setminus K_m(A,r)$. Orthogonalisiere also $Av^m$ gegen $v^1,...,v^m$.
+
+Durch Anwendung des modifizierten Gram-Schmidt-Verfahrens resultiert
+das {\em Arnoldi-Verfahren}.
+
+\begin{alg}[Arnoldi-Verfahren] \label{Arnoldi-Verfahren}
+~  				% um "3.3 Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}	% um den Leeraum zu entfernen
+\begin{algorithm}
+  %\caption{Arnoldi-Verfahren}
+  \begin{algorithmic}
+    \STATE $v^1 = r$, $h_{1,0} = \|r\|$, $v^1 = \frac{1}{h_{1,0}}r$
+    \FOR{$i = 2, 3, \dots$}
+      \STATE $v^i = Av^{i-1}$
+      \FOR{$j = 1, \dots ,i-1$}
+        \STATE $h_{j,i-1} = \langle v^i,v^j\rangle$
+        \STATE $v^i = v^i - h_{j,i-1} v^j$
+      \ENDFOR
+      \STATE $h_{i,i-1} = \| v^i \|$
+      \STATE $v^i = \frac{1}{h_{i,i-1}} \cdot v^i$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Wir f\"uhren folgende Kurznotation ein
+
+\begin{equation}
+\label{obereHessenbergmatrix} A V_m = V_{m+1} H_{m+1,m}
+\end{equation}
+
+mit
+
+\[
+V_m = \left[ v^1,...,v^m \right] \in \co^{n \times m}
+\]
+
+\[
+H_{m+1,m}=\left(\begin{array}{cccc}
+h_{1,1} & h_{1,2}& \cdots & h_{1,m}\\
+h_{2,1} & h_{2,2} &\ddots & h_{2,m}\\
+&\ddots&\ddots&\vdots \\
+&&\ddots& h_{m,m}\\
+&&& h_{m+1,m}
+\end{array}\right) \in \co^{(m+1)\times m}.
+\]
+
+Im Falle $ A = A^H $ vereinfacht sich der Arnoldi-Prozess, da
+die meisten Eintr"age in $H_{m+1,m}$ verschwinden. Es bezeichne
+dazu $H_m$ die Matrix
+\[
+H_m = \left(\begin{array}{cccc}
+h_{1,1} & h_{1,2}& \cdots & h_{1,m}\\
+h_{2,1} & h_{2,2} &\ddots & h_{2,m}\\
+&\ddots&\ddots&\vdots \\
+&& h_{m-1,m} & h_{m,m}
+\end{array}\right) \in \co^{m\times m}.
+\]
+
+\begin{lem}
+Falls $A$ hermitesch ist, ist  $H_m$ eine reelle, symmetrische Tridiagonalmatrix.
+Es gilt also $h_{i+1,i} = h_{i,i+1}$ f"ur alle $i$ und $h_{i,j} = 0 $ f"ur $i > j+1$.
+\end{lem}
+
+\begin{proof}
+Aus \eqnref{obereHessenbergmatrix} folgt
+
+\begin{align*}
+V_m^H A V_m &= V_m^H V_{m+1} H_{m+1,m} \\
+            &= \left(\begin{array}{cc}
+                        & 0\\
+                        & \vdots\\
+\quad                        \raisebox{12pt}[-12pt]{\Large $I_m$} \quad& 0 \\
+               \end{array}\right) H_{m+1,m} \\
+            &= H_m.
+\end{align*}
+Mit $V_m^HAV_m$ ist auch $H_m$ hermitesch, besitzt also Tridiagonalgestalt.
+Au"serdem sind dann die Diagonalelemente reell (und positiv). Die Elemente
+$h_{i,i-1}$ der ersten Nebendiagonalen ergeben sich nach
+Algorithmus~\ref{Arnoldi-Verfahren}  als $\|v^i\|$, sind also auch reell.
+\end{proof}
+
+Damit erhalten wir aus dem Arnoldi-Verfahren das Lanczos-Verfahren zur Bestimmung einer ONB von
+$K_m(A,r)$ im Falle $A = A^H$.
+
+\begin{alg}[Lanczos-Verfahren] \label{Lanczos-Verfahren0}
+~  				% um "3.3 Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}	% um den Leeraum zu entfernen
+\begin{algorithm}
+  %\caption{Lanczos-Verfahren}
+  \begin{algorithmic}
+    \STATE $v^1 = \frac{r}{\|r\|}, \; v^0 = 0,\; h_{1,0} = 0$
+    \FOR{$i = 2,3, \dots$}
+      \STATE $v^i = Av^{i-1}$
+      \STATE $v^i = v^i - h_{i-1,i-2}v^{i-2}$
+      \STATE $h_{i-1,i-1} = \langle v^i,v^{i-1}\rangle$
+      \STATE $v^i = v^i - h_{i-1,i-1}v^{i-1}$
+      \STATE $h_{i,i-1} = \|v_i\|$
+      \STATE $v^i = \frac{1}{h_{i,i-1}}\cdot v^i$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Eine alternative Bezeichnung f"ur die Koeffizienten im Lanczos-Verfahren ist
+
+\[
+h_{i-1,i-2} = \beta_{i-1}, \enspace
+h_{i-1,i-1} = \alpha_{i-1}.
+\]
+
+Damit lässt sich der Algorithmus wie folgt formulieren:
+
+\begin{alg}[Lanczos-Verfahren] \label{Lanczos-Verfahren}
+~               % um "3.3 Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}   % um den Leeraum zu entfernen
+\begin{algorithm}
+  %\caption{Lanczos-Verfahren}
+  \begin{algorithmic}
+    \STATE $v^1 = \frac{r}{\|r\|}, \; v^0 = 0,\; \beta_1 = 0$
+    \FOR{$i = 2,3, \dots$}
+      \STATE $q^i = Av^{i-1} - \beta_{i-1} v^{i-2}$
+      \STATE $\alpha_{i-1} = \langle q^i,v^{i-1} \rangle$
+      \STATE $q^i = q^i - \alpha_{i-1} v^{i-1}$
+      \STATE $\beta_{i} = \|q^i\|$
+      \STATE $v^i = \frac{q^i}{\beta_{i}}$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Hierin gilt:
+\begin{equation}
+\label{betamalalpha} \beta_{i} v^i = A v^{i-1} - \alpha_{i-1} v^{i-1} - \beta_{i-1} v^{i-2}.
+\end{equation}
+
+\begin{defn}
+Zwei Folgen $v^1,\cdots ,v^m$ und $w^1,\cdots ,w^m \in \cn $ heißen {\em bi-orthogonal},
+falls gilt
+\[
+\langle v^i,w^j \rangle  = \delta_{i,j}.
+\]
+\end{defn}
+
+\begin{bem}
+$v^i,w^j$ sind nur bis auf reziproke Vielfache eindeutig bestimmt.
+\end{bem}
+
+Im Falle $A \neq A^H$ konstruieren wir nun eine bi-orthogonale Basis $v^1,\cdots ,v^m$ von $K_m(A,r)$ und
+$w^1,\cdots ,w^m$ von $K_m(A^H,\tilde{r})$.
+
+\bigskip
+
+Man berechnet $v^1,w^1$ mit dem {\em unsymmetrischen} Lanczos-Verfahren.
+
+\bigskip
+
+{\bf Situation:}
+\begin{quote}
+$v^1,\ldots, v^m$ sei eine Basis von $K_m(A,r)$
+
+$w^1,\ldots, w^m$ sei eine Basis von $K_m(A^H,\tilde{r})$
+
+die beiden Basen sind bi-orthogonal
+\end{quote}
+und
+\begin{quote}
+$v^m \notin K_{m-1}(A,r)$
+
+$w^m \notin K_{m-1}(A^H,\tilde{r})$.
+\end{quote}
+
+{\bf Ansatz:}
+\begin{align*}
+q^{m+1} &= Av^m,\\
+p^{m+1} &= A^Hw^m.
+\end{align*}
+Wir setzen an:
+\begin{align}
+\tilde{v}^{m+1} &= q^{m+1} - \sum_{i=1}^m \alpha_i v^i,\\
+\tilde{w}^{m+1} &= p^{m+1} - \sum_{i=1}^m \beta_i w^i.
+\end{align}
+
+{\bf Bedingung f"ur Bi-Orthogonalit"at:}
+\begin{align*}
+\langle \tilde v^{m+1},w^j \rangle =& \langle q^{m+1},w^j \rangle -\alpha_j \overset{!}{=} 0,\\
+\langle v^{j}, \tilde w^{m+1} \rangle =& \langle v^j,p^{m+1} \rangle -\overline{\beta}_j \overset{!}{=} 0.
+\end{align*}
+
+Damit erhalten wir
+\begin{align*}
+\alpha_j =&\langle q^{m+1},w^j \rangle,\\
+\beta_j =&\langle p^{m+1},v^j \rangle.
+\end{align*}
+
+Für $ j \leq m-2$ gilt allerdings weiter
+\begin{align*}
+\alpha_j =\langle q^{m+1},w^j \rangle
+                       &=\langle Av^m,w^j \rangle \\
+                       &=\langle v^m,A^Hw^j \rangle \\
+                       &=0,
+\end{align*}
+da $A^Hw^j \in K_{m-1}(A^H,\tilde{r})$. Analoges gilt f"ur die $\beta_j$, d.h.\ es
+ gilt
+\[
+\alpha_j = \beta_j = 0 \mbox{ f"ur } j=1,\ldots,m-2.
+\]
+
+Zur Normierung sei
+\begin{align*}
+\delta_{m+1} &= \left( \langle \tilde{v}^{m+1},\tilde{w}^{m+1} \rangle \right) ^{\frac 12}\\
+v^{m+1} &= \frac{1}{\delta_{m+1}}\tilde{v}^{m+1} \\
+w^{m+1} &= \frac{1}{\overline{\delta}_{m+1}}\tilde{w}^{m+1}
+\end{align*}
+Schlie"slich weisen wir noch nach, dass die Koeffizienten $\alpha_{m-1}$ und
+$\beta_{m-1}$ vom vorherigen Schritt schon bekannt sind (daf"ur verwenden wir
+kurzfristig einen zus"atzlichen oberen Index):
+\begin{align*}
+\alpha_{m-1} &= \langle Av^m,w^{m-1}\rangle\\
+ &= \langle v^m,A^Hw^{m-1} \rangle\\
+ &= \langle v^m,\tilde{w}^m + \beta_{m-1}^{(m-1)} w^{m-1} + \beta_{m-2}^{(m-1)} w^{m-2} \rangle\\
+ &= \langle v^m,\tilde{w}^m \rangle = \delta_{m}
+\intertext{ }
+\beta_{m-1} &= \langle A^Hw^m,v^{m-1} \rangle\\
+ &= \langle w^m,Av^{m-1} \rangle \\
+ &= ...\\
+ &= \langle w^m,\tilde{v}^m\rangle = \overline{\delta}_{m}
+\end{align*}
+
+Insgesamt erhalten wir damit folgendes Verfahren:
+
+\begin{alg}[unsymmetrisches Lanczos-Verfahren] \label{unsymmetrisches Lanczos-Verfahren}
+~               % um "3.3 Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}   % um den Leeraum zu entfernen
+\begin{algorithm}
+  %\caption{Lanczos-Verfahren}
+  \begin{algorithmic}
+    \STATE $v^0 = w^0 = 0$\\
+    \STATE $\delta_1 = \left( \langle r, \tilde{r} \rangle \right)^{\frac 12} $
+    \STATE $v^1 = \frac{1}{\delta_1} \cdot r$
+    \STATE $w^1 = \frac{1}{\delta_1} \cdot \tilde{r}$
+    \FOR{$m = 1,2, \dots$}
+      \STATE $\alpha_m = \langle Av^m,w^m\rangle $
+      \STATE $\tilde{v}^{m+1} = Av^m - \alpha_m v^m - {\delta}_m v^{m-1}$
+      \STATE $\tilde{w}^{m+1} = A^Hw^m - \overline{\alpha}_m w^m - \overline{\delta_m} w^{m-1}$
+      \STATE $\delta_{m+1} = \left( \langle \tilde{v}^{m+1},\tilde{w}^{m+1} \rangle \right )^{\frac 12} $
+      \STATE $v^{m+1} = \frac{1}{\delta_{m+1}} \cdot \tilde{v}^{m+1}$
+      \STATE $w^{m+1} = \frac{1}{\overline{\delta}_{m+1}} \cdot \tilde{w}^{m+1}$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{bem}
+Im unsymmetrischen Lanczos kann Folgendes passieren
+\[
+\delta_m = 0,
+\]
+obwohl $\tilde{v}^m \neq 0$ und $\tilde{w}^m \neq 0$.
+
+\medskip
+
+Das nennt man {\em serious breakdown}, da das Verfahren abbricht, ohne dass eine Basis für
+den maximalen Krylov-Unterraum $K_{m^*}(A,r)$ oder $K_{m^{**}}(A^H,\tilde{r})$ berechnet
+wurde.
+\end{bem}

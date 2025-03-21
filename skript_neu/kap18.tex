@@ -1,0 +1,126 @@
+\section[Analyse allgemein]{Analyse von Zweigitterverfahren allgemein}
+
+Gegeben seien $Ax=b$ (\glqq{}feines Gitter\grqq{}), $\hat A$ (grobes
+Gitter), $P,R$ (Prolongation, Restriktion) und $S_{\omega,\nu}$
+(Gl\"atter).
+
+Iterationsoperator des Zweigitterverfahrens:
+$(I-P\hat A^{-1}RA)S_{\omega,\nu}$.
+
+\begin{defn}
+  $S_{\omega,\nu}$ besitzt die \emph{Gl\"attungseigenschaft}, falls gilt
+  \begin{equation*}
+    \norm{AS_{\omega,\nu}}_2
+    \leq
+    \norm{A}_2\eta(\nu)
+    \qquad
+    \text{mit }
+    \eta(\nu)\xrightarrow{\nu\to\infty}0.
+  \end{equation*}
+\end{defn}
+
+\begin{defn}
+  $P$, $R$, $\hat{A}$ besitzen die \emph{Approximationseigenschaft},
+  falls gilt
+  \begin{equation*}
+    \norm[big]{A^{-1}-P\hat A^{-1}R}_2
+    \leq
+    C\frac{1}{\norm{A}_2}.
+  \end{equation*}
+\end{defn}
+
+\begin{sa}
+  Sind Gl\"attungs- und Approximationseigenschaft erf\"ullt, so
+  konvergiert das Zweigitterverfahren, wenn $\nu$ gro\ss{} genug ist
+  ($\eta(\nu)C<1$).
+\end{sa}
+
+\begin{bem}
+  Die Approximationseigenschaft kann man i.A.\ nur dadurch nachweisen,
+  dass man ausnutzt, dass $A$ eine endlichdimensionale Approximation
+  eines kontinuierlichen Differential-Operators ist, z.B.\ bei Finiten
+  Elementen (wir machen das hier nicht).
+\end{bem}
+
+F\"ur die Gl\"attungseigenschaft haben wir bereits Lemma~\ref{smooth2_lem}.
+Ein weiteres Resultat ist:
+
+\begin{lem}
+  Sei $A=M-N$. Es gelte in einer Norm $\norm{}$
+  \begin{equation*}
+    \norm{I-2M^{-1}A} \leq 1
+    \qquad\text{und}\qquad
+    \norm{M} \leq C\norm{A}
+    .
+  \end{equation*}
+  Dann gilt mit dem Gl\"atter $S=M^{-1}N=I-M^{-1}A$
+  \begin{equation*}
+    \norm[big]{AS^\nu}
+    \leq
+    \sqrt{\frac{2}{\pi\nu}}\;\norm[big]{A}.
+  \end{equation*}
+\end{lem}
+
+\begin{proof}
+  Wir zeigen zun\"achst: F\"ur $B$ mit $\norm{B}<1$ gilt
+  \begin{equation*}
+    \norm[big]{ (I-B) (I+B)^\nu }
+    \leq
+    2 \binom{\nu}{\lfloor\nu/2\rfloor}
+    \leq
+    2^{\nu-1}\sqrt{\frac{2}{\pi\nu}}.
+  \end{equation*}
+  Die zweite Ungleichung folgt mit der Stirlingschen Formel.
+  Wir verwenden
+  \begin{align*}
+    (I-B) (I+B)^\nu
+    &=
+    (I-B)\sum_{\mu=0}^{\nu}\binom{\nu}{\mu}B^\mu
+    \\
+    &=
+    I+\sum_{\mu=1}^{\nu}
+    \Biggl(\binom{\nu}{\mu}-\binom{\nu}{\mu-1}\Biggr)
+    B^\mu-B^{\nu+1}.
+  \end{align*}
+  Mit
+  $\dbinom{\nu}{\mu}=\dbinom{\nu}{\nu-\mu}$
+  und
+  $\dbinom{\nu}{\mu}\geq\dbinom{\nu}{\mu-1}$
+  f\"ur $\mu=1,\dots,\lfloor\nu/2\rfloor$ ergibt sich
+  \begin{align*}
+    \norm[big]{ (I-B)(I+B)^\nu }
+    &\leq
+    \underbrace{\norm[big]{ I-B^{\nu+1} }}_{\leq2}
+    +
+    2\sum_{\mu=1}^{\lfloor\nu/2\rfloor}
+    \Biggl(\binom{\nu}{\mu}-\binom{\nu}{\mu-1}\Biggr)
+    \\
+    &\leq
+    2+2\Biggl(\binom{\nu}{\lfloor\nu/2\rfloor}-\binom{\nu}{0}\Biggr)
+    \\
+    &=
+    2\binom{\nu}{\lfloor\nu/2\rfloor}.
+  \end{align*}
+  Zum Beweis des Lemmas: Es ist
+  \begin{equation*}
+    M^{-1}AS^\nu
+    =
+    \frac{1}{2^{\nu+1}}(I-B)(I+B)^\nu
+    \qquad
+    \text{mit }
+    B=I-2M^{-1}A
+  \end{equation*}
+  und damit
+  \begin{equation*}
+    \norm{AS^\nu}
+    \leq
+    \norm{M}\cdot\norm{M^{-1}AS^\nu}
+    \leq
+    \norm{M}\frac{1}{2^{\nu+1}}2^{\nu+1}\sqrt{\frac{2}{\pi\nu}}.
+  \end{equation*}
+\end{proof}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Iterationsverfahren03"
+%%% End:

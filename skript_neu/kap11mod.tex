@@ -1,0 +1,101 @@
+\section{CGSquared \& BiCGStab}
+Idee:
+\begin{enumerate}
+\item Gl\"atte Konvergenz in BiCG !
+\item Ersetze Multiplikation mit $A^H$ durch eine mit $A$ und erreiche
+ $x^k \in x^0 + K_{2k}(A,r^0)$
+\end{enumerate}
+Dafür ben\"otigen wir die folgenden BiCG-Verfahrenspolynome:
+
+\begin{defn}
+$\varphi_m \in \overline{\Pi}_m,\ \psi_m \in \Pi_m$ sind die Polynome des BiCG-Verfahrens, d.h.
+\[
+\varphi_m(A)r^0=r^m,\ \psi_m(A)r^0=p^m.
+\]
+Dann gilt auch
+\[
+\overline{\varphi}_m(A^H)\tilde{r}^0=\tilde{r}^m,\ \overline{\psi}_m(A^H)\tilde{r}^0=\tilde{p}^m,
+\]
+wobei $\varphi_m(t)= \sum_{i=0}^m \beta_i t^i$ und $\overline{\varphi}_m(t)= \sum_{i=0}^m \overline{\beta}_i t^i$.
+\end{defn}
+
+\begin{defn}
+Auf $\Pi$ = Menge der Polynome ist die Bilinearform $\left[ \cdot , \cdot \right]$ erkl\"art durch:
+\[
+\left[p,q \right] = \langle p(A)r^0, \overline{q}(A^H)\tilde{r}^0 \rangle.
+\]
+\end{defn}
+
+\begin{lem}
+$\left[ \cdot , \cdot \right]$ ist bilinear und es gilt
+\[
+\left[p,q \right] = \left[ pq,1 \right]
+\]
+\[
+\left[p \vartheta,q \right] = \left[ p,\vartheta q \right],\ \text{wobei } \vartheta(t)=t.
+\]
+\end{lem}
+Der Beweis ist trivial.
+\medskip
+
+
+Anwendung auf BiCG Koeffizienten:
+\[
+\langle r^k, \tilde{r}^k \rangle = \left[ \varphi_k, \varphi_k \right] = \left[ \varphi_k^2,1 \right]
+\]
+\[
+\langle Ap^k, \tilde{p}^k \rangle = \left[ \vartheta \psi_k, \psi_k \right] = \left[ \vartheta \psi_k^2,1 \right].
+\]
+Setze also
+\[
+\Phi_k = \varphi_k^2 \in \overline{\Pi}_{2k},\ \Psi_k = \psi_k^2 \in \Pi_{2k}.
+\]
+Wegen
+\[r^{k+1} = r^{k} - \gamma_kAp^k \quad\text{und}\quad p^{k+1} = r^{k+1} + \rho_kp^k\]
+gilt dann
+\[
+\Phi_{k+1} = \varphi_{k+1}^2 = \left( \varphi_k - \gamma_k \vartheta \psi_k \right)^2 = \Phi_k -2 \gamma_k \vartheta \varphi_k \psi_k + \gamma_k^2 \vartheta^2 \Psi_k
+\]
+sowie
+\[
+\Psi_{k+1} = \psi_{k+1}^2 = \left( \varphi_{k+1} + \rho_k \psi_k \right)^2 = \Phi_{k+1} + 2 \rho_k \varphi_{k+1} \psi_k + \rho_k^2 \Psi_k.
+\]
+Ohne die gemischten Terme $\varphi_k\psi_k$ in der Gleichung f"ur $\Phi_{k+1}$ und $\phi_{k+1}\psi_k$ in der Gleichung f"ur $\Psi_{k+1}$ h\"atten wir Iterationsvorschriften in $\Phi_k,~\Phi_{k+1}$ und $\Psi_k$. Um diese Iterationsvorschriften zu erhalten, f\"uhren wir einen der gemischten Terme als dritte Gr\"o"se ein. Setzen wir also $\Upsilon_k := \varphi_k\psi_k$, so gilt
+\[
+\varphi_{k+1} \psi_k = \Upsilon_k - \gamma_k \vartheta \Psi_k
+\]
+und somit
+\[
+\Upsilon_{k+1}=\varphi_{k+1} \psi_{k+1} = \Phi_{k+1} + \rho_k \left(\Upsilon_k - \gamma_k \vartheta \Psi_k \right).
+\]
+
+Zusammenfassung:
+\begin{enumerate}
+\item $\gamma_k = \dfrac{\left[\Phi_k,1\right]}{\left[ \vartheta \Psi_k,1 \right]}$
+\item $\Phi_{k+1} = \Phi_k - \vartheta \left( 2 \gamma_k \Upsilon_k + \gamma_k^2 \vartheta \Psi_k \right)$
+\item $\rho_k = \dfrac{\left[\Phi_{k+1},1 \right]}{\left[ \Phi_k,1 \right] }$
+\item $\Upsilon_{k+1} = \Phi_{k+1} + \rho_k \left( \Upsilon_k + \gamma_k \vartheta \Psi_k \right) $
+\item $\Psi_{k+1} = \Phi_{k+1} + 2 \rho_k \left( \Upsilon_k - \gamma_k \vartheta \Psi_k \right) + \rho^2_k \Psi_k$
+\end{enumerate}
+
+Unter Verwendung der Vektoren $r^k = \Phi_k(A)r^0$, $p^k = \Psi_k(A)r^0$,
+$u^k = \Upsilon_k(A)r^0$ und der Iterierten $x^k$ mit $r^k = b-Ax^k$ ergibt
+dies folgendes neues Verfahren:
+\begin{alg}[CGS (CG-squared, Sommerfeld 1989)]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic} 
+    \STATE w\"ahle $x^0$, setze $r^0 = b-Ax^0$, w\"ahle $\tilde{r}^0,\ p^0=r^0=u^0$
+    \FOR{$k = 0,1, \dots$ }
+	\STATE $s^k=Ap^k$
+      \STATE $\gamma_k = \dfrac{\langle r^k, \tilde{r}^0 \rangle}{\langle s^k, \tilde{r}^0 \rangle}$
+	\STATE $r^{k+1} = r^k - A\left(2 \gamma_k u^k + \gamma_k^2 s^k \right)$
+	\STATE $x^{k+1} = x^k + 2 \gamma_k u^k + \gamma_k^2 s^k$
+	\STATE $\rho_k= \dfrac{\langle r^{k+1},\tilde{r}^0 \rangle}{\langle r^k, \tilde{r}^0 \rangle}$
+	\STATE $u^{k+1} = r^{k+1} + \rho_k \left( u^k + \gamma_k s^k \right)$
+	\STATE $p^{k+1}=r^{k+1} + 2 \rho_k \left( u^k - \gamma_k s^k \right) + \rho^2_k p^k$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}

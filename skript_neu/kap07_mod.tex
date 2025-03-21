@@ -1,0 +1,289 @@
+\section[KUV mit minimalem Residuum]{Krylov-Unterraum-Verfahren mit minimalem Residuum}
+
+{\bf Gegeben: }
+\begin{quote}
+$A \in \cnn$ mit $A \neq A^H$,  $A$ regul\"ar.
+\end{quote}
+{\bf Ziel: }
+\begin{quote}
+L\"ose $Ax = b$ mit Startvektor $x^0$ und $r^0 = b-Ax^0$.
+\end{quote}
+{\bf Idee:}
+\begin{quote}
+Bestimme ONB von $K_m(A,r^0)$ mit Arnoldi-Prozess und errechne $x^m \in x^0 + K_m(A,r^0)$, so dass
+\end{quote}
+\[
+\|b-Ax^m\|_2 = \underset{x \in x^0 + K_m(A,r^0)}{\min} \|b-Ax\|_2.
+\]
+
+{\bf Ansatz:}
+\begin{quote}
+$x = x^0 + V_m z^m$ mit $z^m = \left(z_1,\cdots,z_m\right)^T \in \co^m$ sowie
+$V_m = \left[ v^1,\cdots,v^m \right]$.
+\end{quote}
+
+Damit erhalten wir
+\[
+b - Ax = r^0 - AV_m z^m = r^0 - V_{m+1}H_{m+1,m}z^m.
+\]
+
+Mit $r^0 = h_{1,0} v^1$ und $h_{1,0} = \|r^0\|$ gilt nun
+\[
+b-Ax = V_{m+1} \left[
+\left(%
+\begin{array}{c}
+  h_{1,0} \\
+  0 \\
+  \vdots \\
+  0 \\
+\end{array}%
+\right) - H_{m+1,m} z^m \right]
+\]
+und somit
+\[
+\|b-Ax\|_2 = \|h_{1,0}e^1 - H_{m+1,m}z^m\|_2.
+\]
+Hierbei ist $e^1$ der erste Einheitsvektor in $\co^{m+1}$,
+$H_{m+1,m} \in \mathbb{C}^{(m+1)\times m}$
+aber $z \in \mathbb{C}^m$.
+
+\clearpage
+
+{\bf Exkurs:}
+
+\begin{quote}
+Zu l\"osen ist also ein "uberbestimmtes Least Squares Problem $Bx = c$ mit
+$B\in \mathbb{C}^{k \times l}, \; k > l$. Gesucht ist
+ein $x$, welches $\| Bx-c \|_2^2$ minimiert. Dies findet man unter Verwendung der
+QR-Faktorisierung.
+
+{\bf Ansatz:}
+\begin{quote}
+Faktorisiere $ B = QR$ mittels QR-Zerlegung. Dann folgt
+\end{quote}
+\begin{align*}
+\|Bx-c\|_2^2 &= \|Q^H(Bx-c)\|_2^2\\
+&= \|Rx - Q^Hc\|_2^2.
+\end{align*}
+Das Minimum wird erreicht f\"ur
+\[
+x = R_1^{-1}( (Q^Hc)(1:l) ),
+\]
+wobei
+\[
+R = \left(\begin{array}{ccc} & R_1 & \\
+    0 & \cdots & 0 \end{array}
+    \right), \enspace R_1 \in \co^{l\times l} \mbox{ obere Dreiecksmatrix }.
+\]
+\end{quote}
+
+In unserem Falle ist $H_{m+1,m}$ eine obere Hessenberg Matrix. Ihre QR-Fak\-to\-ri\-sierung
+kann mittels Jacobi Rotationen bestimmt werden. Es kann sogar $Q$ in der
+QR-Faktorisierung von $H_{m+1,m}$ auf die f"ur $H_{m+2,m+1}$ aufdatiert werden.
+
+\bigskip
+
+{\bf Notation:}
+\[
+Q_{m+1} H_{m+1,m} = R_{m+1,m} \enspace \mbox{QR-Faktorisierung}
+\]
+mit
+\[
+Q_{m+1} = J_m^{(m+1)}\cdots J_1^{(m+1)},
+\]
+wobei $J_j^{(m+1)}$ eine Jacobi Rotation in $\co^{m+1}$ auf den Zeilen $j$
+und $j+1$ ist, welche das `untere Nebendiagonalelement' $h_{j+1,j}$ eliminiert,
+\[
+J_j^{(m+1)} = \left(%
+\begin{array}{cccc}
+  I &  &  &  \\
+   & \bar{c}_j & \bar{s}_j &  \\
+   & -s_j & c_j &  \\
+   &  &  & I \\
+\end{array}%
+\right).
+\]
+Um anzugeben, wie man $J_m^{(m+1)}$ bestimmt, beobachten wir zun\"achst
+\begin{eqnarray*}
+J_{m-1}^{(m+1)} \cdots J_1^{(m+1)} H_{m+1,m} &=& J_{m-1}^{(m+1)} \cdots J_1^{(m+1)}
+    \left(\begin{array}{c|c} 
+  H_{m,m-1}& \begin{array}{c}
+           h_{1,m} \\
+  \vdots \\
+h_{m,m}
+  \end{array}\\
+\hline
+  0         & h_{m+1,m}
+  \end{array}
+ \right) \\
+&=&
+    \left( \begin{array}{cc}
+  R_{m,m-1} & \eta^{(m)} \\
+  0         & h_{m+1,m}
+  \end{array}
+ \right)
+\end{eqnarray*}
+mit
+\[
+\eta^{(m)} = (r_{1,m},\ldots,r_{m-1,m},\eta_{m,m})^T,
+\]
+wobei
+\begin{eqnarray*}
+r_{1,m} &=& \bar{c}_1h_{1,m} + \bar{s}_1h_{2,m}, \\
+\eta_{1,m} &=& -s_1h_{1,m} + c_1h_{2,m}, \\
+r_{2,m} &=& \bar{c}_2\eta_{2,m} + \bar{s}_2h_{3,m}, \\
+\eta_{2,m} &=& -s_2\eta_{1,m} + c_2h_{3,m}, \\
+& \vdots & \\
+\eta_{m,m} &=& -s_{m-1}\eta_{m-1,m} + c_{m-1}h_{m,m} .
+\end{eqnarray*}
+Damit erhalten wir f"ur die Parameter $c_m,s_m$ der Jacobi Rotation
+$J^{(m+1)}_m$, welche $(0,\ldots,0,\eta_{m,m},h_{m+1,m})^T$ abbildet auf
+$(0,\ldots,0,r_{m,m},0)^T$ die Werte 
+\begin{equation} \label{rotparam_eq}
+  c_m = \eta_{m,m}/\sqrt{|\eta_{m,m}|^2 + |h_{m+1,m}|^2}, \
+s_m = h_{m+1,m}/\sqrt{|\eta_{m,m}|^2 + |h_{m+1,m}|^2}  \hspace*{-0.6cm}
+\end{equation}
+und
+\[
+r_{m,m} = \bar{c}_m\eta_{m,m} + \bar{s}_mh_{m+1,m} = \sqrt{|\eta_{m,m}|^2 + |h_{m+1,m}|^2} .
+\]
+
+% Vorlesung vom 20.05.03
+
+Die L"osung des LS-Problems
+\[\min \|h_{1,0} e^1 - H_{m+1,m} z^m \|_2 \]
+lautet damit
+$$ z^m = h_{1,0} R_m^{-1} ((Q_{m+1} e^1)(1:m)), \enspace \mbox{ wobei }
+ R_{m+1,m} = \left( \begin{array}{c} R_m \\
+                    0 \cdots 0
+                    \end{array}
+             \right),
+$$
+und der Wert des Minimums ist
+$$ h_{1,0} ( Q_{m+1} e^1)_{m+1}. $$
+Dieser Wert kann ohne Kenntnis von $z^m$ wie folgt bestimmt werden:
+Setze 
+$$ Q_m e^1=h_{1,0} \left(\begin{array}{c}
+                        \epsilon_1\\
+                        \vdots\\
+                        \epsilon_{m-1} \\
+                        \tilde{\epsilon}_{m}
+               \end{array}\right). $$
+Dann ist
+\[
+Q_{m+1}e^1 = J_m^{(m+1)} \left( \begin{array}{cc} Q_m & 0 \\
+                                               0 & 1 
+                                  \end{array}
+                         \right) e^1
+ = J_m^{(m+1)} \cdot
+      \left(\begin{array}{c}
+                        \epsilon_1\\
+                        \vdots\\
+                        \epsilon_{m-1} \\
+                        \tilde{\epsilon}_{m} \\
+                          0
+               \end{array}\right)
+ =
+\left(\begin{array}{c}
+                        \epsilon_1\\
+                        \vdots\\
+                        \epsilon_{m} \\
+                        \tilde{\epsilon}_{m+1}
+               \end{array}\right),
+\]
+mit
+\begin{align*}
+  \epsilon_m & =  \tilde{\epsilon}_m\overline{c}_m, \\
+  \tilde{\epsilon}_{m+1} & =  \tilde{\epsilon}_m\overline{s}_m. \\
+\end{align*}
+Insbesondere gilt
+$$ \tilde{\epsilon}_{m+1} = \prod \limits_{j=1}^{m} \overline{s}_j ,$$
+so dass wir f"ur den Wert des Minimums den Ausdruck
+\[
+  h_{1,0}\tilde{\epsilon}_{m+1} = \|r^0\| \cdot \tilde{\epsilon}_{m+1}
+\]
+erhalten.
+
+Wir haben jetzt alle Zutaten f"ur das Verfahren
+GMRES (Generalized Minimal Residual):
+
+\clearpage
+
+
+\begin{alg}[GMRES (Saad, Schultz, 1986)] \label{GMRES_alg}
+~               % um "3.3 Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \STATE w\"ahle $x^0$, setze $r^0 = b-Ax^0,\ \rho_0=h_{1,0}=\|r^0\|_2 $
+    \FOR{$m = 1,2, \dots$, bis $\rho_m$ klein genug}
+      \STATE bestimme n\"achsten Vektor $v^m$ und Koeffizienten
+    $h_1^m, \ldots ,h_{m+1}^m$ aus Arnoldi-Prozess
+      \STATE bestimme $s_m,c_m$ nach \eqnref{rotparam_eq}
+      \STATE datiere $\epsilon_m$ und $\tilde{\epsilon}_{m+1}$ auf
+      \STATE setze $\rho^m = \rho_{m-1}\cdot \overline{s}_m $
+             \enspace \COMMENT{ $\rho_m = \|r^m\|$} 
+      \IF{$\rho_m$ klein genug}
+          \STATE l\"ose $R_{m} z^{m} =  \left( \epsilon_1, \ldots, \epsilon_m \right)^T$
+          \STATE setze $x^{m} = x^0 + V_{m} z^{m}$
+      \ENDIF
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{bem}
+ Speicher- und Rechenaufwand (ohne MVMs) verh\"alt sich wie $\mathcal{O}(mn + m^2)$
+ $\curvearrowright$ Verfahren wird schnell impraktikabel.
+\end{bem}
+Es bezeichne $x^m$ die GMRES-Iterierte nach jedem Schritt, also die L\"osung
+von $$\min\limits_{x \in x^0+K_m(A,r^0)} \|b-Ax\|_2. $$
+Dann gilt nat"urlich $$ \|r^0\|\geq\|r^1\|\geq \ldots .$$
+Das folgende Beispiel zeigt, dass hier lange Gleichheit herrschen kann.
+
+\begin{bsp} \label{stagnation_bsp}
+Sei
+\[
+ A = \left(\begin{array}{cccc}
+                        0 &        & & 1\\
+                        1 & \ddots & & 0\\
+                          & \ddots & \ddots & \vdots \\
+                          & & 1 & 0
+               \end{array}\right),\enspace x^0=0,\;  b=e^1=r^0.
+\]
+Dann ist $K_m(A,r^0)=  \spann\{e^1,\ldots,e^m\}$, $e^i$ = $i$-ter Einheitsvektor.
+L\"osung von  
+$$\min\limits_{x \in K_m(A,r^0)} \|e^1-Ax\|_2, $$
+ist f"ur $m=1,2,\ldots,n-1$ wegen
+$Ax\in  \spann\{e^2,\ldots,e^{m+1}\}$ stets $x^m=0$.
+Es gilt also f\"ur die GMRES-Iterierten
+$$ x^0=x^1=\ldots=x^{n-1}=0,\; x^n=e^n = A^{-1}b $$ und 
+$$ r^0=r^1=\ldots=r^{n-1}=e^1, $$
+also
+$$\|r^0\|=\ldots=\|r^{n-1}\|=1. $$
+Beachte: $\spek(A)=\{ e^{\frac{2\pi ik}{n}} , \;  k=0,\ldots,n-1\} $. Ein so
+um die 0 verteiltes Spektrum ist f"ur KUV prinzipiell schwierig, weil die
+Verfahrenspolynome ja $p(0) = 1$ erf"ullen m"ussen.
+\end{bsp}
+
+Idee f\"ur "`praktikable"' GMRES-Variante: "`Restarted"'GMRES=GMRES($k$)
+mit restart Wert $k$.
+\begin{alg}[GMRES($k$)]
+~               % um "3.3 Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \STATE w\"ahle $x^0$
+    \FOR{$m = 1,2,\dots$}
+      \STATE f\"uhre $k$ Schritte von GMRES aus mit Startvektor $x^{m-1}$
+      \STATE Ergebnis ist $x^m$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+Es ist nun $$ x^m \in x^{m-1}+K_k(A,r^{m-1}), r^{m-1}=b-Ax^{m-1},$$
+aber es gilt i.A. {\em nicht}
+\[
+x^m \in x^0 + K_{km}(A,r^0).
+\]
+

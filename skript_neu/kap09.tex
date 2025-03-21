@@ -1,0 +1,666 @@
+\section[FOM und CG]{FOM und CG}
+{\bf Gegeben: }
+\begin{quote}
+$Ax=b$, $A \in \cnn$, $A$ regul"ar.
+\end{quote}
+{\bf Gesucht: }
+\begin{quote}
+$r^m\in K_m(A,r^0)$, s.d.
+\begin{equation} \label{galbed}
+r^m \perp K_m(A, r^0).
+\end{equation}
+\end{quote}
+\eqref{galbed} hei"st \textsl{Galerkin}-Bedingung. \\
+Erinnerung an Arnoldi-Verfahren:
+\begin{equation} \label{arnoldi_relation}
+\begin{array}{rcl}
+AV_m &=& V_{m+1}H_{m+1,m} 
+\end{array} 
+\end{equation}
+mit
+\begin{eqnarray*}
+ H_{m+1,m}=
+ \left(\begin{array}{c} 
+                H_m \\
+                h_{m+1,m}e_m^T
+               \end{array}\right), \quad H_m \in \mathbb{C}^{m \times m}.
+\end{eqnarray*}
+
+\begin{sa} \label{sa:FOM_ber} $x \in x_0 + K_m(A,r^0)$ efüllt die Galerkin-Bedingung \eqref{galbed} genau dann, wenn $x = x^m = x^0 + V_mz^m$ mit 
+\begin{equation} \label{eq:z_fuer_Galerkin}
+H_mz^m = \beta_0 e_1, \enspace \beta_ 0 = \|r^0\|.
+\end{equation}
+Das zugeh"orige Residuum $r^m$ ist ein skalares Vielfaches von $v^{m+1}$.
+\end{sa}
+\begin{proof} F"ur $x = x^0 + V_mz$ mit $z \in \mathbb{C}^m$ gilt
+\begin{eqnarray*}
+& & b-Ax \perp K_m(A,r^0) \\
+&\Leftrightarrow & r^0 - AV_m^ \perp K_m(A,r^0)\\
+&\Leftrightarrow & V_m^H(r^0-AV_mz) = 0 \\
+&\Leftrightarrow & \beta_0e_1 - H_m z = 0 \\
+&\Leftrightarrow & z = z_m \text{ aus \eqref{eq:z_fuer_Galerkin}} 
+\end{eqnarray*}
+Weiterhin ist $r^m = b-Ax^m = r^0 - AV_mz^m \in K_{m+1}(A,r^0)$ und $r^m \perp K_m(A,r^0)$. Das orthogonale Komplement von $K_m(A,r^0)$ in $K_{m+1}(A,r^0)$ wird nach Konstruktion der Arnoldi-Vektoren aber gerade von $v^{m+1}$ aufgespannt. 
+\end{proof}
+
+\subsection{FOM}
+
+\begin{defn} Die Full Orthogonalization Method (FOM) ist das Krylov-Unteraumverfahren, dessen Iterierte \eqref{galbed} erf"ullen, die sich also gem"aß Satz~\ref{sa:FOM_ber} berechnen.
+\end{defn}
+
+
+\begin{alg}[FOM]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \STATE w\"ahle $x^0$, setze $r^0 = b-Ax^0$, $\beta_0 = \|r^0\|$, $v^1 = \frac{1}{\beta_0}r^0$
+    \FOR{$m = 1,2 \dots$ }
+      \STATE bestimme den n"achsten Arnoldi-Vektor, dies ergibt die Arnoldi-Relation auf Stufe $m$: $AV_m = V_{m+1}H_{m+1,m}$ 
+      \STATE setze $x^m = x^0 + \beta_0 H_m^{-1}e_1 $
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{bem} Die FOM Iterierten brauchen nicht alle zu existieren, weil $H_m$ singul"ar werden kann. 
+\end{bem}
+
+\begin{bsp} Sei
+\[
+A = \left( \begin{array}{cc} 1 & 0 \\ 0 & -1 \end{array} \right) \text{ und } r^0 = \left( \begin{array}{c} 1 \\ 1 \end{array} \right).
+\]
+Dann ist $v_1 = \frac{1}{\sqrt{2}}r^0$ und $H_1 = 0 \in \mathbb{C}^{1 \times 1}$. Die FOM-Iterierte $x^1$ existiert also nicht. \\
+Beachte: $A$ in diesem Beispiel ist sogar symmetrisch.
+\end{bsp}
+
+
+
+
+\begin{aufg} \label{aufg:fom_existenz}  Zeige: Falls $0 \not \in F(A)$, so ist $H_m$ nicht-singul"ar f"ur alle $m$. 
+\end{aufg}
+
+FOM f"ur allgemeines $A$ erfordert wie GMRES die Speicherung alle Arnoldi-Vektoren und der Aufwand pro Schritt erh"oht sich mit $m$. Im Gegensatz zu GMRES ist die Galerkin-Bedingung keine Minimalit"atsbedingung $\Longleftrightarrow$ das Verhalten von Fehler und Residuum ist nicht monoton, es kann starke Ausschl"age geben.  
+
+Wenn $A$ aber hpd ist, so kann die Galerkin-Bedingung als Minimalit"atsbedingung interpretiert werden. Weil dann Arnoldi zu Lanczos wird, kann ein Verfahren mit kurzer Rekursion formuliert werden: CG.
+
+\subsection{CG}
+\begin{lem} \label{lem:min} Sei $B \in \mathbb{C}^{m \times m}$ hpd, $a \in \mathbb{C}^m$. Dann wird
+\[
+f(x) = \langle Bx,x\rangle - 2 \Re \langle x,a \rangle 
+\]
+minimal auf $\mathbb{C}^m$ f"ur $x = x^*=B^{-1}a$. 
+\end{lem}
+\begin{proof} Es ist
+\[
+f(x = \underbrace{\langle B(x-B^{-1}a), x- B^{-1}a \rangle}_{ \geq 0, \, =0 \text{ f"ur } x = x^*} - \langle B^{-1}a,B^{-1}a \rangle.
+\]
+\end{proof}
+
+
+
+\begin{sa} $A$ sei hpd. Dann erf"ullt $x^m \in x^0 + K_m(A,r^0)$ die Galerkin-Bedingung \eqref{galbed} genau dann, wenn $x^m$ den Fehler in der $A$-Norm minimiert,
+\[
+x^m = \mbox{argmin}_{x \in x^0 + K_m(A,r^0)} \|A^{-1}b - x \|_A,
+\]
+wobei $\| y \|_A := \langle Ay,y\rangle^{1/2}$.
+\end{sa}
+\begin{proof} Sei $x = x^0 + V_m z$. Wir bezeichnen $e^0 = A^{-1}r^0 = A^{-1}b-x^0$. Dann ist
+\begin{eqnarray*}
+\|A^{-1}b -x \|_A^2 &=& \langle b-Ax, A^{-1}b-x \rangle \\
+& = & \langle r^0 -AV_mz, e^0-V_mz \rangle \\
+&=& \langle AV_mz,V_mz \rangle - \langle AV_mz,e^0 \rangle - \langle r^0,V_mz\rangle + \langle r^0,e^0 \rangle \\
+&=& \langle V_m^HAV_mz,z \rangle - \langle V_mz,Ae^0 \rangle - \langle r^0,V_mz\rangle + \langle r^0,e^0 \rangle \\
+&=& \langle V_m^HAV_mz,z \rangle - 2 \Re \langle z,V_m^HAr^0 \rangle + c,
+\end{eqnarray*}
+mit $c = \langle r^0,e^0 \rangle = \langle Ae^0,e^0 \rangle \geq 0$. Nach Lemma~\ref{lem:min} (mit hpd-Matrix $H_m = V_m^HAV_m$ und Vektor $a = V_m^Hr^0 = \beta_0 e_1$) wird dies minimiert f"ur $z = H_m^{-1} \beta_0e_1$.
+\end{proof}
+
+Da wir $A$ hpd voraussetzen, reduziert sich Arnoldi auf Lanczos. Wir schreiben deshalb ab jetzt $T_m$ statt $H_m$ mit der "ublichen Tridiagonalmatrix $T_m$ . 
+
+\textbf{Vorsicht:} Der Rest dieses Kapitels ist aus einem anderen Skript "ubernommen (Stilbruch!). Die Bezeichnungen sind nicht alle konsistent. Z.B. heißt der Iterationsindex ab jetzt $k$ statt $m$ und $\beta_0$ heißt $\beta_1$. 
+Ziel ist die Herleitung einer kurzen Rekursion als Alternative zu FOM im Fall $A$ hpd.
+
+
+Weil $T_m=V_m^TAV_m$ spd ist, existiert die (wurzelfreie) Cholesky-Zerlegung von $T_m$, d.h.
+\[T_m=L_m\cdot D_m\cdot L_m^T\]
+mit
+\[D_m=\text{diag}(\delta_1,...,\delta_m), \quad  L_m=\left(\begin{array}{cccc}
+1&&&\\
+\zeta_2&\ddots\\
+&\ddots&\ddots\\
+&&\zeta_m&1
+\end{array}\right) .\]
+Durch Gleichsetzen erh"alt man
+\begin{eqnarray*}
+L_mD_mL_m^T&=&\left(\begin{array}{cccc}
+1&&&\\
+\zeta_2&\ddots\\
+&\ddots&\ddots\\
+&&\zeta_m&1
+\end{array}\right)\cdot \left(\begin{array}{cccc}
+\delta_1&\delta_1\zeta_2&&0\\
+&\ddots&\ddots\\
+&&\ddots&\delta_{m-1}\zeta_m\\
+&&&\delta_m
+\end{array}\right)\\\\\\
+&=&\left(\begin{array}{cccccccc}
+\delta_1&\delta_1\zeta_2\\\\
+\delta_1\zeta_2&\delta_2+\delta_1\zeta_2^2&\ddots\\\\
+&\ddots&\ddots&\ddots\\\\
+&&\ddots&\ddots&\delta_{m-1}\zeta_m\\\\
+&&&\delta_{m-1}\zeta_m&\delta_m+\delta_{m-1}\zeta_m^2
+\end{array}\right)\\\\\\
+&=&\left(\begin{array}{ccccc}
+\alpha_1&\beta_2&&\\
+\beta_2&\ddots&\ddots\\
+&\ddots&\ddots&\ddots\\
+&&\ddots&\ddots&\beta_m\\
+&&&\beta_m&\alpha_m\\
+\end{array}\right)
+\end{eqnarray*}
+also
+\begin{equation*} 
+\begin{cases}
+\,\,\, \delta_1=\alpha_1\\
+\left.\begin{array}{l}
+\zeta_k=\beta_k/\delta_{k-1}\\
+\delta_k=\alpha_k-\delta_{k-1}\zeta_k^2
+\end{array}\right\}\ k=2,3,...,m.
+\end{cases}\label{G439}
+\end{equation*}
+Damit erhalten wir aus $x^{(k)} = x^{(0)} + V_m T_m^{-1}\beta_1 e_1$
+\begin{eqnarray*}
+x^{(k)}&=&x^{(0)}+V_k(L_kD_kL_k^T)^{-1}\beta_1e_1\\
+&=&x^{(0)}+\underbrace{\left(V_k(L_k^T)^{-1} \right)}_{=:W_k}\cdot\underbrace{\left(D_k^{-1}L_k^{-1}\beta_1e_1 
+\right)}_{=:z^{(k)}}.
+\end{eqnarray*}
+
+
+\noindent Beachte nun
+\begin{eqnarray*}
+W_{k+1}L_{k+1}^T=V_{k+1}&=&[V_k|v_{k+1}]\\
+\|\phantom{L_{k+1}^T=V_{k+1}}  \\
+W_{k+1}\left(\begin{array}{c|c}
+L_k^T&\begin{array}{c}
+0\\\vdots\\0\\\zeta_{k+1}
+\end{array}\\
+\hline
+\begin{array}{ccc}
+0&\hdots&0
+\end{array}&1
+\end{array}\right).
+\end{eqnarray*}
+Also gilt
+\[W_{k+1}=[W_k|w_{k+1}]\text{ mit }\zeta_{k+1}w_k+w_{k+1}=v_{k+1}.\]
+Außerdem gilt
+\[
+\begin{array}{ccl}
+L_{k+1}D_{k+1}z^{(k+1)}&=&\beta_1e_1.
+\end{array}
+\]
+Setze 
+\[\begin{array}{ccl}
+(z^{(k+1)})_{k+1}&=&\mu_{k+1},
+\end{array}\]
+woraus sich
+\[\begin{array}{ccl}
+\left(\begin{array}{c|c}
+L_k &\begin{array}{c}
+0\\\vdots\\0\\ 0
+\end{array}\\
+\hline
+\begin{array}{cccc}
+0&\hdots&0 &\zeta_{k+1}
+\end{array}&1
+\end{array}\right)\cdot\left(\begin{array}{c|c}
+D_k&0\\
+\hline
+0&\delta_{k+1}
+\end{array}\right)z^{(k+1)}&=&\beta_1e_1
+\end{array}\]
+ergibt. Es folgt
+\[z^{(k+1)}=\left(\begin{array}{c}z^{(k)}\\\mu_{k+1}\end{array}\right).\]
+Dabei gilt
+\[\zeta_{k+1}\delta_k\mu_k+\mu_{k+1}\delta_{k+1}=0\]
+und somit
+\begin{eqnarray*}
+\mu_{k+1}&=&\dfrac{1}{\delta_{k+1}}\left(-\delta_k\zeta_{k+1}\mu_k \right)\\
+&=&-\dfrac{\beta_{k+1}}{\delta_{k+1}}\mu_k.
+\end{eqnarray*}
+Fassen wir nun alles zusammen, so ergibt sich damit
+\begin{eqnarray*}
+x^{(k+1)}&=&x^{(0)}+W_{k+1}z^{(k+1)}\\
+&=&x^{(0)}+[W_k|w_{k+1}]\left(\begin{array}{c}
+z^{(k)}\\\mu_{k+1}
+\end{array}\right)\\
+&=&\underbrace{x^{(0)}+W_kz^{(k)}}_{=x^{(k)}}+\mu_{k+1}w_{k+1}\\
+&=&x^{(k)}+\mu_{k+1}w_{k+1}.
+\end{eqnarray*}
+Hiermit erhalten wir mit den richtigen Initialisierungen (f"ur $k=1$) den folgenden
+Algorithmus.
+
+
+
+\begin{alg}[CG-Verfahren, Variante I]\label{A439}\label{S439}\label{alg:CG_variante_I}
+~\vspace*{-2\baselineskip}
+\begin{algorithm}
+\begin{algorithmic}
+\STATE W"ahle $x^{(0)}$, setze $r^{(0)}=b-Ax^{(0)}, \beta_1=\|r^{(0)}\|, v_1=r^{(0)}/\beta_1$
+\STATE setze $w^{(0)}=0,\delta_0=1,\mu_0=1,v^{(0)}=0$
+\FOR{$k=1,2,..$}
+\STATE $\begin{array}{lrcl}
+&q^{(k)}&=&Av^{(k)}\\
+&\alpha_k&=&\left\langle q^{(k)},v^{(k)}\right\rangle \\
+&\zeta_k&=&\begin{cases}
+0& \mbox{ falls} k=1\\
+\beta_k/\delta_{k-1} & \mbox{ falls } k > 1
+\end{cases}\\
+&\delta_k&=&\alpha_k-\delta_{k-1}\zeta_k^2\\
+&w^{(k)}&=&v^{(k)}-\zeta_kw^{(k-1)}\\
+&\mu_k&=&-\dfrac{\beta_k}{\delta_k}\mu_{k-1}\\
+&x^{(k)}&=&x^{(k-1)}+\mu_kw^{(k)}\\
+&\widetilde{v}^{(k+1)}&=&q^{(k)}-\alpha_kv^{(k)}-\beta_kv^{(k-1)}\label{G4310}\\\stepcounter{equation}
+&\beta_{k+1}&=&\|\widetilde{v}^{(k+1)}\|\\
+&v^{(k+1)}&=&\widetilde{v}^{(k+1)}/\beta_{k+1}
+\end{array}$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{bem}Eine Implementierung dieses Verfahrens ben"otigt nur f"unf Vektoren (einen f"ur $x$,
+einen f"ur $w$, zwei f"ur die $v's$, sowie einen Hilfsvektor f"ur $w$ bzw. $\widetilde{v}$).\label{S4310}
+\end{bem}
+
+\noindent Wir bringen jetzt in zwei weiteren Schritten das CG-Verfahren auf eine Standard-Gestalt.
+
+\paragraph{1. Schritt}{\ }
+
+Wir eliminieren zun"achst $v^{(k-1)}$ in der Berechnungsvorschrift f"ur $\tilde{v}^{(k+1)}$ aus Alg.~\ref{alg:CG_variante_I}  (ein Vektor weniger wird ben"otigt).
+Verwende
+\[V_k=[v^{(1)}|...|v^{(k)}],\ W_k=[w^{(1)}|...|w^{(k)}].\]
+Die Arnoldi-Relation lautet
+\[AV_k=V_{k+1}\left(\begin{array}{c}
+T_k\\
+\begin{array}{cccc}
+0&\hdots&0&\beta_{k+1}
+\end{array}
+\end{array}\right)=
+\left(\begin{array}{c}
+L_kD_kL_k^T\\
+\begin{array}{cccc}
+0&\hdots&0&\beta_{k+1}
+\end{array}
+\end{array}\right).\]
+Mit $V_k=W_kL_k^T$ folgt nun
+\[
+\begin{array}{rrcl}
+&AW_kL_k^T&=&V_{k+1}\left(\begin{array}{c}
+L_kD_kL_k^T\\
+\begin{array}{cccc}
+0&\hdots&0&\beta_{k+1}
+\end{array}
+\end{array}\right)\\
+\Rightarrow&AW_k&=&V_{k+1}\left(\begin{array}{c}
+L_kD_k\\
+\begin{array}{cccc}
+0&\hdots&0&\beta_{k+1}
+\end{array}
+\end{array}\right)
+\end{array}\]
+\noindent denn
+\[L_k\left(\begin{array}{c}
+0\\\vdots\\0\\\beta_{k+1}
+\end{array}\right)=\left(\begin{array}{c}
+0\\\vdots\\0\\\beta_{k+1}
+\end{array}\right),\]
+also
+\[\left(\begin{array}{c}
+0\\\vdots\\0\\\beta_{k+1}
+\end{array}\right)=L_k^{-1}\left(\begin{array}{c}
+0\\\vdots\\0\\\beta_{k+1}
+\end{array}\right),\]
+und damit
+\[(0,...,0,\beta_{k+1})=(0,...,0,\beta_{k+1})(L_k^T)^{-1}.\]
+Dies bedeutet f"ur die $k$-te Spalte
+\[\begin{array}{rrcl}
+&Aw^{(k)}&=&\beta_{k+1}v^{(k+1)}+\delta_kv^{(k)}\\
+\Leftrightarrow&v^{(k+1)}&=&\dfrac{1}{\beta_{k+1}}\cdot (Aw^{(k)}-\delta_kv^{(k)})\\
+\Leftrightarrow&\widetilde{v}^{(k+1)}&=&Aw^{(k)}-\delta_kv^{(k)}.
+\end{array}\]
+Dies kann man nun f"ur die Aufdatierung von $\tilde{v}^{(k+1)}$ in Alg.~\ref{alg:CG_variante_I} verwenden. Allerdings ben"otigt man immer noch $q=Av^{(k)}$ zur Bestimmung von $\alpha_k$.
+Auf $\alpha_k$ kann aber ganz verzichtet werden, denn $\delta_k$ (einzige Stelle, wo bisher $\alpha_k$ noch ben"otigt
+wird) kann alternativ auch folgendermaßen berechnet werden:
+\[\begin{array}{rrcl}
+&L_kD_kL_k^T=T_k=V_k^TAV_k&=&V_k^TAW_kL_k^T\\
+&&=&V_k^T(AW_k)L_k^T\\
+\Rightarrow&L_kD_k&=&V_k^T(AW_k)
+\end{array}.\]
+Vergleichen wir nun das Element an der Stelle $(k,k)$ in beiden Matrizen, so ergibt sich
+\[\delta_k=\left\langle v^{(k)},Aw^{(k)}\right\rangle .\]
+Als Ergebnis des ersten Schrittes erhalten wir nun
+
+\begin{alg}[CG-Verfahren, Variante II]\label{A4311}\label{S4311}\label{alg:CG_variante_II}
+~\vspace*{-2\baselineskip}
+\begin{algorithm}
+\begin{algorithmic}
+\STATE Initialisierung wie in Algorithmus \nref{A439}
+\FOR{$k=1,2,...$}
+\STATE $\begin{array}{rrcl}
+&\zeta_k&=&\beta_k/\delta_{k-1}\\
+\text{(4.3.11a)}&w^{(k)}&=&\zeta_kw^{(k-1)}\label{G4311a}\\
+&q&=&Aw^{(k)}\\
+&\delta_k&=&\left\langle v^{(k)},q\right\rangle \\
+\text{(4.3.11b)}&\mu_k&=&-\dfrac{\beta_k}{\delta_k}\mu_{k-1}\label{G4311b}\\
+\text{(4.3.12)}\label{G4311}&x^{(k)}&=&x^{(k-1)}+\mu_kw^{(k)}\\\stepcounter{equation}
+&\widetilde{v}_{k+1}&=&q-\delta_kv^{(k)}\\
+&\beta_{k+1}&=&\|w_{k+1}\|_2\\
+&v^{(k+1)}&=&\dfrac{1}{\beta_{k+1}}\widetilde{v}_{k+1}
+\end{array}$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\paragraph{2. Schritt}{\ }
+
+Einbeziehung des Residuums $r^{(k)}=b-Ax^{(k)}$ (mit $\|r^{(k)}\|$ hat man ein vern"unftiges Abbruchkriterium
+zur Hand):
+\begin{eqnarray*}
+r^{(k)}=b-Ax^{(k)}&=&b-A(x^{(0)}+V_kT_k^{-1}\left(\begin{array}{c}
+\beta_k\\0\\\vdots\\0
+\end{array}\right))\\
+&=&(b-Ax^{(0)})-AV_kT_k^{-1}\left(\begin{array}{c}
+\beta_k\\0\\\vdots\\0
+\end{array}\right)\\
+&=&r^{(0)}-V_{k+1} T_{k+1,k}T_k^{-1}\left(\begin{array}{c}
+\beta_1\\0\vdots\\0
+\end{array}\right)\\
+&=&r^{(0)}-V_{k+1}\left(\begin{array}{c}
+T_k\\\begin{array}{cccc}
+0&\hdots&0&\beta_{k+1}
+\end{array}
+\end{array}\right)T_k^{-1}\left(\begin{array}{c}
+\beta_1\\0\\ \vdots\\0
+\end{array}\right)
+\end{eqnarray*}
+\begin{eqnarray*}
+&=&r^{(0)}-V_{k+1}\left(\begin{array}{c}
+I_k\\\left(\begin{array}{cccc}
+0&\hdots&0&\beta_{k+1}
+\end{array}\right)T_k^{-1}
+\end{array}\right)\left(\begin{array}{c}
+\beta_1\\0\\\vdots\\0
+\end{array}\right)\\
+&=&r^{(0)}-V_{k+1}\left(\begin{array}{c}
+\beta_1\\0\\\vdots\\0\\
+\left(\begin{array}{cccc}
+0,...,0,\beta_{k+1}
+\end{array}\right)T_k^{-1}
+\left(\begin{array}{c}
+\beta_1\\0\\\vdots\\0
+\end{array}\right)
+\end{array}\right)\\
+&=&r^{(0)}-\beta_1v^{(1)}-\left(\begin{array}{cccc}
+0,...,0,\beta_{k+1}
+\end{array}\right)T_k^{-1}
+\left(\begin{array}{c}
+\beta_1\\0\\\vdots\\0
+\end{array}\right)v^{(k+1)}\\
+&=&-\underbrace{\left(\begin{array}{cccc}
+0,...,0,\beta_{k+1}
+\end{array}\right)T_k^{-1}
+\left(\begin{array}{c}
+\beta_1\\0\\\vdots\\0
+\end{array}\right)}_{*}v^{(k+1)}.
+\end{eqnarray*}
+Also ist $r^{(k)}$ ein skalares Vielfaches von $v^{(k+1)}$! Wie erh"alt man den Faktor $*$ einfach?
+
+\medskip
+
+Aus Algorithmus~\ref{alg:CG_variante_II} folgt:
+\begin{equation}
+r^{(k)}=b-Ax^{(k)}=b-Ax^{(k-1)}-\mu_kAw^{(k)}=r^{(k-1)}-\mu_kAw^{(k)}\label{G4312}.
+\end{equation}
+F"ur $v^{(k+1)}$ gilt
+\[
+\begin{array}{rrcl}
+&\beta_{k+1}v^{(k+1)}&=&Aw^{(k)}-\delta_kv^{(k)}\\
+\Rightarrow&-\mu_k\beta_{k+1}v^{(k+1)}&=&\mu_k\delta_kv^{(k)}-\mu_k Aw^{(k)}
+\end{array}\]
+Aus Algorithmus \nref{A439} wissen wir nun
+\[\mu_k=-\dfrac{\beta_k}{\delta_k}\mu_{k-1},\]
+also
+\[\mu_k\delta_k=-\mu_{k-1}\beta_k\]
+und damit
+\[-\mu_k\beta_{k+1}v^{(k+1)}=-\mu_{k-1}\beta_kv^{(k)}-\mu_kAw^{(k)}.\]
+Der Vergleich mit Gleichung \nref{G4312} ergibt also:
+\[r^{(k)}=(-\mu_k\beta_{k+1})v^{(k+1)},\]
+und wegen $\|v^{(k+1)}\|=1$, insbesondere
+\begin{equation}
+\label{G4313}|\mu_k\beta_{k+1}|=\|r^{(k)}\|.
+\end{equation}
+Wir stellen deshalb Algorithmus \nref{A4311} auf die Gr"oßen
+\[\begin{array}{rcll}
+r^{(k)}&=&(-\mu_k\beta_{k+1})v^{(k+1)}&(r^{(k)}\text{ statt }v^{(k+1)})\\
+p^{(k)}&=&(-\mu_{k-1}\beta_{k})w^{(k)}&(p^{(k)}\text{ statt }w^{(k)})
+\end{array}\]
+um und erhalten so die Aufdatierungsvorschriften
+\begin{eqnarray}\label{G4314}
+p^{(k)}&=&r^{(k-1)}-\zeta_k\cdot\dfrac{-\mu_{k-1}\beta_k}{-\mu_{k-2}\beta_{k-1}}p^{(k-1)}  )\\
+x^{(k)}&=&x^{(k-1)}+\mu_k\dfrac{-1}{\mu_{k-1}\beta_k}p^{(k)} )\label{G4315}\\
+r^{(k)}&=&r^{(k-1)}-\mu_k\dfrac{-1}{\mu_{k-1}\beta_k}Ap^{(k)} \quad  (\text{aus \eqnref{G4315}} )\label{G4316}.
+\end{eqnarray}
+F"ur die vorkommenden Koeffizienten gilt
+\begin{eqnarray}
+\notag
+\zeta_k\cdot\dfrac{-\mu_{k-1}\beta_k}{-\mu_{k-2}\beta_{k-1}}
+&=&\dfrac{\beta_k}{\delta_{k-1}}\dfrac{\mu_{k-1}\beta_k}{\mu_{k-2}\beta_{k-1}}\\
+\notag\label{G4317}
+&\overset{Alg.~\ref{alg:CG_variante_II}}{=}&\dfrac{\beta_k}{\frac{-\beta_{k-1}}{\mu_{k-1}\mu_{k-2}}\mu_{k-2}\beta_{k-1}}
+\dfrac{\mu_{k-1}\beta_k}{\mu_{k-2}\beta_{k-1}}\\
+&=&\dfrac{\beta_k^2\mu_{k-1}^2}{\beta_{k-1}^2\mu_{k-2}^2}\overset{\sgref{G4313}}{=}
+\dfrac{\left\langle r^{(k-1)},r^{(k-1)}\right\rangle }{\left\langle r^{(k-2)},r^{(k-2)}\right\rangle }=:\epsilon_{k-1}
+\end{eqnarray}
+und
+\begin{eqnarray}
+\notag-\dfrac{\mu_k}{\mu_{k-1}\beta_k}&\overset{Alg.~\ref{alg:CG_variante_II}}{=}&\dfrac{1}{\delta_k}=\dfrac{1}{\left\langle v^{(k)},Aw^{(k)}\right\rangle }\\
+\notag&=&\dfrac{(\mu_{k-1}\beta_k)^2}{\left\langle r^{(k-1)},Ap^{(k)}\right\rangle }\\
+&=&\dfrac{\left\langle r^{(k-1)},r^{(k-1)}\right\rangle }{\left\langle r^{(k-1)},Ap^{(k)}\right\rangle }=:\gamma_{k-1}\label{G4318}.
+\end{eqnarray}
+Verwendet man noch
+\begin{equation}
+\label{G4319}\gamma_{k-1}=\dfrac{\left\langle r^{(k-1)},r^{(k-1)}\right\rangle }{\left\langle p^{(k-1)},Ap^{(k)}\right\rangle }
+\end{equation}
+(siehe Lemma \nref{G4313}, unten), so erh"alt man die Standardform des CG-Verfahrens.
+
+
+\begin{alg}[CG-Verfahren, Standardform]\label{S4312}\label{alg:CG_standard}
+~\vspace*{-2\baselineskip}
+\begin{algorithm}
+\begin{algorithmic}
+\STATE w"ahle $x^{(0)}$
+\STATE setze $r^{(0)}=b-Ax^{(0)},\ p^{(0)}=r^{(0)}$
+\FOR{$k=1,2,...$}
+\STATE $\gamma_{k-1}=\dfrac{\left\langle r^{(k-1)},r^{(k-1)}\right\rangle }{\left\langle p^{(k-1)},Ap^{(k-1)}\right\rangle }$
+\STATE $x^{(k)}=x^{(k-1)}+\gamma_{k-1}p^{(k-1)}$
+\STATE $r^{(k)}=r^{(k-1)}-\gamma_{k-1}\cdot A\cdot p^{(k-1)}$
+\STATE $\epsilon_{k}=\dfrac{\left\langle r^{(k)},r^{(k)}\right\rangle }{\left\langle r^{(k-1)},r^{(k-1)}\right\rangle }$
+\STATE $p^{(k)}=r^{(k)}+\epsilon_kp^{(k-1)}$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{lem} \label{S4313}  Es ist
+\[\gamma_{k-1}=\dfrac{\left\langle r^{(k-1)},r^{(k-1)}\right\rangle }{\left\langle r^{(k-1)},Ap^{(k)}\right\rangle }=\dfrac{\left\langle r^{(k-1)},r^{(k-1)}\right\rangle }{\left\langle p^{(k-1)},Ap^{(k-1)}\right\rangle }.\]
+\end{lem}
+\begin{proof}
+Aus Gleichung \eqref{G4314} folgt per Induktion
+\[p^{(k)}\in K_k(A,r^{(0)}).\]
+Die $r^{(k)}$ sind skalare Vielfache der Lanczos-Vektoren $v^{(k+1)}$ und $K_k(A,r^{(0)})$ wird von den $v^{(1)},...,v^{(k)}$
+aufgespannt. Da $\left\langle v^{(k+1)},v^{(j)}\right\rangle =0,\ j=1,...,k$ gilt
+\[\left\langle v^{(k+1)},p^{(k)}\right\rangle =\left\langle r^{(k)},p^{(k)}\right\rangle =0\]
+und damit folgt aus \eqref{G4316} und \eqref{G4318}:
+\[
+\begin{array}{rrcl}
+&0=\left\langle r^{(k)},p^{(k)}\right\rangle &=&\left\langle r^{(k-1)}-\gamma_{k-1}Ap^{(k)},p^{(k)}\right\rangle \\
+\Rightarrow&\gamma_{k-1}&=&\dfrac{\left\langle r^{(k-1)},p^{(k)}\right\rangle }{\left\langle p^{(k)},Ap^{(k)}\right\rangle }\\
+&&\overset{\sgref{G4314}}{=}&
+\dfrac{\left\langle r^{(k-1)},r^{(k-1)}-\epsilon_{k-1}p^{(k-1)}\right\rangle }{\left\langle p^{(k)},Ap^{(k)}\right\rangle }\\
+&&=&\dfrac{\left\langle r^{(k-1)},r^{(k-1)}\right\rangle }{\left\langle p^{(k)},Ap^{(k)}\right\rangle }.
+\end{array}\]
+\end{proof}
+
+\subsection*{Analyse von FOM und CG}
+F"ur FOM gibt es außer Aufgabe~\ref{aufg:fom_existenz} nicht viel mehr zu sagen. Es gibt aber einen interessanten Zusammenhang mit GMRES. Dazu seien $r^m_{\gmres}$ und $r^m_{\fom}$ die jeweiligen Residuen.
+
+\begin{sa} Es gilt mit $c_m,s_m$ die Parameter der Jacobi-Rotation $J_m^{(m1)}$ bei der Berechnung der QR-Faktorisierung von $H_{m+1,m}$, s.\ Beginn von Kapitel~\ref{kap:gmres}. Dann gilt
+\begin{itemize}
+\item[(i)] F"ur alle $m$ ist $x^m_{\gmres} = |s_m|^2x^{m-1}_{\gmres} + |c_m|^2x^m_{\fom}$ und 
+           $r^m_{\gmres} = |s_m|^2 r^{m-1}_{\gmres} + |c_m|^2r^m_{\fom}$.
+\item[(ii)] F"ur alle $m$ gilt 
+\[
+   \frac{1}{\|r^m_{\fom}\|^2} + \frac{1}{\|r^{m-1}_{\gmres}|^2} = \frac{1}{\|r^m_{\gmres}\|^2}.
+\]
+\end{itemize}
+\end{sa}
+\begin{proof} s. Vorlesung.
+\end{proof}
+\medskip
+
+F"ur CG kann man mehr zeigen.
+
+\begin{lem} $A$ sei hpd, $A = Q\Lambda Q^H$ mit $Q=[q_1 | \cdots | q_n]$ Matrix der Eigenvectoren, $Q^HQ = I$, $\Lambda = \diag(\lambda_1,\cdots,\lambda_n)$. Dann gilt f"ur jedes Polynom $p$
+\[
+\| p(A) \|_A = \max_{\lambda \in \spek(A)} |p(\lambda)|.
+\]
+Das bekannte Resultat f"ur die 2-Norm gilt also auch f"ur die $A$-Norm.
+\end{lem}
+\begin{proof} Sie $x =\sum_{i=1}^n \xi_i q_i$ ein beliebiger Vektor mit $\| x \|^2_A = \langle Ax,x\rangle =1$, also
+\begin{equation}\label{eq:p_A-norm}
+\sum_{i=1}^n \lambda_i | \xi_i|^2 = 1. 
+\end{equation}
+Dann ist $\|p(A)x\|_A^2 = \langle  Ap(A)x,x \rangle = \sum_{i=1}^n \lambda_i 
+p(\lambda_i)|\xi_i|^2$. Unter der Nebenbedingung $\eqref{eq:p_A-norm}$ wird dieser Ausdruck am gr"oßten, wenn f"ur das $i_0$ mit $|p(\lambda_{i_0})| = \max_{i=1}^n |p(\lambda_{i})|$ die $\xi_i$ so gew"ahlt sind, dass $\lambda_{i_0} |\xi_{i_0}|^2 =1$, $\xi_i = 0$ f"ur $i \neq 0$. Aus der Definition der Matrix-Norm
+\[
+\|p(A)\|_A = \max\{ \|p(A)x\|_A: \|x\|_A = 1\}
+\]
+ergibt sich so die Behauptung.
+\end{proof}
+
+\begin{sa} Sei $A$ hpd und $\kappa = \lambda_n/\lambda_1$ die Konditionszahl und $c = \frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}$. Dann gilt f"ur die Iterierten $x^m$ von CG f"ur $Ax=b$ f"ur die Fehler $e^m = x^*-x^m$ mit $x^* = A^{-1}b$ die Absch"atzung
+\[
+\|e^m\|_A \leq \frac{2}{c^{-m}+c^m} \|e^0\|_A.
+\]
+\end{sa}
+\begin{proof} Es ist $e_m = p_m(A)e^0$ mit dem Residuumspolynom $p_m \in \bar{\Pi}_m$. Weil CG den Fehler in der $A$-Norm minimiert gilt
+\[
+\|e^m\|_A = \|p_m(A)e^0\|_A \leq \| a_m T_m^{[\lambda_1,\lambda_n]}(A)e^0\|_A,
+\]
+wobei $a_m T_m^{[\lambda_1,\lambda_n]}$ das skalierte Tschebyscheffpolynom f"ur $[\lambda_1,\lambda_n]$ 
+ist mit $|a_m| = 1/T_m^{[\lambda_1,\lambda_n]}(0) = \frac{2}{c^{-m}+c^m}$. Der Satz folgt, indem man die Absch"atzung f"ur $\|e^m\|_A$ weiter fortsetzt zu
+\begin{eqnarray*}
+\|e^m\|_A  \leq \| a_m T_m^{[\lambda_1,\lambda_n]}(A)e^0\|_A &\leq& |a_m| \max_{\lambda \in \spek(A)}\| |T_m^{[\lambda_1,\lambda_n]}(\lambda)| \cdot \|e^0\| \\
+&\leq& |a_m| \max_{\lambda \in [\lambda_1,\lambda_n]}\| |T_m^{[\lambda_1,\lambda_n]}(\lambda)| \cdot \|e^0\| \\
+&=& |a_m| \|e^0\|_A.
+\end{eqnarray*}
+\end{proof}
+
+Die Residuen in CG fallen nicht notwendig monoton in der 2-Norm. Der Fehler schon:
+
+\begin{sa} Bez.\ wie vorher. Es gilt f"ur alle $m$
+\[
+\|e^{m}\| \leq \|e^{m-1}\|.
+\]
+\end{sa}
+\begin{proof}
+Es ist
+\begin{eqnarray*}
+\|x^*-x^m\|^2 &=& \|x^*-x^{m-1}+x^{m-1}- x^m \|^2 \\
+&=& \|x^*-x^{m-1}\|^2 + 2 \Re \langle x^*-x^m,x^m-x^{m-1} \rangle + \|x^m-x^{m-1}\|^2.
+\end{eqnarray*}
+Wir zeigen, dass der mittlere Term nicht-negativ ist. Es gibt ein $M\leq n$ mit $x^* = x^M$ und nach Algorithmus 
+\ref{alg:CG_standard} ist $x^* = x^M = \sum_{k=0}^{M-1} \gamma_k p^k$ mit $\gamma_k \geq 0$. Damit ist
+\[
+\langle x^*-x^m,x^m-x^{m-1} \rangle = \sum_{k=m}^M \gamma_k \langle p_{m-1},p_k \rangle.
+\]
+Der Beweis ist erbracht, wenn wir $\langle p_{m-1},p_k \rangle \geq 0$ gezeigt haben f"ur $k=0,\ldots,m-1$ (und das $\Re$ 
+wird sich dann als unn"otig erwiesen haben). Durch wiederholte Anwednung der Vorschrift f"ur  $p^k$ aus Algorithmus~\ref{alg:CG_standard} 
+erhalten wir $p^k = r^k + \rho_{1}r^{k-1} + \cdots + \rho_{k-m}r^{m} + \sigma p^{m-1}$, wobei $\sigma$ ebenso wie 
+die $\rho_j$ als Produkte der $\epsilon_\ell \geq 0$ aus dem Algorithmus nicht-negativ ist. Es ist $p^{m-1} \in K_{m-1}
+(A,r^0)$ und $r^k \perp K_{m-1}(A,r^0)$ f"ur $k=m,\ldots,k$. Also ist  $\langle p_{m-1},p_k \rangle = \sigma \langle 
+p^{m-1},p^{m-1} \rangle \geq 0$. 
+\end{proof} 
+
+
+
+Es gibt einen Zusammenhang zwischen den FOM- und GMRES-Iterierten $x^m$. Das Dreiecks-System 
+\begin{equation*}
+R_m y_m = g_m 
+\end{equation*} kann durch wiederholte Anwendungen der bekannten Rotationen in der Hessenbergmartrix $\overline{H}_m$ erzeugt werden. Der einzige Unterschied zwischen den Vektoren $y_m$ in GMRES und in Arnoldi ist, dass die letzte Rotation für FOM weggelassen werden kann. Das heißt, dass die Matrix $R_m$ in den jeweiligen Methoden nur im Eintrag an Position $m,m$ und die rechte Seite sich nur in der letzten Komponente unterscheidet. 
+\begin{lem}
+Sei $\tilde{R}_m$ die obere Dreicksmatrix $Q_{m-1} H \in \mathC^{m \times m}$ und $R_m$ der $m \times m$ obere Teil der Matrix $ Q_m H_{m+1,m}$ wie zuvor. Sei $\tilde{g}$ der Vektor $Q_{m-1} (\beta_0 e_1) \in \mathC^m$ und sei $g$ der Vektor aus den ersten $m$ Komponenten von $Q_m(\beta e_1) \in \mathC^{m+1}$. Die Vektoren $\tilde{y}_m = \tilde{R}_m^{-1} \tilde{g}_m$ und $y_m = R_m^{-1}g_m$ seien die Koeffizienten bzgl.\ der Arnoldi-Vekroren der $m$-ten Iterierten von FOM bzw. GMRES. \\
+Dann ist
+\begin{equation} \label{eq:FOM-GMRES_connection}
+ y_m - \left(\begin{array}{c}
+y_{m-1}\\
+0
+\end{array}\right) = |c_m|^2 \left( \tilde{y}_m - \left(\begin{array}{c}
+y_{m-1}\\
+0
+\end{array}
+\right)\right)
+\end{equation}
+mit $c_m$ als ``Cosinus-Term'' aus der $m$-ten Rotation wie zuvor.
+\end{lem}
+\begin{proof}
+Per Konstruktion gilt:\\
+\begin{equation*}
+	R_m = \left( \begin{array}{cc} R_{m-1} & z_m \\
+	0 & \xi_m \end{array} \right) \text{, } \tilde{R}_m = \left( \begin{array}{cc} R_{m-1} & z_m \\
+	0 & \tilde{\xi}_m \end{array} \right) 
+\end{equation*}
+und f"ur die ``rechten Seiten'' $g_m$ und $\tilde{g}_m$:\\
+\begin{equation*}
+	g_m = \left( \begin{array}{c} g_{m-1} \\ \gamma_m \end{array} \right) \text{, } 
+		\tilde{g}_m = \left( \begin{array}{c} g_{m-1} \\ \tilde{\gamma}_m \end{array} \right)
+\end{equation*}
+	mit $\gamma_m = c_m \tilde{\gamma}_m$. \\
+	Unter Anwendung der Definitionen von $s_m$ und $c_m$, sowie der Notation $\lambda = \sqrt{|\tilde{\xi}_m|^2 + |h_{m+1,m}|^2}$ erhalten wir
+	\begin{equation*}
+		\xi_m = c_m \tilde{\xi}_m + s_m h_{m+1,m} = \frac{|\tilde{\xi}_m|^2}{\lambda} + \frac{|h_{m+1,m}|^2}{\lambda} = \lambda = \frac{\bar{\tilde{\xi}}_m}{c_m}
+	\end{equation*}
+	Damit ergibt sich aus
+	\begin{equation*}
+y_m = R_m^{-1} g_m = \left( \begin{array}{cc} R_{m-1}^{-1} & -\frac{1}{\xi_m} R_{m-1}^{-1}z_m \\ 0 & \frac{1}{\xi_m} \end{array} \right) \left(\begin{array}{c} g_{m-1} \\ \gamma_m \end{array} \right)
+	\end{equation*}
+ unter Anwendung von $R_{m-1}^{-1} g_{m-1} = y_{m-1}$:
+	\begin{equation*}
+		y_m - \left(\begin{array}{c} y_{m-1} \\ 0 \end{array} \right) = \frac{\gamma_m}{\xi_m} \left( \begin{array}{c} -R_{m-1}^{-1} z_m \\ 1 \end{array} \right).
+	\end{equation*}
+	F"uhrt man die gleiche Rechnung f"ur $\tilde{y}_m, \tilde{\xi}_m, \tilde{\gamma}_m$ statt f"ur $y_m, \xi_m, \gamma_m$ aus, erh"alt man den "Ausdruck
+    \begin{equation*}
+		\tilde{y}_m - \left(\begin{array}{c} y_{m-1} \\ 0 \end{array} \right) = \frac{\tilde{\gamma}_m}{\tilde{\xi}_m} \left( \begin{array}{c} -R_{m-1}^{-1} z_m \\ 1 \end{array} \right),
+	\end{equation*}
+	woraus sich wegen $	\frac{\gamma_m}{\xi_m} = |c_m|^2 \frac{\tilde{\gamma}_m}{\tilde{\xi}_m}$ die Beziehung \eqref{eq:FOM-GMRES_connection} ergibt.
+\end{proof}
+
+Multipliziert man \eqref{eq:FOM-GMRES_connection} von links mit $V_{m+1}$ uind addiert $x^0$ erhält man für die Iterierten $x^m_{\gmres} - (1-|c_m|^2)x^{m-1}_{\gmres} = |c_m|^2 x_{\fom}$ und damit
+
+
+\begin{sa} Die FOM und GMRES-Residuen erfüllen (bei gleichem Startwert) die Beziehung
+\[
+r^k_{\gmres} = |c_m|^2 r_{\fom}^m + (1-|c_m|^2)r_{\gmres}^{m-1}.
+\]
+\end{sa}
+
+\begin{aufg} Zeige, dass auch gilt
+\[
+|r^m_{\gmres}\| = |c_m| \cdot \|r^m_{\fom}\| ,
+\]
+falls $c_m \neq 0$.
+\end{aufg}
+
+%Saad p. 188

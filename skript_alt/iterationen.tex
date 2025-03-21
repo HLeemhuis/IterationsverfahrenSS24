@@ -1,0 +1,216 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{ngerman,                                      % ngerman für neue dt. Rechtschreibung
+	         amssymb,                  
+                     theorem}                                        % statt amsthm 
+\usepackage{fancyhdr}                                      % fancyheadings ist obsolete
+\usepackage[sumlimits,intlimits,
+                     leqno]{amsmath}		   % links Nummern, Summen und Integrale in
+                                                                           % abgesetzte Fomeln mit oberen und unteren Grenzen ohne \limits
+\usepackage[latin1]{inputenc}                           % um ß und Umlaute direkt benutzen zu können
+\usepackage{epic,eepic}			   % Zum Malen
+\usepackage{color}				   % Für Farben
+\usepackage{graphicx}			   % besser als epsfig
+\usepackage{pstricks}
+\usepackage{hyperref}
+\usepackage{algorithmic}                                  % Algorithmen-Paket 						   
+\usepackage[boxed]{algorithm}
+\makeatletter 
+\providecommand*{\toclevel@algorithm}{0} 	   % bookmark-level setzen
+\makeatother 
+		   
+\usepackage{ifpdf}
+
+\setlength{\headheight}{15pt}		               % Kopfhöhe
+\setlength{\parindent}{0cm}		               % keinen Einzug
+\renewcommand{\headrulewidth}{0.4pt}	   % obere Liniendicke
+\lhead{\leftmark}				   % weitere Einstellungen für den Kopf-/Fußbereich
+\rhead{\today}
+
+
+
+\allowdisplaybreaks				   % Seitenumbruch in Formeln ermöglichen
+\numberwithin{equation}{section}		   % Gleichung in einer section zurücksetzen
+
+\theoremstyle{changebreak}			   % Umbruch nach Text und Nummer vorne
+
+\theorembodyfont{\rm} 			   % Aufrechtes setzen des Textes
+\newtheorem{defn}{Definition}[section]
+\newtheorem{bem}[defn]{Bemerkung}
+\newtheorem{bsp}[defn]{Beispiel}
+\newtheorem{alg}[defn]{Algorithmus}
+\newtheorem{lem}[defn]{Lemma}
+\newtheorem{his}[defn]{Hilfssatz}
+\newtheorem{sa}[defn]{Satz}
+\newtheorem{thm}[defn]{Theorem}
+\newtheorem{cor}[defn]{Korollar}
+\newtheorem{aufg}[defn]{Aufgabe}
+
+
+
+\newcommand{\nref}[1]{\ref{#1}}
+\newcommand{\sref}[1]{\textrm{\scriptsize \ref{#1} \normalsize}}
+\newcommand{\sgref}[1]{\textrm{(\scriptsize \ref{#1}) \normalsize}}
+\newcommand{\lr}{\longrightarrow}
+\newcommand{\ot}{\leftarrow}
+\newcommand{\eqnref}[1]{(\ref{#1})}
+\newcommand{\MathC}{\mathbb{C}}
+\newcommand{\dbaI}{\text{d"unnbesetzte approximierte Inverse }}
+\newenvironment{proof}{\textbf{Beweis: }}{\hfill $\Box$}
+
+\newenvironment{Blist}[1]%					
+    {\begin{list}{}{%
+         \renewcommand{\makelabel}[1]{##1:\hfil}%
+         \settowidth{\labelwidth}{#1:}%
+         \setlength{\leftmargin}{\labelwidth+\labelsep}}}%
+    {\end{list}}
+
+\newcommand{\knn}{\mathbb{K}^{n\times n}}
+\newcommand{\kmn}{\mathbb{K}^{m\times n}}
+\newcommand{\knm}{\mathbb{K}^{n\times m}}
+\newcommand{\rnn}{\mathbb{R}^{n\times n}}
+\newcommand{\rmn}{\mathbb{R}^{m\times n}}
+\newcommand{\rn}{\mathbb{R}^{n}}
+\newcommand{\cnn}{\mathbb{C}^{n\times n}}
+\newcommand{\cmn}{\mathbb{C}^{m\times n}}
+\newcommand{\cmm}{\mathbb{C}^{m\times m}}
+\newcommand{\cnm}{\mathbb{C}^{n\times m}}
+\newcommand{\cm}{\mathbb{C}^{m}}
+\newcommand{\co}{\mathbb{C}}
+\newcommand{\cn}{\mathbb{C}^{n}}
+\newcommand{\cN}{\mathbb{C}^{N}}
+\newcommand{\kn}{\mathbb{K}^{n}}
+\newcommand{\km}{\mathbb{K}^{m}}
+\newcommand{\limk}{\underset{k\to \infty}{\lim}}
+\newcommand{\limn}{\underset{n\to \infty}{\lim}}
+\newcommand{\limm}{\underset{m\to \infty}{\lim}}
+\newcommand{\re}{\textup{Re}}
+\newcommand{\im}{\textup{Im}}
+\newcommand{\rr}{\mathbb{R}}
+\renewcommand{\Leftrightarrow}{\Longleftrightarrow}		% sieht schöner aus
+
+\newcommand{\lmq}{\preceq}
+\newcommand{\lm}{\prec}
+\newcommand{\la}{\langle}
+\newcommand{\ra}{\rangle}
+%\newcommand{\vec}{{\rm vec}}
+
+
+\DeclareMathOperator{\cond}{cond}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\spek}{spek}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\spann}{span}
+
+\DeclareMathSymbol{\ordinaryl}{\mathalpha}{letters}{`l}		% erzeugt automatisch ein geschwungenes
+\begingroup								% l in der Mathematik-Umgebung
+\lccode`\~=`\l
+\lowercase{\gdef ~{\ifnum\the\mathgroup=-1 \ell \else \ordinaryl \fi}}
+\endgroup
+\mathcode `\l="8000
+
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{3}
+
+
+% zusaetzliche Makros von H. Fritzsche
+\makeatletter
+\newcommand{\ANA@delimeterd}[5][]{%
+  {%
+    \def\DFMATH@delimetersize{#1}%
+    \ifx\DFMATH@delimetersize\@empty
+      \def\DFMATH@LeftDelimiter{\left#3}%
+      \def\DFMATH@MiddleDelimiter{\,\middle#4\,}%
+      \def\DFMATH@RightDelimiter{\right#5}%
+    \else
+      \def\DFMATH@LeftDelimiter{\csname #1l\endcsname#3}%
+      \def\DFMATH@MiddleDelimiter{\csname #1m\endcsname#4}%
+      \def\DFMATH@RightDelimiter{\csname #1r\endcsname#5}%
+    \fi
+    \DFMATH@LeftDelimiter #2\DFMATH@RightDelimiter
+  }%
+}
+\let\normall=\relax
+\let\normalr=\relax
+\let\normalm=\relax
+
+\newcommand{\norm}[2][]{%
+  {%
+    \def\DFMATH@normsize{#2}%
+    \ifx\DFMATH@normsize\@empty \def\DFMATH@normsize{\cdot}\fi
+    \ANA@delimeterd[#1]{\DFMATH@normsize}{\lVert}{}{\rVert}%
+  }%
+}
+\newcommand{\abs}[2][]{%
+  {%
+    \def\DFMATH@abssize{#2}%
+    \ifx\DFMATH@abssize\@empty
+      \def\DFMATH@abssize{\cdot}%
+    \fi
+    \ANA@delimeterd[#1]{\DFMATH@abssize}{\lvert}{}{\rvert}%
+  }%
+}
+
+\makeatother
+
+
+
+\begin{document}
+\pagenumbering{roman}
+\pdfbookmark{Titelseite}{Titels}
+\begin{titlepage}
+ \begin{center}
+  \Huge \textsc{Iterationsverfahren} 
+
+  \bigskip
+
+  \Large \textsc{}
+
+  \vspace*{1.3cm}
+
+  \large Prof. Dr. Andreas Frommer
+
+  \vspace*{1.2cm}
+
+\includegraphics{lion}  
+
+\vspace*{1.2cm}
+
+  Sommersemester 2015
+
+
+  \vfill
+  Bergische Universit"at Wuppertal
+
+  Fachbereich Mathematik
+ \end{center}
+\end{titlepage}
+
+
+\tableofcontents
+\pagenumbering{arabic}
+\clearpage
+\pagestyle{fancy}
+
+\include{kap01}
+\include{kap02}
+\include{kap03}
+\include{kap04}
+\include{kap05}
+\include{kap06}
+\include{kap07}
+\include{kap08}
+\include{kap09}
+\include{kap10}
+\include{kap11neu}
+\include{kap12}
+\include{kap13}
+\include{kap14}
+\include{kap15}
+\include{kap16}
+
+\appendix
+
+\include{loesungs_versuche}
+%\include{aufgabe7.8}
+\end{document}

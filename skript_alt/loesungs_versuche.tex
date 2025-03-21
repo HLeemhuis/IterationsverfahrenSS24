@@ -1,0 +1,96 @@
+\section{Lösungs-Versuche}
+
+\begin{aufg}
+Finde ausgehend von Satz \nref{Minmaxkreis_sa} die L"osung von
+\[
+\underset{p_m\in \overline{\Pi}_m,}{\min}\ \underset{\lambda\in D(\gamma,\rho)}{\max}|p_m(\lambda)|.
+\]
+\end{aufg}
+\textbf{Antwort:}
+$p_m(z)=\frac{(z+\gamma)^m}{\gamma^m}$, wie man leicht mittels linearer Transformation $z\mapsto z-\gamma$
+aus Satz \ref{Minmaxkreis_sa} einsieht.
+
+
+\begin{aufg}
+Bestimme jeweils die (im Sinne von Satz \nref{cmschranke_sa}) asymptotisch optimale Lösung der MinMax-Aufgabe
+\[
+\underset{p_m \in \overline{\Pi}_m }{\min} \quad \underset{\lambda \in E}{\max} |p(\lambda)|
+\]
+und den zugehörigen Wert des Minimums für die Fälle:
+\begin{enumerate}
+\item $E = a + bE_{\rho}$, wobei $a,b > 0$ und $ a - b\cdot \frac{1}{2}(\rho+1/\rho)  > 0 $
+\begin{center}
+\begin{picture}(200,100)
+\put(150,50){\ellipse{80}{40}}
+\put(150,30){\line(0,1){40}}
+\put(0,50){\vector(1,0){200}}
+\put(100,0){\vector(0,1){100}}
+\end{picture}
+\end{center}
+
+\item $E = a+be^{i\frac{\pi}{2}}E_{\rho}$, wobei $a,b > 0$ und $ a - b \cdot \frac{1}{2}(\rho-1/\rho) > 0 $
+\begin{center}
+\begin{picture}(200,100)
+\put(150,50){\ellipse{40}{80}}
+\put(150,10){\line(0,1){80}}
+\put(0,50){\vector(1,0){200}}
+\put(100,0){\vector(0,1){100}}
+\end{picture}
+\end{center}
+
+\item $E_\rho$ ist Geradenstück parallel zur reellen Achse von $-a$ bis $+a$ mit Achsenabschnitt b auf der imaginären Achse
+\begin{center}
+\begin{picture}(200,100)
+\put(70,70){\line(1,0){60}}
+\put(61,58){$-a$}
+\put(121,58){$+a$}
+
+\put(0,50){\vector(1,0){200}}
+\put(100,0){\vector(0,1){100}}
+\end{picture}
+\end{center}
+Sind in diesem Fall die Polynom auch optimal f"ur endliches $m$? 
+\end{enumerate}
+\end{aufg}
+\textbf{Antwort:}
+\begin{Blist}{1. und 2.}
+\item[1. und 2.] wurden mit den Tschebyscheff-Polynomen behandelt.
+\item[3.]
+\end{Blist}
+
+\begin{aufg}
+Sei $A \neq A^H$, aber mit einer der folgenden speziellen Eigenschaften:
+\begin{enumerate}
+\item $A^H = \overline{A} \in \cnn$ (z.B. bei der Diskretisierung der Maxwell-Gleichungen in der Elektrodynamik)
+\item $A^HJ = J^HA,\ J \in \cnn,\ J=J^H$ (man nennt $A$ dann auch {\em 
+$J$-hermitesch})
+\item $A^TJ = J^TA,\ J \in \cnn$ (man nennt $A$ dann auch {\em $J$-symmetrisch})
+\end{enumerate}
+Zeige jeweils: Für geeignete Wahl von $\tilde{r}^0$ (bzw. $w^0$) kann man den unsymmetrischen Lanczos-Prozess mit nur einer MVM mit $A$
+(und eventuell einer zusätzlichen mit $J$) durchführen 
+(dies überträgt sich dann auch auf BiCG).
+\end{aufg}
+\begin{proof}
+\begin{enumerate}
+\item 
+\[
+AV^m = V^{m+1} T_{m+1,m} \quad \text{und} \quad A^H W^m = W^{m+1} \overline{T}_{m+1,m}
+\]
+$\Longrightarrow A \overline{W}^m = \overline{W}^{m+1} T_{m+1,m}$. Wähle also $w^0 = \overline{v}^0$, dann gilt: $w^m = \overline{v}^m \forall m$
+\item
+\[
+AV^m = V^{m+1} T_{m+1,m} \quad \text{und} \quad A^H W^m = W^{m+1} \overline{T}_{m+1,m}
+\]
+Ansatz: $w^i = Jv^i$, dann gilt: \[A^H W_m = A^H J V_m = J A V_m = \underbrace{J V_{m+1}}_{=W_{m+1}}T_{m+1,m}.\] 
+Es muß also gelten das $T_{m+1,m} \in \mathbb{R}^{(m+1) \times m }$
+\[
+\alpha_m = \langle A v^m, w^m \rangle = \langle A v^m, J v^m \rangle = \langle J^H A v^m, v^m \rangle \in \mathbb{R}
+\]
+denn: $(J^H A)^H = A^H J=JA=J^HA$
+\[
+\delta_m = \langle \overline{v}^m, \overline{w}^m \rangle = \langle \overline{v}^m, J \overline{v}^m \rangle \in \mathbb{R}
+\]
+da $J=J^H$
+\item analog zu 2 mit dem Ansatz: $w^i = \overline{J v^i}$
+\end{enumerate}
+\end{proof}

@@ -1,0 +1,59 @@
+
+\begin{aufg}
+Sei $A \neq A^H$, aber mit einer der folgenden speziellen Eigenschaften:
+\begin{enumerate}
+\item $A^H = \overline{A} \in \cnn$ (z.B. bei der Diskretisierung der Maxwell-Gleichungen in der Elektrodynamik)
+\item $A^HJ = JA,\ J \in \cnn,\ J=J^H$ (man nennt $A$ dann auch {\em 
+$J$-hermitesch})
+\item $A^TJ = JA,\ J \in \cnn$ (man nennt $A$ dann auch {\em $J$-symmetrisch})
+\end{enumerate}
+Zeige jeweils: F"ur geeignete Wahl von $\tilde{r}^0$ (bzw. $w^0$) kann man den unsymmetrischen Lanczos-Prozess mit nur einer MVM mit $A$
+(und eventuell einer zus"atzlichen mit $J$) durchf"uhren 
+(dies übertr"agt sich dann auch auf BiCG).
+\end{aufg}
+\begin{proof}
+\begin{itemize}
+  \item[1.:] \begin{align*} \begin{array}{rccc}
+			& AV^m &=& V^{m+1}T_{m+1,m} \\
+			& A^HW^m &=& W^{m+1}\overline{T}_{m+1,m} \\
+			\Rightarrow & \underbrace{A^T}_{=A}\overline{W}^m &=& \overline{W}^{m+1}T_{m+1,m}
+		\end{array} \end{align*}
+		W"ahlt man also: $w^0=\overline{v}^0$ gilt $w^m=\overline v^m$ $\forall$ m.
+  \item[2.:] Es gilt
+		\begin{align*} \begin{array}{ccccccc}
+			JAV^m &=& JV^{m+1}T_{m+1,m} &\Leftrightarrow & A^HJV^m &=& JV^{m+1}T_{m+1,m} 
+		\end{array} \end{align*}
+		W"ahlt man $w^0=Jv^0$, so gilt $w^m=Jv^m$ $\forall$ m, falls $T_{m+1,m}=\overline T_{m+1,m}$.
+		\begin{align*} \begin{array}{ccc}
+			\alpha_i &=& \langle Av^i,w^i \rangle \\
+				   &=& \langle Av^i,Jv^i \rangle \\
+				   &=& \langle v^i,A^HJv^i \rangle \\
+				   &=& \langle v^i,JAv^i \rangle \\
+				   &=& \langle Jv^i,Av^i \rangle \\
+				   &=& \overline \alpha_i 
+		\end{array} \end{align*}
+		Zeige per Induktion, dass $\delta_i=\overline\delta_i$ $\forall i$.
+ 		\begin{itemize}
+               \item[i=1 :] \begin{align*}
+					\delta_1^2=\langle r,\tilde r \rangle = \langle r,Jr\rangle = \langle Jr,r\rangle
+						= \overline\delta_1^2 
+            		    \end{align*}	
+		   \item[i $\curvearrowright$ i+1:]	\begin{align*} \begin{array}{ccl}
+					\delta_{i+1}^2 &=& \langle \tilde v^{i+1},\tilde w^{i+1} \rangle \\
+						&=& \langle \tilde v^{i+1}, A^Hw^i-\overline\alpha_iw^i-\overline\delta_iw^{i-1} \rangle \\
+						&=& \langle \tilde v^{i+1}, A^HJv^i-\alpha_iJv^i-\delta_iJv^{i-1} \rangle \\
+						&=& \langle Av^i-\alpha_iv^i-\delta_iv^{i-1} , JAv^i-\alpha_iJv^i-\delta_iJv^{i-1} \rangle \\
+						&=& \langle \tilde v^{i+1}, J\tilde v^{i+1} \rangle \\
+						&=& \langle J\tilde v^{i+1}, \tilde v^{i+1} \rangle \\
+						&=& \overline\delta_{i+1}^2
+				\end{array} \end{align*}
+		\end{itemize}
+  \item[3.:] Es gilt
+		\begin{align*} \begin{array}{ccccccc}
+			JAV^m &=& JV^{m+1}T_{m+1,m}  &\Leftrightarrow & A^TJV^m &=& JV^{m+1}T_{m+1,m}  \\
+			&&&\Leftrightarrow & \overline A^HJV^m &=& JV^{m+1}T_{m+1,m}  \\
+			&&&\Leftrightarrow & A^H\overline J\overline V^m &=& \overline J\overline V^{m+1} \overline T_{m+1,m} 
+		\end{array} \end{align*}
+		W"ahlt man $w^0=\overline J\overline v^0$, so gilt $w^m=\overline J\overline v^m$ $\forall$ m.
+\end{itemize}
+\end{proof}

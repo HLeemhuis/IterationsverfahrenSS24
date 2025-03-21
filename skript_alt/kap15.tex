@@ -1,0 +1,339 @@
+\section[Analyse f\"ur Modellproblem I]{Analyse des Zweigitterverfahrens für Modellproblem I}
+
+Die Iteration des Zweigitterverfahrens ist gegeben durch
+\[
+y^k = S_{\nu, \omega }(x^k),
+\]
+\[
+x^{k+1} = y^k + P \hat{A}^{-1}R(b - A y^k ).
+\]
+
+Damit gilt für die Fehler $e^k = x^k - x^*$ mit $x^* = A^{-1} b$:
+\[
+e^{k+1} = J_{\omega}^{\nu} e^k - P \hat{A}^{-1} R A J_{\omega}^{\nu}e^k
+\]
+mit $J_{\omega}$ Jacobi-Glätter wie früher, d.h. $J_{\omega} = (1- \omega) I + \omega D^{-1}B$. Wir m\"ussen
+ also folgenden Spektralradius untersuchen:
+\[
+\rho( (I - P \hat{A}^{-1} R A ) J_{\omega}^{\nu} ).
+\]
+
+Wir verwenden dazu die folgende Faktorisierung
+\[
+(I - P \hat{A}^{-1} R A ) J_{\omega}^{\nu} = ( A^{-1} - P \hat{A}^{-1} R ) ( A J_{\omega}^{\nu} ).
+\]
+Wir starten mit $A J_{\omega}^{\nu}$, $\omega = \frac45$. $AJ_{\omega}^{\nu}$ besitzt die Eigenvektoren $z^{(k,l)}$ mit den zugehörigen Eigenwerten
+\[
+\mu_{\omega}^{(k,l)} := \left[ 4 - 2 (\cos( \pi h k) + \cos(\pi h l)) \right] \left[\dfrac{\omega}{2} ( \cos(\pi k h) + \cos(\pi l h) ) + (1- \omega) \right]^{\nu}.
+\]
+
+Man kann $| \mu_{\omega}^{(k,l)} |$ nach oben absch\"atzen durch Kurvendiskussion der Funktion
+$f(t) = (4-2t)\cdot \left[\dfrac{\omega}{2}t + (1- \omega) \right]^{\nu}$ auf dem Intervall $[-2,2]$.
+Es ist $f(-2) = 8 \cdot (1-2\omega)^\nu$, $f(2) = 0$, und $f$ besitzt an der Stelle
+$(2\omega \nu - 2(1-\omega))/(\omega(1+\nu))$ ein Extremum mit Wert
+$(4/\omega) \cdot \nu^\nu/(\nu+1)^{\nu + 1}$. Damit erhalten wir
+
+\begin{lem} \label{smooth_lem}
+F\"ur $\omega = \frac{4}{5}$ und f\"ur $\nu = 1,2$ ist
+\[
+\| A J_{\omega}^{\nu} \|_2 \leq 8 \cdot \left( \frac{3}{5} \right)^\nu \approx \|A\|_2 \cdot \left( \frac{3}{5} \right)^\nu,
+\]
+f\"ur $\nu \geq 3$ ist
+\[
+\| A J_{\omega}^{\nu} \|_2 \leq 5 \cdot \frac{\nu^\nu}{(\nu+1)^{\nu+1}} \approx \|A\|_2 \cdot \frac{5}{8} \cdot \frac{\nu^\nu}{(\nu+1)^{\nu+1}}
+\]
+\end{lem}
+Diese Aussage ist unabh\"angig von der Gittergr\"o"se. Die Schranke wird beliebig klein, wenn man $\nu$ gro"s genug macht.
+
+
+Jetzt untersuchen wir $A^{-1} - P \hat{A} ^{-1} R$. Dafür betrachten wir zuerst $P \hat{A} ^{-1} R z^{(k,l)}$. Es gilt
+\[
+R z^{(k,l)} =\frac{1}{16} \cdot \left]\begin{array}{ccc}
+1 & 2 & 1\\
+2 & 4 &2\\
+1 & 2 &1 \end{array}\right[ z^{(k,l)},\quad
+\]
+d.h.
+\begin{eqnarray*}
+y_{i,j}^{(k,l)} &=& \frac{1}{4} z^{(k,l)}_{2i,2j} + \frac{1}{8}\cdot \left(z^{(k,l)}_{2i-1,2j} +z^{(k,l)}_{2i+1,2j}+z^{(k,l)}_{2i,2j-1}+z^{(k,l)}_{2i,2j+1}\right) \\
+                         &  & \mbox{} + \frac{1}{16} \left(z^{(k,l)}_{2i-1,2j-1} +z^{(k,l)}_{2i-1,2j+1}+z^{(k,l)}_{2i+1,2j-1}+z^{(k,l)}_{2i+1,2j+1}\right).
+\end{eqnarray*}
+
+Jetzt ist unser Ziel
+\[
+(A^{-1}-P\hat A^{-1} R)z^{(k,l)}
+\]
+in einer noch nicht näher spezifizierten Norm abzuschätzen. Dabei ist
+\[
+z_{i,j}^{(k,l)}=\sin(ik\pi h)\sin(jl\pi h).
+\]
+Wir betrachten zunächst $P\hat A^{-1} R z^{(k,l)}$ näher. Setzen wir
+\[
+\hat z^{(k,l)}=Rz^{(k,l)},
+\]
+so gilt
+\begin{align*}
+\hat z^{(k,l)}_{ij}&=\sin(2ik\pi  h)\sin(2jl\pi h)\underbrace{\frac{1}{4}[1+\cos(k\pi h)][1+\cos(l\pi h)]}_{=:\tau_{k,l}}\\
+&=\tau_{k,l}\sin (ik\pi \hat h)\sin(jl\pi\hat h) \\
+&=\tau_{k,l}\hat z^{(k,l)}_{ij} \quad (k,l \bmod \hat{n}),
+\end{align*}
+denn
+\[
+\sin((2i-1)k\pi h)+2\sin(2ik\pi h)+\sin((2i+1)k\pi h)=2 \cdot \sin(2 ik\pi h) [1+\cos(k\pi h)].
+\]
+Mit
+\begin{align*}
+\hat y^{(k,l)}&=\hat A^{-1} \hat z^{(k,l)}\\
+&=\underbrace{\frac{1}{4-2[\cos(\pi \hat h k)+\cos(\pi \hat h l)]}}_{=:\sigma_{k,l}}\cdot \hat z^{(k,l)}
+\end{align*}
+ergibt sich f\"ur $y^{(k,l)} = P\hat y^{(k,l)}$
+komponentenweise
+\begin{align*}
+y^{(k,l)}_{2i,2j}&=\hat y_{i,j}^{(k,l)},\\
+y^{(k,l)}_{2i-1,2j}&=\frac{1}{2}\left(\hat y_{i-1,j}^{(k,l)}+\hat y_{i,j}^{(k,l)} \right),\\
+\vdots\;\\
+y^{(k,l)}_{2i-1,2j-1}&=\frac{1}{4}\left(\hat y_{i-1,j}^{(k,l)}+\hat y_{i,j}^{(k,l)}+\hat y_{i,j-1}^{(k,l)}+\hat y_{i-1,j-1}^{(k,l)} \right).
+\end{align*}
+Insgesamt erhalten wir so
+\begin{align*}
+y^{(k,l)}_{2i,2j}&=\sigma_{k,l}\tau_{k,l}\sin(2ik\pi h)\sin(2jl\pi h)\\
+y^{(k,l)}_{2i-1,2j}&=\sigma_{k,l}\tau_{k,l}\sin((2i-1)k\pi h)\cos(l\pi h)\\
+\vdots\;\\
+y^{(k,l)}_{2i-1,2j-1}&=\sigma_{k,l}\tau_{k,l}\cos(k\pi h)\cos(l\pi h)\sin((2j-1)l\pi h)\sin((2i-1)kl\pi h).
+\end{align*}
+Wir wissen außerdem
+\[
+A^{-1}z^{(k,l)}=\frac{1}{4-[\cos(k\pi h)+\cos(l\pi h)]}z^{(k,l)}.
+\]
+Damit können wir die Differenz
+\[
+A^{-1}z^{(k,l)}-P\hat A^{-1} Rz^{(k,l)}
+\]
+betrachten. Wir setzen
+\[
+\zeta_{i,j}^{(k,l)}:=\begin{cases}
+1&i,j\text{ gerade}\\
+\cos(k\pi h)&i\text{ ungerade, }j\text{ gerade}\\
+\cos(l\pi h)&i\text{ gerade, }j\text{ ungerade}\\
+\cos(k\pi h)\cos(l\pi h)&i\text{ ungerade, }j\text{ ungerade}.
+\end{cases}
+\]
+Es gilt also
+\begin{equation}\label{Mehrgitter_abschaetz_eq}
+(A^{-1}-P\hat A^{-1} R)z^{(k,l)}
+	=\left(\frac{1}{4-2[\cos(k\pi h)+\cos(l\pi h)]}-\chi_{i,j}^{(k,l)} \right)z^{(k,l)}
+\end{equation}
+mit
+\[
+\chi_{i,j}^{(k,l)}=\sigma_{k,l}\tau_{k,l}\zeta_{i,j}^{(k,l)}.
+\]
+Für eine Abschätzung
+\[
+	\|A^{-1}-P\hat A^{-1}R\|_2 \le C
+\]
+unabhängig von $h$ gen\"ugt es, wenn wir f\"ur alle Eigenvektoren $z^{(k,l)}$ zeigen k\"onnen, dass
+\[
+      \left\| \left( A^{-1}-P\hat A^{-1}R \right) z^{(k,l)} \right\|_2 \le C \| z^{(k,l)}\|_2.
+ \]
+Der interessante Bereich sind dabei die Eigenvektoren zu {\em kleinen} Eigenwerten von $A$ (sind die gro"sen von
+$A^{-1}$).
+Wir diskutieren also
+\begin{align*}
+\frac{1}{4-2[\cos(k\pi h)+\cos(l\pi h)]}-\chi_{i,j}^{(k,l)} \hspace*{-4cm} \\
+	&=\frac{1}{4-2[\cos(k\pi h)+\cos(l\pi h)]}-\sigma_{k,l}\tau_{k,l}\zeta_{i,j}^{(k,l)}\\
+	&=\frac{1}{4-2[\cos(k\pi h)+\cos(l\pi h)]}\\
+	& \hspace*{4cm} -\frac{\frac{1}{4}[1+\cos(k\pi h)][1+\cos(l\pi h)]}{4-2[\cos(k\pi h)+\cos(l\pi h)]} \zeta_{i,j}^{(k,l)}
+\end{align*}
+Für $k,l$ klein ist $k\pi h\ll 1$ und $l\pi h\ll 1$ und damit
+\begin{align*}
+4-2[\cos(k\pi h)+\cos(l\pi h)]&=(k\pi h)^2+(l\pi h)^2+\mathcal{O}(h^4)\\
+[1+\cos(k\pi h)][1+\cos(lk\pi h)]&=4-(k\pi h)^2-(l\pi h)^2+\mathcal{O}(h^4)
+\end{align*}
+Damit ergibt sich
+\begin{align*}
+\frac{1}{4-2[\cos(k\pi h)+\cos(l\pi h)]}
+	-\frac{\frac{1}{4}[1+\cos(k\pi h)][1+\cos(l\pi h)]}{4-2[\cos(k\pi h)+\cos(l\pi h)]} \zeta_{i,j}^{(k,l)}\hspace*{-8cm}\\
+&=\left(\frac{1}{(k\pi h)^2+(l\pi h)^2+\mathcal{O}(h^4)}\right.\\
+	&\left. \hspace*{2cm}  -\frac{1-\frac{1}{4}(k\pi h)^2-\frac{1}{4}(l\pi h)^2+\mathcal{O}(h^4)}{(k\pi h)^2+(l\pi h)^2+\mathcal{O}(h^4)}\zeta_{i,j}^{(k,l)} \right)\\
+&=\frac{1}{4}+\mathcal{O}(h^2) .
+\end{align*}
+Wegen $\|A \| \approx 8/h^2$ haben wir motiviert (wenn auch nicht streng gezeigt):
+\begin{lem} \label{investimate_lem}
+Es ist
+\[
+	\|A^{-1}-P\hat A^{-1}R\|_2\le \frac{C}{\|A\|_2}
+\]
+mit einer von der Gitterweite $h$ unabhängigen, kleinen Konstanten $C$.
+\end{lem}
+
+Setzen wir die Ergebnisse von Lemma~\ref{smooth_lem} und \ref{investimate_lem} zusammen, so erhalten wir:
+\begin{sa} \label{zgkonv_th}
+F\"ur das Modellproblem I gilt unabh\"angig von der Gittergr\"o"se die folgende
+Absch\"atzung f\"ur den Iterationsoperator des Zweigitterverfahrens ($\omega = 4/5$)
+\[
+\| (I-P\hat{A}^{-1}RA)S_{\nu,\omega} \|_2  \leq C \cdot \max \left\{ \left( \frac{3}{5} \right)^\nu, \frac{5}{8} \cdot \frac{\nu^\nu}{(\nu+1)^{\nu+1}} \right\}.
+\]
+\end{sa}
+Gen\"ugend gro"ses $\nu$ erzeugt also Konvergenz. (Tats\"achlich gen\"ugt $\nu = 1$, aber das sieht man hier nicht.)
+
+
+Zur Vorbereitung einer Zweigitter-Analyse f\"ur allgemeinere Probleme
+behandeln wir noch eine alternative Betrachtungsweise für die Glättung. Dazu
+nehmen wir statt des Jacobi-Verfahrens das (relaxierte) Richardson-Verfahren 1. Ordnung.
+\begin{lem}
+Sei $X\in\mathbb{C}^{n\times n}$ hpd und $0\preceq X\preceq I$. Sei $\omega > 0 $ fest und betrachte
+in Abh\"angigkeit von $\nu$
+\[
+	\|X(I- X)^\nu)\|=\eta(\nu).
+\]
+Dann gilt
+\[
+	\eta(\nu)=\frac{\nu^\nu}{(\nu+1)^{\nu+1}}.
+\]
+\end{lem}
+\begin{proof}
+Wegen $0\preceq X\preceq I$, ist $\text{spek}(X)\subset [0,1]$. Da $X(1-X)^\nu$ hermitesch ist, gilt
+\[
+	\|X-(1-X)^\nu\|_2=\underset{\lambda\in\text{spek}(X)}{\max}|\lambda(1-\lambda)^\nu|=\eta(\nu).
+\]
+Eindimensionale Kurvendiskussion für $f(\lambda)=\lambda(1-\lambda)^\nu$ liefert
+\[
+	f'(\lambda)=(1-\lambda)^\nu-\nu\cdot\lambda(1-\lambda)^{\nu-1}.
+\]
+Also ist
+\[
+	\eta(\nu)=\max\left\{	|f(0)|,|f(1)|,f\left(\frac{1}{\nu+1} \right)	\right\}
+\]
+mit $f(0)=f(1)=0$ und $f\left(\frac{1}{\nu+1} \right)=\frac{\nu^\nu}{(\nu+1)^{\nu+1}}$.
+\end{proof}
+
+\begin{bem}Mit der Stirlingschen Formel ergibt sich
+\[
+	\eta(\nu)=\frac{1}{\text{e}\cdot \nu}+\mathcal{O}(\nu^{-2}).
+\]
+\end{bem}
+
+
+\textbf{Anwendung}: Gl\"attung durch Richardson-Verfahren, d.h. es gilt die Zerlegung
+\begin{equation*}
+  A = I-(I-A).
+\end{equation*}
+Die Iteration des (relaxierten) Richardson-Verfahrens ist gegeben durch
+\begin{equation*}
+  x^{k+1} = (I-\omega A)x^k + \omega b.
+\end{equation*}
+$\nu$ Gl\"attungs-Schritte entsprechen einer Matrix
+\begin{equation*}
+  (I-\omega A)^\nu =: S_{\omega,\nu}
+  \qquad
+  \text{Gl\"atter.}
+\end{equation*}
+Verwenden wir $X=\omega A$, so m\"ussen wir
+\begin{equation*}
+  \norm[big]{AS_{\omega,\nu}}
+  =
+  \norm[big]{\frac{1}{\omega}X(I-X)^\nu}
+  =
+  \frac{1}{\omega}\norm[big]{X(I-X)^\nu}
+\end{equation*}
+untersuchen. Wann gilt
+\begin{equation*}
+  0 \preceq X \preceq I
+  \iff
+  0 \preceq \omega A \preceq I~?
+\end{equation*}
+
+\begin{lem} \label{smooth2_lem}
+  \begin{enumerate}
+  \item Sei $A$ hpd. Dann gilt $0\preceq \omega A\preceq I$ f\"ur
+    $\omega\in(0,\frac{1}{\rho(A)}]$ sowie
+    \begin{equation*}
+      \norm{AS_{\omega,\nu}}
+      \leq
+      \frac{1}{\omega} \frac{\nu^\nu}{(\nu+1)^{\nu+1}}.
+    \end{equation*}
+  \item Sei $A$ speziell die Matrix des Modellproblems~I, d.h. 
+    $\tilde{A}= \frac{1}{4}A$ (so dass $\diag(\tilde{A})=I$,
+    $\spek(\tilde{A})\subseteq(0,2)$).  Dann gilt $0\preceq \omega
+    \tilde{A}\preceq I$ f\"ur $\omega\in(0,\frac{1}{2}]$ und damit
+    \begin{equation*}
+      \norm{\tilde{A}S_{\omega,\nu}}
+      \leq
+      \frac{1}{\omega} \frac{\nu^\nu}{(\nu+1)^{\nu+1}}.
+    \end{equation*}
+  \end{enumerate}
+\end{lem}
+
+\begin{bem}
+  Relaxierter Richardson f\"ur $\tilde{A}$ bei Modellproblem~I ist
+  identisch mit relaxiertem Jacobi f\"ur $A$ und es ist
+  $\norm{\tilde{A}S_{\omega,\nu}}=\frac{1}{4}\norm{AS_{\omega,\nu}}$.
+\end{bem}
+
+\begin{cor}
+  F\"ur das Zweigitterverfahren beim Modellproblem~I mit $\omega = 1/2$ gilt die
+  Absch\"atzung
+  \begin{equation*}
+     \norm[big]{(I-P\hat A^{-1}RA)S_{\omega,\nu}}_2
+    \leq
+    2 \cdot C\frac{\nu^\nu}{(\nu+1)^{\nu+1}}
+  \end{equation*}
+  mit $C$ aus Lemma~\ref{investimate_lem}.
+\end{cor}
+
+\begin{proof}
+  \begin{equation*}
+    e^{k+1}
+    =
+    \bigl( (I-P\hat A^{-1}RA)S_{\omega,\nu} \bigr)e^k
+  \end{equation*}
+  mit
+  \begin{equation*}
+    (I-P\hat A^{-1}RA)S_{\omega,\nu}
+    =
+    (A^{-1}-P\hat A^{-1}R)AS_{\omega,\nu}
+  \end{equation*}
+  und damit
+  \begin{equation*}
+    \norm[big]{(I-P\hat A^{-1}RA)S_{\omega,\nu}}_2
+    =
+    \norm[big]{(A^{-1}-P\hat A^{-1}R)}_2
+    \norm[big]{AS_{\omega,\nu}}_2
+    .
+  \end{equation*}
+  Wir wissen f\"ur $\omega=\frac{1}{2}$, relaxierter Jacobi-Gl\"atter
+  \begin{align*}
+    \frac{1}{4}\norm{AS_{\omega,\nu}}_2
+    &\leq
+    2 \frac{\nu^\nu}{(\nu+1)^{\nu+1}} \\
+    \iff
+    \norm{AS_{\omega,\nu}}_2
+    &\leq
+     8  \frac{\nu^\nu}{(\nu+1)^{\nu+1}} \\
+    &\leq
+    C \cdot \norm{A}_2 \frac{\nu^\nu}{(\nu+1)^{\nu+1}}
+  \end{align*}
+  mit $\norm{A}_2=\bigl(4+4\cos(\pi h)\bigr)\approx 8 $,
+  d.h.\ $1\leq C\leq2$.
+
+  Mit Lemma~\ref{investimate_lem} gilt
+  \begin{equation*}
+    \norm[big]{A^{-1}-P\hat A^{-1}R}_2
+    \leq
+    \frac{C}{\norm{A}_2}.
+  \end{equation*}
+  Damit gilt
+  \begin{equation*}
+    \norm[big]{(I-P\hat A^{-1}RA)S_{\omega,\nu}}_2
+    \leq
+    2C\cdot \frac{\nu^\nu}{(\nu+1)^{\nu+1}}.
+  \end{equation*}
+\end{proof}
+
+Damit haben wir ein Analogon zu  Satz~\ref{zgkonv_th}, diesmal f\"ur $\omega = 1/2$.
+\begin{cor}
+  Das Zweigitterverfahren konvergiert mit $\omega = 1/2$, falls $\nu$ gro\ss{} genug ist.
+\end{cor}
+
+ Tats\"achlich gen\"ugt $\nu=1$, \emph{unabh\"angig von $h$}!  Dies
+  kann man auch auf \emph{Mehrgitter} \"ubertragen.

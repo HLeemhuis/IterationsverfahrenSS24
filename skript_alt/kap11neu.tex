@@ -1,0 +1,483 @@
+% Dieses Kapitel habe ich im Sommer 2007 neu geschrieben,
+% weil mit dem Paper von Liessen, Faber und Tichy nun ein besserer
+% Beweis fr den Faber-Manteuffel-Satz vorliegt
+%
+% Andreas Frommer, 22.6.2007
+
+
+\newcommand{\kernel}{\mbox{Kern}}
+\section{Minimales Residuum vs kurze Rekursion}
+
+Das zentrale Resultat dieses Kapitels ist der Satz von Faber und Manteuffel,
+Satz~\ref{faber:sa}. Zur Vorbereitung wiederholen wir ein paar 
+Tatsachen "uber lineare Operatoren auf endlich-dimensionalen R"aumen, wie man sie aus
+den Anf"angervorlesungen zur Linearen Algebra kennt. $A$ bezeichnet einen 
+linearen Operator auf einem solchen Raum $V$ "uber $\MathC$, der mit einem Innenprodukt
+$\langle \cdot, \cdot \rangle$ ausgestattet ist.
+
+\begin{defn} 
+ Die Adjungierte $A^*$ zu $A$ bez"uglich $\langle \cdot , \cdot \rangle$ ist die Matrix mit
+\[
+ \langle Ax , y  \rangle = \langle x, A^*y\rangle \quad \forall \; x,y \in V.
+\]
+\end{defn}
+
+\begin{lem} \label{normal_eq:lem}
+Die folgenden Bedingungen sind "aquivalent:
+\begin{itemize}
+ \item[(i)] $AA^* =  A^*A $,
+ \item[(ii)] $V$ besitzt eine Orthonormalbasis aus Eigenvektoren $q_i$ von $A$ (zu Eigenwerten $\lambda_i$),
+ \item[(iii)] $A^*=p(A), \quad p \in \Pi_{n-1}$, wobei $n = \dim(V)$.
+\end{itemize}
+\end{lem}
+\begin{proof}
+ (i) $\Leftrightarrow$ (ii) ist bekannt aus LA.
+
+ (ii) $\Longrightarrow$ (iii): Aus $\langle q_j, A^*q_i \rangle = \langle Aq_j, q_i \rangle 
+  = \lambda_j \delta_{ij}$ folgt $A^*q_i = \overline{\lambda}_i q_i$.
+ Daraus folgt $A^* = p(A)$, wobei $p$ das Polynom aus
+$\Pi_k$ ist mit $p(\lambda_i)=\overline{\lambda_i}, \quad i=1, \dots,k$. Dabei sind  $\lambda_1,\dots,\lambda_k$ die {\em verschiedenen}
+Eigenwerte von $A$.
+
+ (iii) $\Longrightarrow$ (i): trivial.
+\end{proof}
+%
+
+\begin{defn} 
+Ein linearer Operator, der eine der drei Bedingungen aus Lemma~\ref{normal_eq:lem}
+erf"ullt, hei"st {\em normal}. $A$ hei"st {\em $s$-normal} ($s \in \mathbb{N}, s < \dim(V)$), falls 
+$s$ der kleinste Grad von allen Polynomen ist, die 
+Lemma~\ref{normal_eq:lem} (iii) erf"ullen.
+\end{defn}
+\medskip
+
+Beispiel: $A$ selbstadjungiert $\Rightarrow$ $A$ ist 1-normal.
+\medskip
+
+\begin{aufg} Charakterisiere alle 1-normalen Operatoren.
+\end{aufg}
+
+\begin{defn}
+$\mu_A$ und $d_A$ bezeichnen das Minimalpolynom von $A$ und dessen Grad. 
+\\
+F"ur $v \in V$ bezeichnen $\mu_v$ und $d_v$ das Minimalpolynom von $v$ bzgl.\ $A$
+und dessen Grad. D.h., $\mu_v$ ist das Polynom kleinsten Grades mit 
+$\mu_v(A)v = 0$, normiert auf H"ochstkoeffizient 1.
+\end{defn}
+
+\begin{lem} Gilt $p(A)v = 0$, so folgt $\mu_v \mid p$. Insbesondere
+gilt $\mu_v \mid \mu_A$.
+\end{lem}  
+\begin{proof} Alle Polynome mit $p(A)v = 0$ bilden ein Ideal. Weil
+der Polynomring ein Hauptidealring ist, liegen sie alle in dem 
+von $\mu_v$ erzeugten Hauptideal.
+\end{proof}
+
+\begin{defn} Der von $v \in V$ erzeugte {\em zyklische Unterraum} ist
+\[
+   K(A,v) = K_{d_v}(A,v).
+\]
+Beachte: $d_v$ ist der Stufenindex, ab dem $K_m(A,v)$ stagniert.
+\end{defn}
+
+\begin{lem} \label{normal_tat1:lem}
+Tatsachen "uber zyklische Unterr"aume:
+\begin{itemize}
+\item[(i)] $\hat{A}: K(A,v) \to K(A,v), \, w \to Aw$ ist linearer Operator auf $K(A,v)$.
+\item[(ii)] F"ur $ w \in K(A,v)$ ist $K(A,w) \subseteq K(A,v)$. Gleichheit gilt genau dann,
+          wenn $w = p(A)v$ mit $p$ ist teilerfremd zu $\mu_v$. 
+\item[(iii)] Eigenr"aume in $K(A,v)$ haben immer Dimension 1.
+\end{itemize}
+\end{lem}
+\begin{proof}
+(i) ist klar; ebenso der erste Teil von (ii). F"ur $w = p(A)v$ gilt wegen $K(A,w) \subseteq 
+K(A,v)$  einerseits $\mu_w \mid \mu_v$. Andererseits gilt
+ $\mu_v \mid p \cdot \mu_w$. Dies beweist den Rest von (ii). Ein Eigenvektor $p(A)v$ zum Eigenwert $\lambda$
+erf"ullt $(Ap(A)-\lambda p(A))v = 0$ mit $\deg p \leq d_v-1$. Also ist sogar $\mu_v = \alpha \cdot (t-\lambda) \cdot p(t)$,
+was den Eigenvektor bis auf skalare Vielfache eindeutig festlegt.
+\end{proof}
+
+\begin{lem} \label{normal_tat2:lem}
+Weitere Tatsachen:
+\begin{itemize}
+\item[(i)] Mit $\mu_A(t) = \prod_{i=1}^\ell (t-\lambda_i)^{e_i}$ gilt
+\[
+V = \oplus_{i=1}^\ell \kernel(A-\lambda_i I)^{e_i}
+\]
+\item[(ii)] Zu jedem $p \in \Pi$ mit $p \mid \mu_A$ existiert $u \in V$ mit $\mu_u = p$.
+\end{itemize}
+\end{lem}
+\begin{proof} (i) ist bekannt. In (ii) nimmt man f"ur $p = \prod_{i=1}^\ell (t-\lambda_i)^{f_i}$ mit $f_i 
+\leq e_i$ den Vektor $u = \sum_{f_i > 0} u_i$ mit $u_i \in \kernel(A-\lambda_i I)^{f_i} -
+ \kernel(A-\lambda_i I)^{f_i-1}$.
+\end{proof}
+\medskip
+
+Wir ben"otigen zwei technische Lemmas. 
+
+\begin{lem} \label{FMproof1:lem}
+$A,B: V \to V$ seien linear, $A$ invertierbar. Weiter sei $s+2 \leq d_A$ und 
+f"ur alle $v \in V$ mit $d_v = d_A$  gelte
+\[
+Bv \in \spann(v,A,\ldots,A^s v).
+\]
+\begin{itemize}
+\item[(i)] Dann gilt $AB = BA$.
+\item[(ii)] Im Fall $B = A^*$ folgt: $A$ ist $t$-normal mit $t \leq s$.
+\end{itemize} 
+%Im Fall $B = A^*$ gilt sogar, dass dann $A$ $t$-normal ist
+%mit $t \leq s$.
+\end{lem}
+\begin{proof}
+(i): Sei $d_v = d_A$. F"ur $\gamma \not \in \spek(A)$ folgt mit $w_\gamma = (A-\gamma I)v$
+aus Lemma~\ref{normal_tat1:lem}, dass $K(A,v) = K(A,w_\gamma)$ und $d_v = d_{w_\gamma}$; insbesondere gilt das f"ur $w_0 = Av$. Nach Voraussetzung existieren Polynome $p_\gamma,
+q,r \in \Pi_s$ mit
+\begin{equation} \label{BAs:eq}
+   Bw_\gamma = p_\gamma(A)w, \; B(Av) = q(A)(Av), \; Bv = r(A)v,
+\end{equation}
+also
+\[
+Bw_\gamma = (p_\gamma(A)\cdot(A -\gamma I))v = B(Av)-\gamma Bv = (q(A)\cdot A - \gamma r(A))v. 
+\]
+F"ur $\gamma \not \in \spek(A)$ erf"ullt das Polynom $\phi_\gamma(t) = t\cdot(p_\gamma(t)-q(t))-\gamma(p_\gamma(t)-r(t)) \in \Pi_{s+1}$ 
+also $\phi_\gamma(A)v = 0$, ist also Vielfaches von $\mu_v$. Wegen $\leq s+1 \leq d_v$
+folgt $\phi_\gamma \equiv 0$. Hieraus folgt 
+\[
+   \gamma(q-r) = (t-\gamma)(p_\gamma - q),
+\]
+d.h.\ jedes $0 \neq \gamma \not \in \spek(A)$ ist Nullstelle von $q-r$,
+also $q=r$ und damit nach \eqnref{BAs:eq} $BAv = q(A)Av = ABv = Ar(A)v$. 
+
+Die Operatoren
+$A$ und $B$  kommutieren also auf allen Vektoren $v$ mit $d_v = d_A$. F"ur einen gegebenen solchen Vektor
+ist $\mbox{dist}(A^{d_v-1}v,\spann(v,\ldots,A^{d_v-2}v)) >0$; aus Stetigkeitsgr"unden 
+gilt das dann auch noch, wenn man $v$ durch ein beliebiges $w$ aus einer gen"ugend kleinen 
+Kugel um $v$ ersetzt. F"ur alle solche $w$ ist also $d_w = d_v$; insbesondere gibt
+es eine Basis $b_1,\ldots,b_n$ von $V$ mit $d_{b_i} = d_v$. Gezeigt wurde bereits
+$ABb_i = BAb_i$, also gilt $AB = BA$. \smallskip \\
+(ii): Nach (i) ist $A$ normal, also $A^* = p(A)$ mit $\deg p \leq d_A-1$. F"ur ein $v$ mit 
+$d_v = d_A$ gilt aber $A^*v = p(A)v \in \spann(v,Av,\ldots,A^sv)$. Weil $v,Av,\ldots,A^{d_A-1}v$
+l.u.\ sind, folgt daraus $\deg p \leq s$.
+\end{proof}
+\medskip
+
+Jetzt betrachten wir das Arnoldi-Verfahren \ref{Arnoldi-Verfahren} in
+Abh"angigkeit vom Startvektor $v = h_{1,0}v_1 $. Zur Erinnerung: Man berechnet
+eine ONB $\{v_1,v_2,\ldots\}$ durch
+\begin{equation} \label{Arnoldi_rek.eq}
+h_{i+1,i} v_{i+1} = Av_i - \sum_{j=1}^{i} h_{j,i}v_j.
+\end{equation}
+F"ur gegebenen Startvektor $u,v,w,x,\ldots$ bezeichnen dann $u_i,v_i,w_i,x_i, \ldots$
+die entsprechenden Arnoldi-Vektoren. 
+
+\begin{lem} \label{FMproof2:lem}
+$A: V \to V$ sei linear und invertierbar. Es sei $1 < i \leq m < n \leq d_A$.
+F"ur alle $u \in V$ mit $d_u = n$ gelte $\langle u, Au_i \rangle =0$. Dann gilt
+auch f"ur alle $v$ mit $i \leq d_v \leq n$ die Beziehung $\langle v, Av_i \rangle = 0$.
+\end{lem}
+\begin{proof}
+Sei $v \in V$ mit $i \leq  d_v < n$. Sei $u \in V$ mit $d_u = n$ so, dass $\mu_v \mid \mu_u$. 
+(Erg"anze $\mu_v$ um $d_u-d_v$ Linearfaktoren aus Eigenwerten und verwende Lemma \ref{normal_tat2:lem}(ii).)  Setze
+\[
+x_\gamma = v - \gamma u.
+\]
+Klar: $\mu_{x_\gamma} \mid \mu_u$. Angenommen, $\mu_{x_\gamma}$ ist echter Teiler
+von $\mu_u$. Dann gilt
+\begin{equation} \label{mugamma:eq}
+  \mu_{x_\gamma}(A)v = \gamma \underbrace{\mu_{x_\gamma}(A)u}_{\neq 0}.
+\end{equation}
+Es gibt nur endlich viele Teiler von $\mu_u$. F"ur jeden solchen Teiler $\mu_{x_\gamma}$
+wird \eqnref{mugamma:eq} f"ur nur ein $\gamma$ erf"ullt. F"ur alle bis auf endlich viele
+$\gamma$ ist also $\mu_{x_\gamma} = \mu_u$. Sei jetzt $x = x_\gamma$ f"ur ein $\gamma$,
+das keine Ausnahme ist. Dann ist im Arnoldi-Verfahren $x_i = p(A)x$ mit $p \in \Pi_{i-1}$
+und es gilt f"ur $j=0,\ldots,i-2$
+\[
+  0 = \langle A^j x, x_i \rangle = \langle A^j x, p(A)x \rangle
+\]
+und, nach Voraussetzung,
+\[
+\langle x , Ax_i \rangle  = \langle x, Ap(A)x \rangle = 0.
+\]
+Dies sind $i$ Gleichungen eines homogenen LGS f"ur die $i$ Koeffizienten 
+von $p \neq 0$, d.h. die Determinante
+\[
+\delta(x) = 
+\left| 
+\begin{array}{cccc}
+   \langle x, x \rangle & \langle x, Ax \rangle & \ldots & \langle x, A^{i-1} x \rangle \\
+  \langle Ax, x \rangle & \langle Ax, Ax \rangle & \ldots & \langle Ax, A^{i-1} x \rangle \\
+    \vdots              &    \vdots              &    \ldots & \vdots \\
+ \langle A^{i-2}x, x \rangle & \langle A^{i-2}x, Ax \rangle & \ldots & \langle A^{i-2}x, A^{i-1} x \rangle \\
+ \langle x, Ax \rangle & \langle x, A^2x \rangle & \ldots & \langle x, A^{i} x \rangle 
+\end{array}
+              \right|
+\]
+verschwindet f"ur $x = x_\gamma$ f"ur alle bis auf endlich viele und damit f"ur alle
+$\gamma$. Also existiert auch f"ur $\gamma = 0$, also $x=v$ eine nicht-triviale L"osung
+des zugeh"origen LGS in Gestalt eines Polynoms $0 \neq q \in \Pi_{i-1}$. Die ersten
+$i-1$ Gleichungen besagen, dass $0 \neq w = q(A)v$ orthogonal zu
+$\spann(v,Av,\ldots,A^{i-2} v)$,
+also Vielfaches von $v_{i}$ ist. Die letzte Gleichung besagt $\langle v, Aw \rangle = 0$,
+also $\langle v, Av_i \rangle = 0$. 
+\end{proof}
+
+
+\begin{defn} $A$ {\em erlaubt eine $s$-stellige Rekursion}, wenn im
+Arnoldi-Verfahren f"ur jeden Startvektor $v$ gilt $h_{j,i} = 0$ f"ur
+$j < i-s$ und es einen Startvektor gibt, f"ur den f"ur wenigstens
+ein $i$ die Zahl $h_{i-s,i} \neq 0$. 
+\end{defn}
+
+
+\begin{sa}[Faber, Manteuffel 1982] 
+\label{faber:sa}
+$A$ erlaubt eine $s$-stellige Rekursion mit $s+2 \leq d_A$
+ $\Longleftrightarrow$ $A$ ist $s$-normal. 
+\end{sa}
+\begin{proof}
+"`$\Leftarrow$"': Es ist $h_{i,j} = \langle Av_i,v_j \rangle = \langle v_i, A^*v_j \rangle$
+mit $A^* = p(A), p \in \Pi_s$. Also
+\[
+\langle v_i, \underbrace{p(A)v_j}_{\in K_{j+s}} \rangle = 0 \mbox{ f"ur } j+s \leq i-1.
+\]
+"`$\Rightarrow$"' (der harte Teil!): \\
+{\em Teil I: Einschr"ankung auf $K(A,v)$ mit $d_v = s+2$.}\\
+Nach Voraussetzung gilt
+\begin{equation} \label{FMproof:eq}
+\langle v, Av_{s+2} \rangle = 0 \enspace \mbox{f"ur alle } v \in V \mbox{ mit } d_v = s+3.
+\end{equation}
+Sei $u \in V$ mit $d_u = s+2$. Sei $\hat{A}: K(A,u) \to K(A,u), \, u \to Au$. Es
+ist $d_u = d_{\hat{A}} = \dim K(A,u)$. Sei $y \in K(A,u)$ mit $d_y = d_u$
+(bzgl.\ $A$ wie $\hat{A}$). Wegen \eqnref{FMproof:eq} und Lemma~\ref{FMproof2:lem}
+gilt
+\[
+0 = \langle y, Ay_{s+2} \rangle =  \langle y, \hat{A}y_{s+2} \rangle = 
+\langle \hat{A}^*y, y_{s+2} \rangle .
+\]
+Also gilt $\hat{A}^*y \in \spann(y,\hat{A}y,\ldots,\hat{A}^s y)$. Nach Lemma~\ref{FMproof1:lem}(ii)
+folgt: $\hat{A}$ ist $t$-normal mit $t \leq s = \dim K(A,u) -1$. Insbesondere gilt mit paarweise
+verschiedenen $\lambda_i$
+\[
+  K(\hat{A},y) = \kernel(\hat{A}-\lambda_1 I) \oplus_\perp \kernel(\hat{A}-\lambda_2 I) \oplus_\perp 
+         \ldots \oplus_\perp \kernel(\hat{A}-\lambda_{s+2} I).
+\]
+(Alle Eigenr"aume sind 1-dimensional nach Lemma~\ref{normal_tat1:lem}(iii).).
+\smallskip
+
+{\em Teil II: "Ubertragung auf ganz $V$.} \\
+Sei $v \in V$ mit $d_v = d_A$. Dann ist
+\[
+K(A,v) = \oplus_{i=1}^\ell K(A,z_i) \mbox{ mit } \mu_{z_i}(t) = (t-\lambda_i)^{c_i}.
+\]
+Wieder sind die $\lambda_i$ paarweise verschieden. OBdA seien sie nach absteigenden
+$c_i$ nummeriert. Wegen $\dim(K(A,w)) = d_A > s+2$ existiert $m \leq \ell$ und $\tilde{c}_m
+\leq c_m$ mit $c_1+\ldots + c_{m-1} + \tilde{c}_m = s+2$. Der Vektor $w = z_1 + \ldots +z_{m-1}
++ z_{m-1} + \tilde{z}_m$ mit $\tilde{z}_m \in \kernel(A-\lambda_m I)^{\tilde{c}_m} - 
+\kernel(A-\lambda_m I)^{\tilde{c}_m-1} $ hat $d_w = s+2$. Nach Teil~I besitzt $A$ 
+demnach $s+2$
+verschiedene Eigenwerte auf $K(A,w)$, weshalb $c_1 = \ldots = \tilde{c}_m=1$ und damit
+sogar $m=\ell$ und $c_1 = \ldots = c_\ell = 1$. Damit ist
+\[
+\mu_A(t) = \mu_w(t)  = \prod_{i=1}^\ell (t-\lambda_i)^1
+\]
+und deshalb (LA I)
+\[
+V = \oplus_{i=1}^\ell \kernel (A - \lambda_i I).
+\]
+Setze $V_i = \spann(z_i,\ldots,z_{s+i+1}) = K(A,\sum_{j=i}^{s+i+1} z_j)$
+mit $z_j \in \kernel(A-\lambda_j I)$. Nach Teil I ist
+\[
+V_i = \kernel(A-\lambda_i I) \oplus_\perp \kernel(A-\lambda_{i+1} I) \oplus_\perp 
+         \ldots \oplus_\perp \kernel(A-\lambda_{s+i+1} I),
+\]
+und es existiert ein Polynom $p_i \in \Pi_{s}$ mit $p_i(\lambda_j) = \overline{\lambda_j},
+\, j=i,\ldots,s+i+1$. Die Polynome $p_i$ und $p_{i+1} \in \Pi_s$ stimmen in den $s+1$ Stellen $\lambda_{i+1}, \ldots, \lambda_{s+i+1}$ "uberein, sind also (alle!) identisch, $p_1=p_2
+= \ldots p_\ell = p$.
+\\
+Zusammengefasst: $A$ ist orthogonal diagonalisierbar und es existiert $p \in \Pi_s$ mit $p(\lambda) = 
+\overline{\lambda}$ f"ur alle $\lambda \in \spek(A)$. Also ist $A$ $s$-normal.
+\end{proof}
+\medskip
+
+Frage: Haben wir auch gezeigt, dass $s$ nicht kleiner sein kann?
+\medskip
+
+Im Falle des Standard-Innenproduktes und der Standardbasis 
+besitzt $A^*$ als Matrix die Darstellung
+\[
+A^* = \overline{A}^T.
+\]
+
+Wie ist dies bei einem beliebigen Innenprodukt (der Satz legt sich ja
+nicht fest)? \\
+Wechsel in der Notation: $\langle \; , \; \rangle_*$ ist jetzt ein beliebiges
+Innenprodukt, $\langle \; , \; \rangle$ das "ubliche euklidische Innnenprodukt.
+
+%
+\begin{lem}
+ Sei $\langle \; , \; \rangle_*$ ein Innenprodukt auf  $\cn$.
+ Dann existiert ein $B \in \cnn$, $B$ hpd mit
+\[\langle x , y \rangle_* = \langle x,B y \rangle \enspace (\mbox{$\langle \; , \; \rangle$ "ubliches Skalarprodukt).} \]
+\end{lem}
+\begin{proof}
+ "Ubung.
+\end{proof}
+%
+\begin{sa}
+ Sei $\langle \; , \; \rangle_*$ gegeben und $B$ hpd mit $\langle x, y \rangle_*$ = $\langle y, By\rangle$. Dann gilt:  $A$ ist normal bzgl.
+$\langle \; , \; \rangle_* \Longleftrightarrow B^{\frac{1}{2}}AB^{-\frac{1}{2}} $ ist normal bzgl. $\langle \; , \; \rangle$.
+\end{sa}
+\begin{proof}
+ \begin{align*}
+  && \langle Ax, y\rangle_*  & = \langle x, A^*y\rangle_* \\
+  & \Longleftrightarrow &  \langle Ax, By\rangle & =  \langle x, BA^*y\rangle \\
+  & \Longleftrightarrow &  \langle BAx, y\rangle & =  \langle x, BA^*y\rangle \quad \forall \; x,y \\
+  & \Longleftrightarrow  & (BA^*)^H   & =  BA   \\
+  & \Longleftrightarrow  & BA^* & =  A^HB  \\
+  & \Longleftrightarrow & A^* & = B^{-1}A^HB.
+ \end{align*}
+Es ist also
+ \begin{align*}
+  && A^*A & =AA^* \\
+  & \Longleftrightarrow & B^{-1}A^HBA  & = AB^{-1} A^HB  \\
+  & \Longleftrightarrow  & B^{-\frac{1}{2}}A^H B^{\frac{1}{2}}B^{\frac{1}{2}}AB^{-\frac{1}{2}}  & = B^{\frac{1}{2}}AB^{-\frac{1}{2}}B^{-\frac{1}{2}}A^HB^{\frac{1}{2}}   \\
+  & \Longleftrightarrow  & \tilde{A}^H \tilde{A}  & = \tilde{A} \tilde{A}^H
+ \end{align*}
+mit $\tilde{A}=B^{\frac{1}{2}}AB^{-\frac{1}{2}}$.
+\end{proof}
+%
+
+\medskip
+
+\textbf{Bezeichnung:} Statt "`$A$ normal bzgl. $\langle \; , \; \rangle_*$"' sagt man auch: "`$A$ ist $B$-normal"' ($B$ ist die zu
+$\langle \; , \; \rangle_*$ geh"orige hpd-Matrix).
+%
+\begin{cor}
+ $A$ ist $B$-normal $\Longleftrightarrow \exists \; p \in \Pi_n$ mit $A^*=p(A)$.
+\end{cor}
+\begin{proof}
+ \begin{align*}
+ A \text{ ist $B$-normal} & \Longrightarrow    & \tilde{A}    &= B^{\frac{1}{2}}AB^{-\frac{1}{2}} \text{ normal} \\
+ & \Longrightarrow        & \tilde{A}^H     &= p(\tilde{A}) = B^{\frac{1}{2}}p(A)B^{-\frac{1}{2}} \\
+ & \Longrightarrow        & B^{\frac{1}{2}}\tilde{A}^HB^{-\frac{1}{2}} &=p(A) \\
+ & \Longrightarrow        & A^*        & = p(A)
+ \end{align*}
+\end{proof}
+%
+
+%% Vorlesung 18
+%% Freitag, 27.6.2003
+%% David Fritzsche
+
+\textbf{Beachte:} Satz~\ref{faber:sa} setzt eine bestimmte Form f\"ur kurze
+Rekursion voraus.
+
+Alternative: z.B.~gekoppelte kurze Rekursion. Dann k\"onnten doch weitere
+Verfahren mit minimalem Residuum und kurzer Rekursion existieren.
+
+\begin{bsp}
+  Sei $A\in\cnn$ unit\"ar, also $AA^H=I$. Es exisitiert eine kurze Rekursion
+  zur Berechnung der Arnoldi-Vektoren
+  \begin{equation*}
+    h_{k,k+1}v^{k+1} = Av^k-\sum_{j=1}^{k}h_{k,j}v^j
+    \qquad
+    \text{mit }
+    \norm{v^k}_2=1
+    \text{ und }
+    v^0=\frac{1}{\norm{r^0}}r^0.
+  \end{equation*}
+Die Vektoren
+  $v^0,\dots,v^k$ sind eine Orthonormalbasis von $K_{k+1}(A,r^0)$ und
+  {$Av^0,\dots,Av^k$} ist Orthonormalbasis von $AK_{k+1}(A,r^0)$.
+
+  Damit ist $w^k,Av^0,\dots,Av^{k-1}$ bei geeigneter Wahl von $w^k$ eine
+  Orthonormalbasis von $K_{k+1}(A,r^0)$.
+  Eine geeignete Wahl ergibt sich induktiv "uber
+  \begin{align*}
+    \tilde w^k
+    &= w^{k-1} - \sum_{j=0}^{k-1}
+    \frac {\langle w^{k-1},Av^j\rangle} {\langle Av^j,Av^j\rangle} Av^j
+    && (\langle Av^j,Av^j\rangle = 1)
+    \\
+    &= w^{k-1} - \sum_{j=0}^{k-1} \langle w^{k-1},Av^j\rangle Av^j
+    && (w^{k-1}\perp Av^j \text{ f\"ur } j=0,\dots,k-2)
+    \\
+    &= w^{k-1} - \langle w^{k-1},Av^{k-1}\rangle Av^{k-1}
+    &&
+    \\
+    w^k
+    &= \frac{1}{\norm{\tilde w^k}}\tilde w^k
+    .
+    &&
+  \end{align*}
+
+  Die Berechnung von $v^{k+1}$ geht jetzt so:
+  \begin{equation*}
+    \tilde v^{k+1} = Av^k -\Bigl(\sum_{j=1}^{k}\beta_{k,j}Av^{j-1}\Bigr)
+    - \beta_{k,0}w^k
+  \end{equation*}
+  \begin{align*}
+    \text{mit}\qquad
+    \beta_{k,j}
+    &= \langle Av^k, Av^{j-1}\rangle = 0
+    &&\text{da } v^k\perp v^{j-1}
+    \\
+    \beta_{k,0}
+    &=
+    \langle Av^k, w^k\rangle
+    &&
+  \end{align*}
+  Wir erhalten also folgenden Algorithmus~\ref{alg:unitaeres-arnoldi-verf}
+  zur Berechnung der Arnoldi-Vektoren.
+
+  \begin{alg}[Unit\"ares Arnoldi-Verfahren]\label{alg:unitaeres-arnoldi-verf}
+    \begin{algorithm}
+      \begin{algorithmic}
+        \STATE $v^0 := \bigl(1/\norm[normal]{r^0}\bigr)r^0$
+        \STATE $w^0 := v^0$
+        \FOR{$k=0,1,2,\dots$}
+          \STATE $\beta_k = \langle Av^k,w^k\rangle$
+          \STATE $\tilde v^{k+1} := Av^k-\beta_k w^k$
+          \STATE $v^{k+1}
+            :=\bigl(1/\norm[normal]{\tilde v^{k+1}}\bigr)\tilde v^{k+1}$
+          \STATE $\tilde w^{k+1} := w^k-\overline{\beta}_k Av^k$
+          \STATE $w^{k+1}
+            :=\bigl(1/\norm[normal]{\tilde w^{k+1}}\bigr)\tilde w^{k+1}$
+        \ENDFOR
+      \end{algorithmic}
+    \end{algorithm}
+  \end{alg}
+
+  Jetzt ist $H_{k,k}$ und $H_{k+1,k}$ aus dem Arnoldi-Prozess nicht
+  mehr explizit gegeben. Man kann aber zeigen (Jagels und Reichel, 1994)
+  \begin{enumerate}
+  \item $H_{k,k}$ wird durch Algorithmus~\ref{alg:unitaeres-arnoldi-verf}
+    in faktorisierter Form (als Produkt von Rotationen) implizit gegeben.
+  \item F\"ur Systeme der Form
+    \begin{equation*}
+      (\zeta I+\rho A)x=b
+    \end{equation*}
+    mit $A^HA=I$ und $\zeta,\rho\in\co$ ist
+    $K_m(\zeta I+\rho A,r^0)=K_m(A,r^0)$ und es existiert auch eine
+    kurze Rekursion zur Bestimmung der Iterierten $x^k$ mit
+    \begin{equation*}
+      \norm[big]{b-(\zeta I+\rho A)x^k}_2
+      =
+      \min_{p_k\in\bar \Pi_k}
+      \norm[big]{p_k(\zeta I+\rho A)b}_2
+      .
+    \end{equation*}
+    Die Herleitung erfolgt wie bei MINRES unter Ausnutzung der faktorisierten
+    Form von $H_{k+1,k}$
+  \end{enumerate}
+
+\end{bsp}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "Iterationsverfahren03"
+%%% End:
+

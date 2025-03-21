@@ -1,0 +1,26 @@
+\contentsline {section}{\numberline {1}Krylov-Unterr\"aume}{2}{section.1}%
+\contentsline {section}{\numberline {2}Allgemeine Betrachtungen...}{9}{section.2}%
+\contentsline {section}{\numberline {3}Die Tschebyscheff-Polynome}{14}{section.3}%
+\contentsline {section}{\numberline {4}Das Tschebyscheff - Verfahren}{22}{section.4}%
+\contentsline {section}{\numberline {5}Analyse von Tschebyscheff- und...}{28}{section.5}%
+\contentsline {section}{\numberline {6}Basen f\"ur Krylov-Unterr\"aume}{35}{section.6}%
+\contentsline {section}{\numberline {7}KUV mit minimalem Residuum}{41}{section.7}%
+\contentsline {section}{\numberline {8}Konvergenzanalyse f\"ur GMRES/MINRES}{54}{section.8}%
+\contentsline {section}{\numberline {9}FOM und CG}{64}{section.9}%
+\contentsline {subsection}{\numberline {9.1}FOM}{65}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}CG}{65}{subsection.9.2}%
+\contentsline {paragraph}{1. Schritt}{69}{section*.2}%
+\contentsline {paragraph}{2. Schritt}{71}{section*.3}%
+\contentsline {section}{\numberline {10}BiCG}{79}{section.10}%
+\contentsline {section}{\numberline {11}CGSquared \& BiCGStab}{83}{section.11}%
+\contentsline {section}{\numberline {12}Minimales Residuum vs kurze Rekursion}{89}{section.12}%
+\contentsline {section}{\numberline {13}Modellproblem IV}{98}{section.13}%
+\contentsline {section}{\numberline {14}Pr\active@dq \dq@prtct {a}konditionierung}{101}{section.14}%
+\contentsline {subsection}{\numberline {14.1}Pr\active@dq \dq@prtct {a}konditionierung von CG}{102}{subsection.14.1}%
+\contentsline {subsection}{\numberline {14.2}Einfache Pr\active@dq \dq@prtct {a}konditionierer}{104}{subsection.14.2}%
+\contentsline {subsection}{\numberline {14.3}Polynomielle Pr\"akonditionierung}{112}{subsection.14.3}%
+\contentsline {section}{\numberline {15}Unvollst\"andige LU-Zerlegungen}{115}{section.15}%
+\contentsline {subsection}{\numberline {15.1}ILU zu einem vorgegebenen Muster}{115}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}Dynamische ILU}{118}{subsection.15.2}%
+\contentsline {subsection}{\numberline {15.3}Approximative Inverse}{121}{subsection.15.3}%
+\contentsline {subsection}{\numberline {15.4}Faktorisierte d\active@dq \dq@prtct {u}nnbesetzte approximative Inverse}{125}{subsection.15.4}%

@@ -1,0 +1,572 @@
+ 
+\section{Pr"akonditionierung}
+
+Gegeben wie immer:
+\[
+Ax = b
+\]
+Ziel: Beschleunigung der Konvergenz eines (passenden) KUV durch Modifikation der Matrix.
+
+\begin{defn} Seien $M_L$ und $M_R$ invertierbar.
+Dann bedeutet
+\begin{itemize}
+\item {\em rechtsseitige Pr"akonditionierung} den "Ubergang zu $AM_R^{-1}y = b$ (mit $x = M_R^{-1}$)
+\item {\em linksseitige Pr"akonditionierung} den "Ubergang zu $M_L^{-1}Ax = M_L^{-1}b$ (mit neuer rechter Seite  $M_L^{-1}b$)
+\item {\em beidseitige Pr"akonditionierung} den "Ubergang zu $M_L^{-1}AM_R^{-1}y = M_L^{-1}b$ (mit $x = M_R^{-1}$ und neuer rechter Seite  $M_L^{-1}b$)
+\end{itemize}
+\end{defn}
+
+Das KUV wird dann mit der modifizierten Matrix (und evtl.\ rechten Seite) durchgef"uhrt.
+
+\textbf{Anforderungen:}
+\begin{enumerate}
+   \item Die modifizierte Matrix sollte ``besser konditioniert'' sein, am besten $\approx I$
+   \item $M_L^{-1}$ und $M_R^{-1}$ sind entweder einfach als d"unn besetzte Matrizen direkt gegeben, oder Systeme mit $M_L, M_R$ sind sehr effizient l"osbar (man muss sie in jedem Iterationsschritt l"osen).
+\end{enumerate}
+
+\begin{bsp}  Sei $A = D-L-U$ mit dem Diagonalteil $D$, unterem bzw. oberen Dreiecksanteil $-L$ bzw. $-U$.
+\begin {itemize}
+   \item Diagonaler Pr"akonditionierer: $M = D$, der Diagonalanteil von $A$. $M^{-1}$ ist sehr einfach zu invertieren.
+   \item Unteres Dreieck als Pr"akonditionierer: $M = D-L$. Systeme mit $M$ sind leicht zu l"osen.
+\end{itemize}
+\end{bsp}
+
+
+
+\subsection{Pr"akonditionierung von CG}
+$A$ hpd. Notation: $M_L^{-1} =:S, M_R^{-1} = S^H$
+
+\begin{eqnarray}\label{G451}
+\begin{array}{rcl}
+\wA \wx & = & \wb \hspace{1.2cm} \mbox{ mit } \\
+\wA & = & S A S^H \, , S \mbox{ regul"ar } ( \Rightarrow \wA \mbox{ hpd}) \\
+\wx & = & S^{-H} x \\
+\wb & = & S b \, ,
+\end{array}
+\end{eqnarray}
+wobei $ \mbox{cond}(\wA) \ll \mbox{cond}(A) $ sein soll.
+
+
+
+Das CG-Verfahren f"ur \eqref{G451} lautet \smallskip
+
+
+\noindent\textbf{Gegeben:} $ \wx_0, \;  \whr_0 = \wb - \wA \wx_0, \; \whp_0 = \whr_0, \;
+\wq_0 = \wA \whp_0 $
+
+\medskip
+
+\noindent f"ur $ k = 0, 1, \ldots, m_0 -1 $
+\begin{eqnarray}\label{G452}
+\wx_{k+1} &=& \wx_k + \widehat{\alpha}_k \whp_k \mbox{ mit }
+\widehat{\alpha}_k = \frac{\| \whr_k \|_2^2}{\langle \wq_k, \whp_k \rangle}\\
+\whr_{k+1} & = & \whr_k - \widehat{\alpha}_k \wq_k \label{G453}\\
+\whp_{k+1} & = & \whr_{k+1} + \widehat{\beta}_k\widehat{p}_k \label{G454}
+\mbox{ mit } \widehat{\beta}_k = \frac{\| \whr_{k+1} \|_2^2}{\| \whr_k \|_2^2} \\
+\wq_{k+1} & = & \wA \whp_{k+1} \label{G455}
+\end{eqnarray}
+
+\noindent R"ucktransformation in das urspr"ungliche System:
+
+\begin{eqnarray*}
+\wx_k & = &S^{-T} x_k \iff x_k = S^H \wx_k \\
+\Rightarrow \underbrace{b - A x_k}_{=: r_k} & = & S^{-1}
+\underbrace{(S b - S A S^H S^{-T} x_k)}_{\wb - \wA \wx_k}\; = \; S^{-1} \whr_k
+\end{eqnarray*}
+
+\noindent Multipliziere also \eqref{G452}, \eqref{G454} mit $ S^H$, \eqref{G453},
+\eqref{G455} mit $ S^{-1}$ und setze
+\begin{equation}
+\left\{ \quad  \begin{array}{ll}
+x_k &= S^H \wx_k, \\ r_k&= S^{-1} \whr_k \, ( = b - A x_k), \\ p_k &= S^H \whp_k, \\ q_k &= S^{-1} \wq_k .
+\end{array}\right.\label{transf_eq}
+\end{equation}
+\medskip
+
+Mit Hilfe von \eqref{transf_eq} formulieren wir die die Gleichungen \eqref{G452} bis \eqref{G455} um:
+\begin{eqnarray*}
+\widehat{\alpha}_k&=&\dfrac{\langle\widehat r_k,\widehat r_k\rangle }{\langle\widehat q_k,\widehat p_k\rangle }\\
+&=&\dfrac{\langle Sr_k,Sr_k\rangle }{\langle Sq_k,S^{-T}p_k\rangle }\\
+&=&\dfrac{\langle r_k,S^{T}Sr_k\rangle }{\langle q_k,S^HS^{-T}p_k\rangle }\\
+&=&\dfrac{\langle r_k,M^{-1}r_k \rangle}{\langle q_k,p_k \rangle }\\
+&=&\dfrac{\langle r_k,\widetilde{r}_k\rangle }{\langle q_k,p_k\rangle }\\
+\widehat{\beta}_k&=&
+\frac{\| \whr_{k+1} \|_2^2}{\| \whr_k \|_2^2}\\
+&=&\dfrac{\langle Sr_{k+1},Sr_{k+1}\rangle }{\langle Sr_k,Sr_k\rangle }\\
+&=&\dfrac{\langle r_{k+1},S^HSr_{k+1}\rangle }{\langle r_k,S^HSr_k\rangle }\\
+&=&\dfrac{\langle r_{k+1},M^{-1}r_{k+1}\rangle }{\langle r_k,M^{-1}r_k\rangle }\\
+&=&\dfrac{\langle r_{k+1},\widetilde{r}_{k+1}\rangle }{\langle r_k,\widetilde{r}_k\rangle }.
+\end{eqnarray*}
+Damit ergibt sich dann
+\setcounter{equation}{1}
+\renewcommand{\theequation}{\thesection.\arabic{equation}'}
+\begin{eqnarray}
+\notag\wx_{k+1} &=& \wx_k + \widehat{\alpha}_k \whp_k\\
+\notag S^{-T}x_{k+1}&=&S^{-T}x_k +\dfrac{\langle r_k,\widetilde{r}_k\rangle }{\langle q_k,p_k\rangle }  S^{-T}p_k\\
+x_{k+1}&=&x_k +\dfrac{\langle r_k,\widetilde{r}_k\rangle }{\langle q_k,p_k\rangle } p_k\\\notag\\
+\notag \whr_{k+1} & = & \whr_k - \widehat{\alpha}_k \wq_k \\
+\notag Sr_{k+1}&=&Sr_{k}-\dfrac{\langle r_k,\widetilde{r}_k\rangle }{\langle q_k,p_k\rangle }  Sq_k\\
+r_{k+1}&=&r_{k}-\dfrac{\langle r_k,\widetilde{r}_k\rangle }{\langle Sq_k,S^{-T}p\rangle }  q_k\\\notag\\
+\notag \whp_{k+1} & = & \whr_{k+1} + \widehat{\beta}_k\widehat{p}_k \\
+\notag S^{-T}p_{k+1} & = & S r_{k+1}+\dfrac{\langle r_{k+1},\widetilde{r}_{k+1}\rangle }{\langle r_k,\widetilde{r}_k\rangle }S^{-T} {p}_k \\
+\notag p_{k+1} & = & S^{T}S r_{k+1}+\dfrac{\langle r_{k+1},\widetilde{r}_{k+1}\rangle }{\langle r_k,\widetilde{r}_k\rangle } {p}_k \\
+ p_{k+1}& = & \widetilde{r}_{k+1}+\dfrac{\langle r_{k+1},\widetilde{r}_{k+1}\rangle }{\langle r_k,\widetilde{r}_k\rangle } {p}_k \\\notag\\
+\notag \wq_{k+1} & = & \wA \whp_{k+1} \\
+\notag Sq_{k+1}&=&(SAS^H)(S^{-T}p_{k+1})\\
+q_{k+1}&=&A p_{k+1}.
+\end{eqnarray}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+Dies liefert folgenden Algorithmus
+\begin{alg}[Pr"akonditioniertes CG-Verfahren]\label{alg:pcg}
+~\vspace*{-2\baselineskip}
+\begin{algorithm}
+%\caption{Pr"akonditioniertes CG-Verfahren}\index{CG-Verfahren!präkoditionites}\index{präkonditioniertes CG-Verfahren}
+\begin{algorithmic}
+\STATE w"ahle $x^{(0)}$ setze $r^{(0)}=b-Ax^{(0)}, p^{(0)}=r^{(0)}$, l"ose $M\hat r^{(0)}=r^{(0)}$
+\FOR{$k=0,1,...,m_0-1$}
+\STATE $x_{k+1}=x_k +\dfrac{\langle r_k,\widetilde{r}_k\rangle }{\langle q_k,p_k\rangle } p_k$
+\STATE $r_{k+1}=r_{k}-\dfrac{\langle r_k,\widetilde{r}_k\rangle }{\langle q_k,p_k\rangle }  q_k$
+\STATE l"ose $M\widetilde{r}_{k+1}={r}_{k+1}$
+\STATE $p_{k+1} =  \widetilde{r}_{k+1}+\dfrac{\langle r_{k+1},\widetilde{r}_{k+1}\rangle }{\langle r_k,\widetilde{r}_k\rangle } {p}_k $
+\STATE $q_{k+1}=A p_{k+1}$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{aufg} Leite Algorithmus \ref{alg:pcg} alternativ dadurch her, dass CG mit dem $M$-Innenprodukt auf die im $M$-Innenprodukt selbstadjungierte und positiv definite Matrix $M^{-1}A$ angewendet wird.
+\end{aufg}
+
+$A$ hpd $\Rightarrow$ Diagonalanteil $D$ ist hpd. Diagonale Pr"akonditionierung ist also bei CG anwendbar. Im Modellproblem I f"uhrt das zu keiner Konvergenzbeschleunigung, denn dort ist $D = 4I$, und die Konditionen von $A$ und $\tfrac{1}{4}A$ sind gleich.
+
+
+\subsection{Einfache Pr"akonditionierer}
+
+Nicht notwendig f"ur CG, also nicht notwendig hpd. Wir diskutieren aber den hpd-Fall aber immer mit.
+
+
+
+\begin{bsp}[Diagonale Pr"akonditionierung] $M = \diag(A)$, nicht notwendig hpd.
+
+\end{bsp}
+
+
+
+\begin{bsp}[Pr\"akond. mit abgebrochener Reihenentwicklung]
+Sei
+\[
+A = P - Q \enspace \mbox{mit } \rho(P^{-1}Q) < 1.
+\]
+Dann gilt
+\[
+A^{-1} = (P-Q)^{-1} = (I - P^{-1}Q)^{-1}P^{-1} = \sum_{\nu=0}^\infty (P^{-1}Q)^\nu P^{-1}.
+\]
+Nehme f"ur ein festes $m$\label{S464}
+\begin{equation} \label{Mm_def}
+M^{-1} = M_m^{-1} = \sum_{\nu=0}^{m-1} (P^{-1}Q)^\nu P^{-1}.
+\end{equation}
+Je gr"o"ser $m$, desto besser approximiert $M_m^{-1}$ die Matrix $A^{-1}$, und es ist
+\[
+M_m^{-1} A = I - \underbrace{(P^{-1}Q)^{m}}_{\to 0 \text{ f\"ur } m \to \infty}.
+\]
+\end{bsp}
+Es stellen sich die folgenden Fragen:
+
+\begin{itemize}
+\item Wie l"ost man
+     \begin{equation} \label{Mm_eq}
+      M\tilde{r} = r \Leftrightarrow \tilde{r} = \sum_{\nu=0}^{m-1} (P^{-1}Q)^\nu P^{-1}r
+     \end{equation}
+     (siehe n"achstes Lemma)
+\item Bei Verwendung f"ur CG: Wann ist $M_m$ hpd? (siehe Lemma \ref{hpd_lem}).
+\end{itemize}
+
+\begin{lem}\label{S465} Sei $r_0 = 0$ und f"ur $\nu = 0,1,\ldots,m-1$ sei
+\begin{equation} \label{iter_eq}
+Pr_{\nu+1} = Qr_\nu + r.
+\end{equation}
+Dann gilt $r_m = \tilde{r}$ mit $\tilde{r}$ aus \eqref{Mm_eq}.
+\end{lem}
+\begin{proof}
+Aus \eqref{iter_eq} folgt
+\begin{eqnarray*}
+r_\nu&=&P^{-1}Qr_{\nu-1}+P^{-1}r\\
+&=&P^{-1}Q(P^{-1}Qr_{\nu-2}+P^{-1}r)+P^{-1}r\\
+&=&P^{-1}Q(P^{-1}Q(P^{-1}Qr_{\nu-3}+P^{-1}r)+P^{-1}r)+P^{-1}r\\
+&=&...\\
+&=&\sum\limits_{\nu=0}^{m}(P^{-1}Q)^\nu \underset{=0}{r_0}+\sum\limits_{\nu=0}^{m-1}(P^{-1}Q)^\nu P^{-1}r\\
+&=&\sum\limits_{\nu=0}^{m-1}(P^{-1}Q)^\nu P^{-1}r\\
+&=&\tilde{r}.
+\end{eqnarray*}
+\end{proof}
+
+\medskip
+
+\noindent L"osen von $M_m\tilde{r} = r$ bedeutet also, $m$ Iterationsschritte der einfachen
+Iteration \eqref{iter_eq} auszuf"uhren.
+
+\begin{bsp} Sie $A = D-L-U$ wie immer.
+\begin{itemize}
+\item ``Jacobi-Pr"akonditionierer: $P = D$, $Q = L+U$ in der Standard-Zerlegung $A = D-L-U$. F"ur $m=1$ erh"alt man die diagonale Pr"akonditionerung.
+\item   Gau\ss{}-Seidel-Pr\"akonditionierung: $P = D-L$, $Q = U$.
+\end{itemize}
+\end{bsp}
+
+Wenn $A$ hpd ist, ist bei Jacobi- und Gau\ss{}-Seidel das resultierende $M_m$ nicht notwendig hpd, au\ss{}er bei Jacobi f\"ur $m=1$. Wir suchen jetzt
+Bedingungen an $P$ und $Q$, die $M_m$ hpd garantieren.
+
+\begin{lem} \label{komm_lem} $A \in \mathC^{n\times n}$ hpd, $B \in
+\mathC^{n \times n}$ hermitesch. Dann gilt\label{S466}
+\begin{itemize}
+\item[a)] Alle Eigenwerte von $AB$ und $BA$ sind reell.
+\item[b)] Ist $B$ hpd (positiv semidefinit), so sind alle
+Eigenwerte von $AB$ und $BA$ positiv (nichtnegativ).
+\item[c)] Sind alle Eigenwerte von $AB$ oder $BA$ positiv, so ist $B$ hpd.
+\end{itemize}
+\end{lem}
+\begin{proof} Aufgabe.
+\end{proof}
+
+
+\begin{lem} \label{hpd_lem} $A \in \mathC^{n \times n}$ sei hpd, $A = P-Q$ mit $P = P^H$.
+Dann gilt f"ur $M_m$ aus \nref{Mm_def}\label{S467}
+\begin{itemize}
+\item[a)] Ist $m$ ungerade und $P$ hpd, so ist $M_m$ hpd.
+\item[b)] Ist $m$ gerade und $P+Q$ hpd, so ist $M_m$ hpd.
+\end{itemize}
+\end{lem}
+\begin{proof}
+Wir zeigen jeweils, dass $M_m^{-1}$ hpd ist. Wir bezeichnen $H = P^{-1}Q$.
+Wegen $P=P^H, Q=Q^H$ folgt $H^H = QP^{-1}$. Durch geeignetes Zusammenfassen
+erh"alt man so
+\[
+H^\nu P^{-1} = \left\{ \begin{array}{ll}
+   (H^\mu P^{-1})^HQ(H^\mu P^{-1})  & \mbox{ falls } \nu = 2\mu+1 \\
+  H^\mu P^{-1} (H^\mu)^H    & \mbox{ falls } \nu = 2\mu.
+    \end{array}
+\right.
+\]
+In jedem Fall ist also $H^\nu P^{-1}$ hermitesch und damit auch
+\[
+M_m^{-1} = \sum_{\nu=0}^{m-1} H^\nu P^{-1}.
+\]
+Wir m"ussen noch zeigen, dass die Eigenwerte von $M_m^{-1}$ alle positiv sind.
+Nach Lemma~\ref{komm_lem} sind alle Eigenwerte von
+\[H = I - P^{-1}A  (\, =\, P^{-1}Q) \]
+reell da $P^{-1}$ hermitesch und $A$ hpd ist.
+
+\medskip
+
+\noindent zu a): Alle Eigenwerte von $T_m := \sum_{\nu=0}^{m-1}H^\nu$ sind gegeben durch
+\begin{equation} \label{TmEwe_eq}
+\sum_{\nu=0}^{m-1} \lambda^\nu =
+\left\{ \begin{array}{ll}
+   \frac{1-\lambda^m}{1-\lambda}  & \mbox{ falls } \lambda \not = 1, \\
+   m    & \mbox{ falls } \lambda = 1.
+    \end{array}
+\right. ,
+\end{equation}
+wobei $\lambda$ Eigenwert von $H$ ist. F"ur $m$ ungerade ist $(1-\lambda^m)/(1-\lambda) $ positiv f"ur alle $\lambda \not = 1$.
+$T_m$ hat also nur positive Eigenwerte. Ist au"serdem $P$ hpd, so folgt aus
+$T_m = M_m^{-1}P$ nach Lemma \ref{komm_lem} c), dass $M_m^{-1}$ hpd ist.
+
+\medskip
+
+\noindent zu b): Nun sei $m$ gerade. Es gilt $P+PH = P+Q$ und so
+\begin{eqnarray*}
+M_m^{-1}
+     &=&\sum\limits_{\nu=0}^{m-1}H^\nu P^{-1}\\
+     &=&H^0P^{-1}+H^1 P^{-1}+....+H^{m-1}P^{-1}\\
+     &=& P^{-1}(P + PH + PH^2 + \ldots + PH^{m-1})P^{-1} \\
+     &=& P^{-1}( (P + PH) + (P + PH)H^2 + \ldots + (P + PH)H^{m-2})P^{-1} \\
+     &=& P^{-1}(P+Q)( I + H^2 + \ldots + H^{m-2})P^{-1}.
+\end{eqnarray*}
+Hieraus erhalten wir
+\[
+PM_{m}^{-1}P = (P+Q)S_m \enspace \mbox{ mit } S_m = I + H^2 + \ldots + H^{m-2}.
+\]
+Die Matrix $S_m$ besitzt die Eigenwerte $\sum_{\mu=0}^{m/2-1} \lambda^{2\mu}$, $\lambda$ Eigenwert von $H$.
+Also sind alle Eigenwerte von $S_m$ positiv. Wie bei a) folgt mit Lemma \ref{komm_lem}
+c) mit $S_m = (P+Q)^{-1}(PM_m^{-1}P)$ zun"achst, dass $PM_m^{-1}P$ hpd ist, wenn $P+Q$ hpd ist, was nach Voraussetzung der Fall ist .
+Mit $PM_m^{-1}P$ ist auch $M_m^{-1}$ hpd.
+\end{proof}
+
+
+\begin{lem} \label{prae_kond_lem}\label{S468}
+$ A \in \mathC^{n \times n} $ sei hpd, $ A = P - Q $ mit $ P = P^H $ und $ H =
+P^{-1} Q $, \, $ \rho (H) < 1 $, \, $ M_m^{-1} = \displaystyle{\sum_{\nu=0}^{m-1}}
+H^\nu P^{-1}$. Dann gilt
+\begin{itemize}
+\item[a)] $H$ besitzt nur reelle Eigenwerte $ \lambda_1 \leq \lambda_2 \ldots \leq \lambda_n $
+\item[b)] $ M_m^{-1} A $ besitzt nur positive Eigenwerte und
+\[
+\cond (M_m^{-1} A) = \frac{\lambda_{\max} (M_m^{-1} A)}{\lambda_{\min}
+(M_m^{-1} A ) }= \left\{\!
+\begin{array}{ll}
+\frac{1 - \lambda_1^m}{1 - \lambda_n^m} & \mbox{falls } \lambda_1 \geq 0
+\mbox{ oder } m\\
+& \mbox{ ungerade} \\
+\frac{1 - \delta^m}{1 - \lambda_n^m} & \mbox{falls }  m \mbox{ gerade} \mbox{
+und }  \lambda_1 < 0 , \\
+& \mid \lambda_n \mid \geq \mid \lambda_1 \mid \\
+\frac{1 - \delta^m}{1 - \lambda_1^m} & \mbox{falls }  m \mbox{ gerade} \mbox{
+und }  \lambda_1 < 0 , \\
+& \mid \lambda_n \mid < \mid \lambda_1 \mid
+\end{array} \right.
+\]
+\end{itemize}
+wobei $ \delta = \displaystyle{\min_{i=1}^n} \mid \lambda_i \mid $
+\end{lem}
+\begin{proof}
+\begin{itemize}
+\item[a)] Es ist $H=I-P^{-1}A$ und $P^{-1}A$ hat nach Lemma \ref{S465} nur reelle Eigenwerte. Wegen $ \rho (H) < 1 $ gilt au{\ss}erdem:
+\[
+ - 1 < \lambda_1 \leq \lambda _n < 1 .
+\]
+
+\item[b)] Es gilt
+\[\begin{array}{rrcl}
+& M_m^{-1} A &=& \left(\sum\limits_{\nu = 0}^{m-1} H^\nu P^{-1} \right) \underbrace{A}_{= P - Q}\\
+&&=& \displaystyle{\sum_{\nu=0}^{m-1}} H^\nu (I - H)= I - H^m\\
+\Rightarrow &\mbox{spek}{(M_m^{-1} A)} &=& \{ 1 - \lambda_i^m, \, i = 1, \ldots, n \}.
+\end{array} \]
+
+\begin{eqnarray*}
+\mbox{Setze } \lambda & = & \min_i \mid 1 - \lambda_i^m \mid \displaystyle =
+ \min_i (1 - \lambda_i^m) \enspace \mbox{ da } |\lambda_i| < 1 \\
+\Lambda & = & \max_i \mid 1 - \lambda_i^m \mid = \max_i (1 - \lambda_i^m)
+\end{eqnarray*}
+Falls $m$ ungerade ist, gilt
+\[
+ \lambda_i^m \leq \ldots \leq \lambda_n^m,
+\]
+also
+\[
+ \lambda = 1 - \lambda_n^m, \, \Lambda = 1 - \lambda_1^m.
+\]
+Falls $ \lambda_1 \geq 0$ ist, gilt $\lambda_i \geq 0 $ f"ur alle $ i$ , also
+\[
+ \lambda = 1 - \lambda_n^m \, \Lambda = 1 - \lambda_1^m, \, .
+\]
+Dies liefert die 1.~Zeile von b).
+
+Falls $m$  gerade ist und  $\lambda_1 < 0$, folgt
+\[
+  \lambda  =  \min\{1 - \lambda_n^m, 1 - \lambda_1^m \}, \, \Lambda  =  1 - \delta^m, .
+\]
+Dies ergibt die 2.~und 3.~Zeile in b).
+\end{itemize}
+\end{proof}
+
+
+Man kann das Gau\ss{}-Seidel-Verfahren
+\[
+(D-L)x^{k+1} = Ux^k + b, k=0,1,2,\ldots
+\]
+symmetrisieren (''symmetrisches  Gau\ss{}-Seidel'')
+\begin{equation*}
+\left.
+\begin{array}{lcll} (D-L)x^{k+1/2} &=& Ux^k + b &\text{(vorw\"arts)} \\
+                     (D-U)x^{k+1} &=& Lx^{k+1/2} + b &\text{(vorw\"arts)}
+\end{array} \right\} \enspace, k=0,1,\ldots
+\end{equation*}
+
+Dann ist
+\[
+x^{k+1} = (D-U)^{-1}\left(I+L(D-L)^{-1}b +L(D-L)^{-1}Ux^k\right),
+\]
+also
+\begin{eqnarray*}
+P^{-1} &=& (D-U)^{-1}(I+L(D-L)^{-1}) = (D-U)^{-1}D(D-L)^{-1} \\
+Q &=& P(D-U)^{-1}\left(L(D-L)^{-1}U\right) = (D-L)D^{-1}L(D-L)^{-1}U \\
+   &=& LD^{-1}U.
+\end{eqnarray*}
+
+\begin{aufg}
+\begin{enumerate}
+\item Begr\"unde, weshalb die Matrizen $D^{-1}L, (I-D^{-1}L)$ und $(I-D^{-1}L)^{-1}$ alle kommutieren und zeige damit die letzte Gleichheit.
+\item Zeige, dass der Rechenaufwand des symmetrisierten Gau\ss{}-Seidel nicht (wesentlich) h\"oher ist als bei Gau\ss{}-Seidel, wenn man geeignete Zwischenresultate abspeichert. {\em Hinweis}: Betrachte zwei aufeinanderfolgende Iterationen.
+\end{enumerate}
+\end{aufg}
+
+H\"aufig versucht man, das Gau\ss{}-Seidel-Verfahren durch Relaxation zu beschleunigen (``successive over relaxation, SOR''). Die $i$-te Komponente wird dann berechnet als
+\[
+x_i^{k+1} = x_i^{k} + \frac{\omega}{a_{ii}}(b_i - \sum_{j=1}^{i-1}a_{ij}x_j^{k+1} + \sum_{j=i}^{n}a_{ij}x_j^{k}.
+\]
+F\"ur $\omega = 1$ ergibt sich das gew\"ohnliche Gau\ss{}-Seidel-Verfahren. Die zugeh"orige Zerlegung ist
+\[
+P = \frac{1}{\omega}D-L, Q = \frac{1-\omega}{\omega}D+U.
+\]
+Entsprechendes kann man auch bei der Symmetrisierung machen (``SSOR''). Die resultierende Zerlegung wird m n"achsten Satz verwendet.
+
+\begin{sa}[m-Schritt-SSOR-Pr"akonditionierung:] \index{m-Schritt-SSOR-Pr"akonditionierung}
+\index{SSOR-Pr"akonditionierung}\index{Präkonditionierer!m-Schritt-SSOR}\label{S469}
+Die Matrix $A \in \mathC^{n \times n} $ sei hpd und
+$ A = P - Q $ sei die SSOR-Zerlegung
+\begin{eqnarray*}
+P & = & \frac{1}{\omega ( 2 - \omega)} ( D - \omega L ) D^{-1} (D - \omega L^H), \\
+Q & = & \frac{1}{\omega (2 - \omega)} ( (1- \omega) D + \omega L) D^{-1} ((1 -\omega) D + \omega L^H)
+\end{eqnarray*}
+mit $ \omega \in (0, 2), A = D - L - L^H $ wie "ublich. Wieder sei
+\[ H = P^{-1}Q, \, M_m^{-1} = \displaystyle{\sum_{r=0}^{m-1}} H^r P^{-1} .\]
+Dann gilt
+\begin{itemize}
+\item[a)] $M_m$ ist hpd f"ur alle $m$
+\item[b)] $H$ besitzt nichtnegative reelle Eigenwerte $ 0 \leq \lambda_1 \leq \ldots \leq \lambda_n$
+und es ist
+\[
+\cond (M_m^{-1} A) = \frac{1 - \lambda_1^m}{1 - \lambda_n^m} \, , \, m = 1, 2 , \ldots .
+\]
+"Uberdies f"allt $ \cond (M_m^{-1} A) $ streng monoton in $m$, sofern $\lambda_1<\lambda_n$.
+\end{itemize}
+\end{sa}
+\begin{proof}
+\begin{itemize}
+\item[a)]
+$P$ ist hpd und $Q$ ist hpsd (semidefinit genau f"ur $\omega = 1$). Also ist $ P^H + Q = P + Q$ hpd. Mit
+Lemma~\ref{hpd_lem} ergibt sich deshalb a).
+\item[b)] $P$ ist hpd $ \Rightarrow P^{-1} $ ist hpd und $Q$ ist positiv semidefinit f"ur alle
+$ \omega \in (0,2) $. Mit Lemma \ref{komm_lem} b) folgt so: $ \mbox{spek}(P^{-1} Q) \subseteq [0,
++ \infty) $. Nach Lemma \ref{prae_kond_lem} b) gilt also
+\[
+\cond (M_m^{-1} A) = \frac{1 - \lambda_1^m}{1 - \lambda_n^m}, \, m = 1, 2,
+\ldots .
+\]
+\end{itemize}
+Zur Monotonie: F"ur $ a, b, c, d > 0 $ gilt\footnote{$\mbox{denn: } cb < ad \mbox{ gilt, weil in } ad \mbox{ die gr"o"seren Terme h"aufiger vorkommen als in } cb \mbox{ dann folgt: } \\ ab+cb < ab + ad
+\Rightarrow \frac{a+c}{b+d} <\frac{a}{b} $}
+\[
+cb < ad \Rightarrow \frac{a+c}{b+d} < \frac{a}{b}.
+\]
+
+
+\noindent Damit gilt im Fall $\lambda_1<\lambda_n$
+\begin{eqnarray*}
+\frac{1 - \lambda_1^{m+1}}{1 - \lambda_n^{m+1}} & = &
+        \frac{1 - \lambda_1}{1 - \lambda_n} \cdot
+              \frac{(\overbrace{1 + \ldots + \lambda_1^{m-1}}^{=a} +
+                     \overbrace{\lambda_1^m}^{=c})}
+                   {(\underbrace{1 + \ldots + \lambda_n^{m-1}}_{=b} +
+                     \underbrace{\lambda_n^m}_{=d})} \\
+& < & \frac{1 - \lambda_1}{1 - \lambda_n}\cdot
+\frac{1 + \ldots + \lambda_1^{m-1}}{1 + \ldots + \lambda_n^{m - 1}}
+= \frac{1 - \lambda_1^m}{1 - \lambda_n^m}.
+\end{eqnarray*}
+\end{proof}
+
+
+In der Praxis erweist sich $\omega = 1$ in der Regel als am besten.
+\medskip
+
+Der Vollst"andigkeit halber beweisen wir noch die Konvergenz von SOR und SSOR als eigenst"andige, station"are Iterationsverfahren.
+
+\begin{lem} $A$ sei spd und $A=P-Q$ mit $P^H+Q$ hpd. Dann gilt $\|P^{-1}Q\|_A < 1$ und damit $\rho(P^{-1}Q) <1 $.
+\end{lem}
+\begin{proof} Sie $H = P^{-1}Q = I - P^{-1}A$. Wir zeigen $\|Hu\|_A^2 < \|u\|_A^2$ f"ur alle $u \neq 0$. \\
+Dazu:
+\begin{eqnarray*}
+\|Hu\|_A^2 &=& u^HH^HAHu = u^H(I-P^{-1}A)^H A (I-P^{-1}A)u \\
+           &=& u^H(A - AP^{-H}\underbrace{(P+P^H-A)}_{=P^H+Q}P^{-1}A u \\
+           & < & u^HAu = \|u\|_A^2  \quad(\text{ f"ur } u \neq 0.)
+\end{eqnarray*}
+\end{proof}
+
+\begin{aufg} Zeige mit Hilfe des Lemmas: F\"ur $A$ hpd konvergieren SOR- und SSOR-Verfahren f"ur $\omega \in (0,2)$.
+\end{aufg}
+
+
+\subsection{Polynomielle Pr\"akonditionierung}
+
+Nehme $M^{-1} = q(A)$, $q$ geeignetes Polynom. \medskip
+
+\textbf{Fragen:}
+\begin{itemize}
+\item Was hei\ss{}t geeignet?
+\item Wie gut kann das sein?
+\end{itemize}
+
+$q(A)$ sollte $A^{-1}$ approximieren. Notwendig: Information \"uber $ \spek(A)$.
+
+
+
+\begin{bsp} Bekannt sei $\spek(A) \in E(f_1,f_2,\hat{\rho})$ (Ellipse aus Definition~\ref{def:Tschebyscheff-Polynom}). Das skalierte Tschebyscheff-Polynom $ p_m(z)=\frac{T_m^E(z)}{T_m^E(0)}$ ist klein auf $E$. Das Polynom  $q_{m-1}(z) = \frac{1-p_m(z)}{z}$ approximiert damit $\frac{1}{z}$ auf $E$. Nehme also $q_{m-1}(A)$.
+\end{bsp}
+
+\begin{bsp} Finde Information \"uber das Spektrum durch $m$ Schritte von Arnoldi, $AV_m = H_m V_m + h_{m+1,m}v_{m+1}e_m^H$, Startvector $v_1$ zuf\"allig.
+Eigenwerte von $H_m$ (= Ritzwerte) approximieren Eigenwerte von $A$. Nehme f"ur $q \in \Pi_{m-1}$ das Interpolationspolynom, das $\frac{1}{z}$ in den Ritzwerten interpoliert.
+\end{bsp}
+
+Achtung: $m \to m+1$ im Folgenden.
+
+\begin{lem} [Darstellung des Interpolationspolynoms] Das Interpolationspolynom $q_{m}$ zu $\frac{1}{z}$ in den Punkten $\Theta_0,\ldots, \Theta_{m}$ besitzt die Darstellung
+\[
+q_{m}(z) = \sum_{\ell = 0}^{m} \frac{1}{\Theta_\ell} \prod_{j=0}^{\ell-1} \left(1-\frac{z}{\Theta_j} \right).
+\]
+\end{lem}
+\begin{proof} Die gegebene Darstellung ergibt sich aus der Newton-Form des Interpolationspolynoms
+\[
+q_{m}(z) = \sum_{\ell = 0}^{m} c_\ell \prod_{j=0}^{\ell-1} \left( z-\Theta_j \right)
+\]
+mit den rekursiv "uber dividierte Differenzen bestimmten Koeffizienten $c_\ell = [\Theta_0,\ldots,\Theta_\ell]$, wobei
+\begin{eqnarray*}
+[\Theta_i,\Theta_i] &=& \frac{1}{\Theta_i}, i=0,\ldots,m, \\{}
+[\Theta_i,\ldots,\Theta_{i+k}] &=& \frac{[\Theta_{i+1},\ldots,\Theta_{i+k}] - [\Theta_i,\ldots,\Theta_{i+k-1}]}{\Theta_j - \Theta_i}, \; i=0,\ldots m-k,\\
+& & \text {f"ur $k=1,\ldots,m$.}
+\end{eqnarray*}
+Hier zeigt man mit einfacher Induktion "uber $k$:
+\[
+[\Theta_i,\ldots,\Theta_{i+k}] = \frac{(-1)^k}{\prod_{j=i}^{i+k}(\Theta_k)}.
+\]
+\end{proof}
+
+Die Berechnung von $q_m(A)x$ erfolgt effizient "uber eine Variante des Hornerschemas
+\begin{tabbing}
+$z = x, y = \frac{1}{\Theta_0}x$ \\
+f"ur \= $\ell = 0,\ldots,m-1$ \\
+  \> $z = z-\frac{1}{\Theta_l}Az$ \\
+  \> $y = y + \frac{1}{\Theta_{\ell+1}}z$
+\end{tabbing}
+
+Diese Auswertung ist instabil, wenn die Knoten $\Theta_i$ nicht geeignet sortiert sind. Bew"ahrt hat sich die Leja-Sortierung.
+
+\begin{defn} Die Knoten $\Theta_i, i=0,\ldots,m$ sind {\em Leja-sortiert}, falls gilt
+\[
+\prod_{j=0}^{i-1} | \Theta_i - \Theta_j| = \max_{\ell = i}^m  \prod_{j=0}^{i-1} | \Theta_\ell - \Theta_j|, \enspace i=1,\ldots,m.
+\]
+\end{defn}
+
+Dies l"asst die Wahl f"ur $\Theta_0$ noch offen, man nimmt h"aufig den betragsm"a"sig gr"o"sten Knoten.
+
+\begin{aufg}
+\begin{enumerate}
+\item $A$ sei hpd mit $\spek(A) \subset [a,b]$.  Zeige, dass $q_{m-1}(A)$ hpd f"ur die "uber die Tschebyscheff-Polynome definierten Polynome $q_{m-1}$.
+\item Ist f"ur allgemeines $A$ f"ur die "uber Interpolation in den Ritz-Werten definierten Polynome $q_{m-1}$ gesichert, dass $q_{m-1}(A)$ regul"ar ist?
+\end{enumerate}
+\end{aufg}
+
+\begin{sa} Sei $A$ hpd und $q(A)$ hpd f"ur ein Polynom $q \in \Pi_{m-1}$. Seien $x_k$ und $\hat x_k$ die Iterierten des CG-Vefahrens f"ur $Ax = b$ bzw.\ des mit $q(A)$ pr"akonditionierten CG-Verfahrens $q(A)A \hat x = q(A)b$ und $x^* = A^{-1}b$.  Dann gilt
+\[
+\| x^{mk+m-1}-x^*\|_A \leq \| \hat x^k - x^*\|_A.
+\]
+\end{sa}
+\begin{proof} Es ist $K_{mk+m-1}(A,b) \supseteq K_{k}(q(A)A,q(A)b)$. Die CG-Iterierte $x^{mk+m-1}$ minimiert die $A$-Norm des Fehlers auf dem gr"o"seren Unterraum,
+\begin{eqnarray*}
+\| x^{mk+m-1}-x^*\|_A &=& \min_{x \in K_{mk+m-1}(A,b)} \|x-x^*\|_A \\
+&\leq&  \min_{x \in K_{k}(q(A)A,q(A)b)} \|x-x^*\|_A = \| \hat x^k-x^*\|_A.
+\end{eqnarray*}
+
+\end{proof}
+
+\begin{sa} Sei $A$ regul"ar und $q(A)$ regul"ar f"ur ein Polynom $q \in \Pi_{m-1}$. Seien $x_k$ und $\hat x_k$ die Iterierten des GMRES-Verfahrens f"ur $Ax = b$ bzw.\ des mit $q(A)$ pr"akonditionierten CG-Verfahrens, also CG f"ur  $q(A)A \hat x = q(A)b$. Sei $x^* = A^{-1}b$.  Dann gilt
+\[
+\| b - Ax^{mk+m-1}\|_2 \leq \| b - A \hat x^k \|.
+\]
+\end{sa}
+\begin{proof} Wie zuvor, diesmal weil GMRES die 2-norm des Residuums minimiert.
+\end{proof}
+
+Interpretation: F"ur gleich viele, n"amlich $mk+m-1$ MVMs erhalten wir bei polynomieller Pr"akonditionierung schlechtere Iterierte. Poylnomielle Pr"akonditionierung f"ur CG ist also witzlos. Bei GMRES kann sie trotzdem die Laufzeit verringern, weil die pr"akonditionierte Variante eine k"urzere Rekursion und damit insbesondere weniger Innenprodukte aufweist.
+
+
+

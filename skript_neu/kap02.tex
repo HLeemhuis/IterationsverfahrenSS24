@@ -1,0 +1,246 @@
+\section[Allgemeine Betrachtungen...]{Allgemeine Betrachtungen zur Konvergenz von Krylov-Unterraum-Verfahren}
+
+F"ur jedes Krylov-Unterraum-Verfahren zur Lösung von $Ax=b, A \in \co^{n \times n}$, $b \in \co^n$ gilt
+\[
+r^{m}=b-Ax^{m}=p_m(A)r^{0}, \quad p_m\in \overline{\Pi}_m.
+\]
+Ein KUV ist konvergent, wenn
+\[
+\limm p_m(A)r^{0}=0
+\]
+gilt. Bei geeigneter Wahl von $p_m$ wird $p_m(A)r^{0}=0$ bereits f"ur ein endliches
+$m\le n$; manche Verfahren erreichen dies auch tats"achlich.
+Andere Verfahren
+(wie z.B. das Richardson-Verfahren) ben"otigen eine unendliche Iterationszahl.
+
+\medskip
+
+Man unterscheidet zwei verschiedene Ans"atze zur Analyse von KUV:
+\begin{enumerate}
+\item parameterfreie KUV: Sie ben\"otigen keine (detailliertere) Information
+\"uber Eigenschaften von $A$ (z.B. das Spektrum). In der Regel bilden sie $p_m(A)$
+dann in expliziter Abh"angigkeit
+von $r^{0}$ $\hookrightarrow$ sp"ater (vergleiche cg-Verfahren),
+\item parameterabh"angige KUV verwenden detailliertere Informationen \"uber $A$, z.B.
+\"uber die Lage des Spektrums. In der Regel bilden sie dann $p_m(A)$ unabh"angig von
+$r^{0}$. Vorteil: keine Innenproduktbildung,
+damit besser parallelisierbar; Nachteil: eventuell weniger effizient.
+\end{enumerate}
+
+\textbf{Frage:} Wann gilt $\limm p_m(A)=0\in\cnn$?
+
+W"are $A$ diagonalisierbar, d.h. es gibt eine invertierbare Matrix $T$ und eine Diagonalmatrix
+$\Lambda=diag(\lambda_1,...,\lambda_n)$, so dass
+\[
+A=T\Lambda T^{-1},
+\]
+dann gilt
+\[
+p_m(A)=Tp_m(\Lambda)T^{-1}.
+\]
+Damit ist dann
+\[
+\limm p_m(A)=0\Leftrightarrow\limm p_m(\lambda)=0 \quad \forall\ \lambda\in\text{spek} (A).
+\]
+Ist $A$ nicht diagonalisierbar, so werden weitere Bedingungen notwendig.
+
+\begin{sa}\label{KonvergenzKUV_sa}
+Es sei
+\[
+A=TJT^{-1}
+\]
+mit
+\[
+J=\left(\begin{array}{ccc}
+J_1\\&\ddots\\&&J_k
+\end{array}\right)
+ \quad
+J_l=\left(\begin{array}{cccc}
+\lambda_l&1\\
+&\ddots&\ddots\\
+&&\ddots&1\\
+&&&\lambda_l
+\end{array}\right) \in \mathbb{C}^{n_l\times n_l}
+\]
+die Jordan-Normalform von $A$ mit $\lambda_l\in \text{spek}(A) =
+\{\lambda_1,...,\lambda_k\}$ (aber Mehrfachnennungen m"oglich). Dann gilt
+\[
+\limm p_m(A)=0\Leftrightarrow\limm p_m^{(\nu)}(\lambda_l)=0 \quad l=1,...,k,\ \nu=0,...,n_l-1.
+\]
+\end{sa}
+\begin{proof}
+Es gilt
+\[
+p_m(A)=Tp_m(J)T^{-1},
+\]
+also
+\[
+\limm p_m(A)=0\Leftrightarrow\limm p_m(J_l)=0\quad l=1,...,k.
+\]
+Wir betrachten also
+\[
+J_l=\lambda_l\cdot I_{n_l}+S, \quad S=\left(\begin{array}{cccc}
+0&1\\
+&\ddots&\ddots\\
+&&\ddots&1\\
+&&&0
+\end{array}\right)\in\mathbb{C}^{n_l\times n_l} \Rightarrow S^{n_l}=0.
+\]
+Damit ergibt sich (mit $\binom{k}{\nu}=0$, falls $\nu >k$)
+\[
+J_l^k=\sum\limits_{\nu=0}^{n_l-1}\binom{k}{\nu}S^\nu\lambda_l^{k-\nu}.
+\]
+Es sei nun $p_m(t)=\sum\limits_{k=0}^{m}c_k t^k$, dann ist
+\begin{align*}
+p_m(J_l)
+&=\sum\limits_{k=0}^{m}c_k \sum\limits_{\nu=0}^{n_l-1}\binom{k}{\nu}S^\nu\lambda_l^{k-\nu}\\
+&=\sum\limits_{\nu = 0}^{n_l-1}\frac{1}{\nu!}S^\nu
+   \underbrace{ \sum\limits_{k=0}^{m}c_k \frac{k!}{(k-\nu)!}\lambda_l^{k-\nu}}_{p_m^{(\nu)}(\lambda_l)}.
+\end{align*}
+Hierin bezeichnet $p_m^{(\nu)}$ die $\nu$-te Ableitung des Polynoms $p_m$.
+
+In der Matrix $S^\nu$ ist genau die $\nu$-te obere Nebendiagonale (mit Einsen)
+besetzt.  Es gilt also
+\[
+\limm p_m(J_l)=0\Leftrightarrow \limm p_m^{(\nu)}(\lambda_l)=0 \quad \nu=0,...,n_l-1.
+\]
+\end{proof}
+
+\begin{cor}\label{Konvergenzdiag_kor}
+Sei $A\in\cnn$ diagonalisierbar (z.B. hermitesch oder normal\footnote{d.h. $AA^*=A^*A$, wobei $A^*$ die Adjungierte von $A$ bezeichnet}). Dann gilt
+\[
+\limm p_m(A)=0\Leftrightarrow\limm p_m(\lambda)=0 \quad \forall\ \lambda\in \text{spek}(A).
+\]
+\end{cor}
+
+F"ur diagonalisierbares $A$ ist also die
+Gr"o"se $\underset{\lambda\in\text{spek}(A)}{\max}|p_m(\lambda)|$ ein 
+Ma"s f"ur die Gr"o"se von $p_m(A)$, sie ist
+sogar eine Norm von $p_m(A)$:
+\[
+A=SDS^{-1}, \quad D=\diag(\lambda_1,...,\lambda_n). 
+\]
+Nehme
+\[
+\|x\|_S=\|S^{-1}x\|_2,
+\]
+dann ist
+\begin{align*}
+\|A\|_S=\underset{\|x\|_S\ne 0}{\max} \frac{\|Ax\|_S}{\|x\|_S}
+&=\underset{\|x\|_S\ne 0}{\max}\frac{\|DS^{-1}x\|_2}{\|S^{-1}x\|_2}\\
+&=\underset{y\ne 0}{\max}\frac{\|Dy\|_2}{\|y\|_2}=\|D\|_2\\
+&=\underset{\lambda\in\text{spek}(A)}{\max}|\lambda|
+\end{align*}
+und analog
+\[
+\|p_m(A)\|_S=\underset{\lambda\in\text{spek}(A)}{\max}|p_m(\lambda)|.
+\]
+Minimierung von
+\[
+\underset{\lambda\in\text{spek}(A)}{\max}|p_m(\lambda)|
+\]
+minimiert also auch $\|p_m(A)\|_S$.
+
+\medskip
+
+\textbf{Bemerkung:} $\|\cdot\|_S$ ist i.A. eine "`schiefe"' Norm. Ist $A$
+jedoch normal, so kann man $S$ unit"ar w"ahlen, so dass $\|x\|_S = \|x\|_2$
+und damit $\|A\|_S = \|A\|_2 =
+\underset{\lambda\in\text{spek}(A)}{\max}|p_m(\lambda)|$.
+
+
+\bigskip
+
+Im diagonalisierbaren Fall l"ost damit ein bestm"ogliches Iterationsverfahren
+f"ur jedes $m$ die MinMax-Aufgabe
+\begin{equation} \label{minimax_eq}
+\underset{p_m\in\overline{\Pi}_m}{\min} \  \underset{\lambda\in\text{spek}(A)}{\max}
+|p_m(\lambda)|.
+\end{equation}
+
+
+Dies ist jedoch in den meisten F"allen praktisch nicht m"oglich, schon alleine
+weil man i.A. die Eigenwerte von $A$ nicht alle kennt.
+
+Parameterabh"angige KUV verwenden deshalb nur partielle Informationen "uber
+$\text{spek}(A)$, um mittels dieser 
+Informationen m"oglichst "`gute"' Polynome $p_m(t)$ zu finden.
+
+\medskip
+
+Es sei z.B. (mittels Satz von Gerschgorin o."A.) bekannt, dass
+\[
+\text{spek}(A)\subset D(\zeta,\rho)=\{z\in\co:\ |z-\zeta|\leq\rho\}.
+\]
+
+Wie lautet die L"osung von 
+\[
+\underset{p_m\in\overline{\Pi}_m}{\min} \  \underset{\lambda\in D(\zeta,\rho)}{\max}|p_m(\lambda)|\;?
+\]
+
+\textbf{Beachte:} $0 \notin D(\zeta,\rho)$ ist hier eine vern"unftige
+zus"atzliche Bedingung, da 
+ansonsten die L"osung $p_m\equiv1$ lautet f"ur alle $m$, d.h.\ es
+resultiert ein nicht konvergentes KUV.
+
+\begin{sa}\label{Minmaxkreis_sa}
+Sei $\rho>0$, sei $\gamma\in\co$ mit $|\gamma|>\rho$. Dann l"ost das Polynom
+\[
+p_m(z)=\frac{z^m}{\gamma^m}
+\]
+die Aufgabe
+\[
+\underset{p_m\in\Pi_m,\ p_m(\gamma)=1}{\min} \  \underset{\lambda\in D(0,\rho)}{\max}|p_m(\lambda)|,
+\]
+der Wert ist $|\rho/\gamma|^m$.
+\end{sa}
+\textbf{Bemerkung:} $|\rho/\gamma|$ ist klein, wenn $\gamma$ weit vom Kreis
+$D(0,\rho)$ entfernt ist. 
+
+Zum Beweis des Satzes ben"otigen wir den Satz von Rouch\'e.
+
+\begin{lem}[Rouch\'e]\label{Rouche_lem}
+Es seien $f,g$ holomorph im Gebiet $\Omega\subset \co$. Es sei $\Gamma$ ein
+einfach geschlossener, in $\Omega$
+nullhomologer Weg (z.B. der Rand eines Kreises in $\co$), so dass gilt
+\[
+|f(\zeta)-g(\zeta)|<|g(\zeta)| \quad \text{f"ur alle } \zeta\in\Gamma.
+\]
+Dann haben $f$ und $g$ gleich viele Nullstellen im Inneren von $\Gamma$.
+\end{lem}
+Vergleiche \textsc{Remmert}, Funktionentheorie I. Grundlehren, Springer,
+4. Auflage; Seite 310f.
+
+
+\begin{proof}
+Sei $p_m^*(z)=\frac{z^m}{\gamma^m}$. Sei $p_m\in \Pi_m,\ p_m(\gamma)=1$ ein Polynom mit
+\[
+\underset{\lambda\in D(0,\rho)}{\max}|p_m(\lambda)|<\underset{\lambda\in D(0,\rho)}{\max}|p_m^*(\lambda)|.
+\]
+Dann gilt  
+\[
+|(p_m^*(z)-p_m(z))-p_m^*(z)|=|p_m(z)|<\left|\frac{\rho}{\gamma} \right|^m=|p_m^*(z)| \enspace \mbox{f"ur } z \in \partial D(0,\rho).
+\]
+Also besitzen $p_m^*-p_m$ und $p_m^*$ gleich viele Nullstellen im Inneren von
+$D(0,\rho)$, n"amlich $m$ St"uck. Au"serdem
+gilt $(p_m^*-p_m)(\gamma)=1-1=0$, also besitzt das Polynom $p:=p_m^*-p_m\in\Pi_m$ mindestens $m+1$ Nullstellen,
+ist also nach dem Fundamentalsatz der Algebra das Nullpolynom. 
+\end{proof}
+
+\medskip
+
+\begin{aufg} Finde ausgehend von Satz \nref{Minmaxkreis_sa} die L"osung von
+\[
+\underset{p_m\in \overline{\Pi}_m,}{\min}\ \underset{\lambda\in D(1,\rho)}{\max}|p_m(\lambda)|.
+\]
+\end{aufg}
+
+\textbf{Antwort: s. "Ubung.}
+\medskip
+
+Wir erhalten so die folgende Interpretation: 
+Bez"uglich der Information
+\[
+\spek(A) \subseteq D(1,\rho)
+\]
+mit $\rho < 1$ ist das Richardson-Verfahren \emph{optimal}.

@@ -1,0 +1,598 @@
+\section{Unvollständige LU-Zerlegungen}
+Eine unvollständige LU-Zerlegung ( ILU ) wird benötig als Präkonditionierer.
+Starten wollen wir mit einer zeilenorientierten Variante der Gauß-Elimination.
+Dazu sei $A\in \cnn$ regulär.
+
+\begin{alg}[$ikj$-Form der Gauß Elimination]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \STATE $a_{i,k} = a_{i,k}/a_{k,k}$
+        \FOR{$ j = k+1, \dots , n$}
+          \STATE $a_{i,j} = a_{i,j} - a_{i,k} a_{k,j}$
+        \ENDFOR
+      \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Nach Terminierung enth"alt das strikte untere Dreieck von $A$ den Faktor $L$;
+der Rest ist $U$.
+\medskip
+
+{\bf Vorteil} der $ikj$-Form: $L$ und $U$ werden zeilenweise berechnet. Dies ist geeignet für die Datenstruktur bei dünnbesetzten Matrizen.
+
+\medskip
+
+{\bf Idee bei ILU:} Lasse Operationen in der Gauß-Elimination weg, so dass die Matrizen weniger gefüllt sind.
+
+\medskip
+
+\subsection{ILU zu einem vorgegebenen Muster}
+
+\begin{defn}
+$E \subseteq \{1,\dots,n \} \times \{1,\dots,n\}$ heißt {\em Muster}, wenn $\{(i,i) , i=1, \dots ,n\} \subseteq E.$
+\end{defn}
+
+\begin{alg}[$ikj$-Form der ILU zum Muster E]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \IF{$(i,k) \in E$}
+          \STATE $a_{i,k} = a_{i,k}/a_{k,k}$
+          \FOR{$ j = k+1, \dots , n$}
+            \IF{$(i,j) \in E \wedge (k,j) \in E$}
+              \STATE $a_{i,j} = a_{i,j} - a_{i,k} a_{k,j}$
+            \ENDIF
+          \ENDFOR
+        \ENDIF
+      \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+F"ur $U$ und $L$ in der $LU$-Faktorisierung gilt dann
+$$ u_{ij} =
+\begin{cases}
+  a_{i,j}  & \text{falls } (i,j) \in E \text{ und } j \geq i \\
+  0 & \text{sonst}
+\end{cases}
+$$
+und 
+$$ l_{ij} =
+\begin{cases}
+  a_{i,j}  & \text{falls } (i,j) \in E \text{ und } j < i \\
+  0 & \text{sonst}.
+\end{cases}
+$$
+
+\begin{sa}
+Sei $A$ eine H-Matrix, dann existiert die ILU für jedes Muster $E$.
+\end{sa}
+
+{\bf Beweis:} s.\ Vorlesung "`Parallele Algorithmen WS 2005/06"'.
+
+Nun stellt sich natürlich die Frage, was geeignete Muster $E$ sind.
+
+\begin{defn}
+Man spricht von ILU(0), falls $ E = \{ (i,j) : a_{ij} \neq 0 \} $.
+\end{defn}
+
+{\bf Frage:} Wie findet man weitere, größere geeignete Muster?
+
+\medskip
+
+{\bf Idee:} Wir gehen davon aus, dass $ \diag(A) = I $ und $|a_{i,j}| < \varepsilon$
+für  $i \neq j$ (z.B. $\varepsilon = \frac 14$ bei Modellproblem I). Dann kann man einen "`Füll-Level-Index"' auf
+folgende Weise vergeben:
+
+\medskip
+
+Initialisierung:
+$$
+\widehat{lev}(i,j) =
+\begin{cases}
+   1 & \text{falls } a_{i,j} \neq 0 \\
+   \infty & \text{falls } a_{i,j} = 0.
+\end{cases}
+$$
+Bei jedem Schritt der (unvollst"andigen) Gauß-Elimination wird $\widehat{lev}(i,j)$ 
+aufdatiert via
+\begin{equation}\label{aufdatierunglevel}
+a_{i,j} = a_{i,j} - a_{i,k} a_{k,j} \Rightarrow \widehat{lev}(i,j) = \min \{ \widehat{lev}(i,j),\widehat{lev}(i,k) + \widehat{lev}(k,j) \}
+\end{equation}
+Geht man davon aus, dass alle $a_{i,i}$ die Gr"o"senordnung 1 haben, so hat
+$a_{i,j}$ die Gr"o"senordnung ${\cal O}(\varepsilon^{\widehat{lev}(i,j)})$.
+Je gr"o"ser $\widehat{lev}(i,j)$, desto kleiner $a_{i,j}$. In einer ILU
+kann man also das Muster so festlegen, dass die Eintr"age mit gro"sem F"ull-Level
+auf Null gesetzt werden.
+
+In der Standardterminologie wird $lev(i,j) = \widehat{lev}(i,j)-1$ verwendet, d.h. (\ref{aufdatierunglevel}) wird zu
+\begin{equation}\label{aufdatierungstandard}
+lev(i,j) = \min \{lev(i,j) , lev(i,k) + lev(k,j) +1 \}.
+\end{equation}
+
+In der ILU($p$) werden nun die Positionen in das Muster $E$ "ubernommen, f"ur
+die $lev(i,j) \leq p$. Dies ist konsistent mit der Bezeichnung
+ILU(0) von vorher.
+
+\begin{alg}[ikj-Form der ILU(p)]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \IF{$lev(i,k) \leq p$}
+          \STATE $a_{i,k} = a_{i,k}/a_{k,k}$
+          \FOR{$ j = k+1, \dots , n$}
+            \STATE $lev(i,j) = \min \{lev(i,j),lev(i,k) + lev(k,j) + 1\} $
+            \IF{$lev(i,k) \leq p$}
+              \STATE $a_{i,j} = a_{i,j} - a_{i,k} a_{k,j}$
+            \ENDIF
+          \ENDFOR
+        \ENDIF
+      \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{enumerate}
+\item Eine gute Implementierung sollte so sein, dass der Aufwand zur Berechnung der
+Level-Indizes nicht gro"s  wird.
+\item Das entstehende Muster $E$ ist unabhängig von den numerischen Werten. Es kann also
+eine Datenstruktur von $L$ und $U$ vorweg berechnet werden.
+\end{enumerate}
+
+\begin{aufg}
+Sei $A$ symmetrisch und $G(A) = (V,E)$ der Graph von $A$.
+Zeige:
+\begin{itemize}
+\item[(i)] Bei der normalen Gau"s-Elimination hat die Matrix $(L\setminus U)$ den
+Graphen $\tilde{G} = (V,\tilde{E})$ mit
+\begin{multline*}
+(i,j) \in \tilde{E} \text{ mit } i < j\\ \iff \exists \text{ Kantenzug } (i,i_1, \dots , i_{l-1},j) \text{ mit }
+  i_\nu \in \{1,\dots i-1\}.
+\end{multline*}
+\item[(ii)] Bei ILU($p$) hat die Matrix $(L\setminus U)$ den
+Graphen $\tilde{G} = (V,\tilde{E})$ mit
+\begin{multline*}
+(i,j) \in \tilde{E} \text{ mit } i < j\\ \iff \exists \text{ Kantenzug der L"ange $p$ } (i,i_1, \dots , i_{l-1},j)\\ \text{ mit }
+  i_\nu \in \{1,\dots i-1\}.
+\end{multline*}
+\end{itemize}
+{\em Hinweis:} Verwende Induktion "uber $k$ und formuliere eine geeignete Eigenschaft
+f"ur die Zwischenresultate $A^{(k)}$.
+\end{aufg}
+
+\subsection{Dynamische ILU}
+{\bf Nachteile von ILU(p):} Muster ist "uber ein einfaches Modell, aber ohne
+wirkliche Rücksicht auf numerische Werte festgelegt. Man hätte aber gerne
+$$A = LU - R \text{  mit  } R \text{ "`klein"'}. $$
+{\bf Idee:} Lege Muster bei ILU dynamisch fest, d.h während der Rechnung.
+
+\medskip
+
+{\bf Typischer Vertreter:} ILUT ("`T"': Threshold = Schwelle )
+
+\begin{defn}
+Eine {\em Nullregel} ist eine Vorschrift, bei der Berechnung einer ILU eine
+ Zahl (oder Teile einer ganzen Zeile ) auf $0$ zu setzen.
+\end{defn}
+Damit ergibt sich folgendes Gerüst für ILU
+
+\begin{alg}[ikj-Form einer allg. ILU] \label{allgemeineILU}
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}[1]
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \STATE $a_{i,k} = a_{i,k}/a_{k,k}$
+        \STATE wende eine Nullregel auf $a_{i,k}$ an
+        \IF{$a_{i,k} \not = 0$}
+         \FOR{$ j = k+1, \dots , n$}
+          \STATE $a_{i,j} = a_{i,j} - a_{i,k} a_{k,j}$
+        \ENDFOR
+       \ENDIF
+      \ENDFOR
+    \STATE wende eine Nullregel auf $a_{i,\bullet}$ an \{i-te Zeile\}
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+\begin{bem}
+ILU($p$) passt in das Schema: Die Nullregeln basieren nur darauf, ob $(i,j) \in E$.
+\end{bem}
+
+\begin{defn}
+ILUT($\tau$,p) verwendet folgende Regeln:
+\end{defn}
+
+{\bf Für Zeile 4:}
+$$
+a_{ik} =
+\begin{cases}
+ 0 &\text{falls } |a_{ij}| \leq \tau\\
+ \text{unverändert } & \text{sonst}
+\end{cases}
+$$
+
+{\bf Für Zeile 11:}
+\begin{enumerate}
+\item $a_{i,j} \leftarrow 0 \text{ , falls} |a_{ij}| \leq \tau$
+\item Behalte danach unter den Einträgen $a_{i1},\dots,a_{i,i-1}$ ($\simeq L$) nur die $p$ betragsgrößten bei,
+      alle anderen werden $0$. Dito mit den Einträgen $a_{i,i+1},\dots,a_{i,n}$
+    ($\simeq U$)
+      ($\Rightarrow \text{max } 2p+1$ Einträge der Zeile sind $\neq 0$)
+\item[] {\bf Variante für 2.}\\
+Es bezeichne $l(i),u(i)$ die Anzahl der Nicht-Nullen in Zeile $i$ von $A$ vor bzw. nach der Diagonalen. Behalte dann
+$l(i)+p$ bzw. $u(i) + p$ Einträge bei.
+\end{enumerate}
+
+
+\begin{bem}
+ILUT($\tau$,p) ist nicht immer eine ILU zu einem Muster $E$, da in Zeile $4$ und Zeile $7$ unterschiedliche
+Nullregeln angewendet werden.
+\end{bem}
+Es gibt nur schwache Aussagen über ILUT, typisch ist die folgende.
+
+\begin{defn}
+$A \in \rnn$ heißt $\hat{M}$-Matrix, falls gilt:
+\begin{align*}
+& a_{ij}  \leq 0 \text{ für } i\neq j,\\
+& a_{ii}   > 0  \text{ für } i = 1, \dots n-1, \\
+& \forall i < n \hspace{0.3cm} \exists j_i > i \text{ mit }  a_{ij_i} < 0.
+\end{align*}
+\end{defn}
+
+\begin{sa}
+$A$ sei eine diagonal dominante $\hat{M}$-Matrix, d.h.
+$$
+(a_{i,\bullet}) = \sum_{j=1}^n a_{ij} \geq 0 \text{ für } i = 1,\dots n.
+$$
+Die Nullregeln in \ref{allgemeineILU} seien beliebig bis auf die Tatsache, dass sie nie auf $a_{i j_i}$ und $a_{ii}$ angewendet werden. 
+Dann ist Algorithmus~\ref{allgemeineILU} durchführbar und es gilt nach Terminierung des Algorithmus:
+\begin{align*}
+a_{ii} & > 0 \text{ für } i = 1,\dots ,n,\\
+a_{nn} & \geq 0, \\
+\sum_{j=1}^n a_{ij} & \geq 0 \text{ für } i = 1,\dots ,n. \\
+\end{align*}
+\end{sa}
+
+{\bf Beweis:}
+Wir benötigen Bezeichnungen für die Zwischenwerte in Algorithmus~\ref{allgemeineILU}
+und formulieren ihn deshalb nochmal.
+
+\begin{alg}[ikj-Form einer allg. ILU mit Zwischenwerten]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$i = 2, \dots ,n$ }
+      \FOR{$ k = 1, \dots ,i-1$}
+        \STATE $l_{i,k} = a_{i,k}^{(k)}/a_{k,k}^{(k)}$
+        \STATE Nullregel
+        \FOR{$ j = k+1, \dots , n$}
+          \STATE $a_{i,j}^{(k+1)} = a_{i,j}^{(k)} - l_{i,k} a_{k,j}^{(k)}$
+        \ENDFOR
+      \ENDFOR
+    \STATE Nullregel
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+Wir zeigen, dass für alle $i$ und $k$ gilt:
+\begin{align*}
+a_{ij}^{(k)} & \leq 0 \text{ für } i\neq j,\\
+a_{ii}^{(k)} &  > 0  \text{ für } i < n, \\
+\sum_{j=1}^n a_{ij}^{(k)} & \geq 0.
+\end{align*}
+
+Der Beweis ist eine Induktion "uber $i$, innerhalb derer eine Induktion
+"uber $k$ gemacht wird. Es reicht deshalb, den Schritt von $k$ nach $k+1$
+bei festem $i$ anzugeben.
+
+$k = 1$: Hier ist die Behauptung identisch mit den Voraussetzungen des
+Satzes.
+
+$k \rightarrow k+1$:
+$$
+a_{ij}^{(k+1)} =
+\begin{cases}
+0 & \text{ falls Nullregel zutrifft}\\
+a_{i,j}^{(k)} - \underbrace{l_{i,k}}_{\leq 0} \underbrace{a_{k,j}^{(k)}}_{\leq 0} & \text{ sonst, insbesondere} \leq 0
+\end{cases} .
+$$
+
+Für die Zeilensummen gilt weiter
+$$\sum_{j=i}^n a_{i,j}^{(k+1)} = \sum_{j=i}^n a_{i,j}^{(k)} - l_{i,k} a_{k,j}^{(k)} - r_{ij}^{(k)}
+\overset{(*)}{=} \underbrace{\sum_{j=i}^n a_{i,j}^{(k)}}_{\geq 0} - \underbrace{l_{i,k}}_{\leq 0}
+\underbrace{\sum_{j=i}^n a_{k,j}^{(k)}}_{\geq 0} \underbrace{- r_{ij}^{(k)}}_{\geq 0} \geq 0$$
+Wobei $(*)$ folgt aus
+$$
+r_{ij}^{(k)} =
+\begin{cases}
+0 & \text{ falls Nullregel zutrifft}\\
+a_{i,j}^{(k)} - l_{i,k} a_{k,j}^{(k)} & \text{ sonst, insbesondere} \leq 0
+\end{cases} .
+$$
+Zu zeigen bleibt $a_{ii}^{(k+1)} > 0$. Wir wissen 
+$$a_{ii}^{(k+1)} \geq \sum_{j=i+1}^n -a_{ij}^{(k+1)} \geq - a_{ij_i}^{(k+1)} = -(a_{ij_i}^{(k)} - l_{i,k} a_{kj_i}^{(k)})
+\geq a_{ij_i}^{(k)} > 0.
+$$
+
+\subsection{Approximative Inverse}
+Die bisherigen Ans"atze zielten auf
+$$A = LU - R \text{  mit  } R \text{ "`klein"'}. $$
+Dann ist die präkonditionierte Matrix
+$$L^{-1}AU^{-1} = I-L^{-1}RU^{-1}.
+$$
+Dabei hoffen wir, dass
+mit $R$ auch $L^{-1}RU^{-1}$ "`klein"' ist. Diese Hoffnung erfüllt sich nicht,
+falls $L$ und $U$ schlecht konditioniert sind.
+
+\medskip
+
+{\bf Neuer Ansatz:} Suche ein $M\in \cnn$ so dass
+\begin{enumerate}
+\item $M$ dünn besetzt,
+\item $MA$ nahe bei $I$.
+\end{enumerate}
+Ein solches $M$ heißt "`sparse approximate inverse"' (dünn besetzte approximative Inverse) von $A$. Wie kann man $M$ berechnen?
+
+\medskip
+
+Dazu betrachten wir Verfahren, welche
+$$\|I-AM\|_F^2$$
+(approximativ) minimieren.
+\begin{defn}
+Für eine Matrix $A\in \cnn$ ist die \emph{Frobeniusnorm} definiert durch \[\|A\|_F^2 := \sum_{i=1}^n \sum_{j=1}^n |a_{ij}|^2.\]
+\end{defn}
+\begin{aufg}\label{fnorm_aufg}
+Man zeige $\|Ax\|_2 \leq \|A \|_F \cdot \|x\|_2$.
+\end{aufg}
+\begin{bem}
+Es ist $\|A\|_F = \|vec(A)\|_2$ mit
+$$vec(A) = \left(\begin{array}{c}  a_{\bullet,1} \\ \vdots \\  a_{\bullet,n} \end{array}\right).$$
+
+\end{bem}
+Für $A,B \in \cnn$ erhalten wir so auch
+$$||A||_F^2 = \langle A,A \rangle,$$
+wobei $\langle , \rangle$ die Bilinearform auf $\cnn$ ist mit
+$$\langle A,B \rangle = \langle vec(A),vec(B) \rangle = \sum_{i=1}^n \sum_{j=1}^n a_{ij} \overline{b}_{ij} =
+\sum_{i=1}^n (B^HA)_{i,i} = tr(B^HA).$$
+Wir betrachten einfache Minimierungsverfahren mit "`line search"'
+\begin{enumerate}
+\item $MR (\simeq \text{GMRES}(1))$: Minimierung entlang des Residuums $I-AM$.
+\item Steepest descent: Minimierung entlang des Gradienten.
+\end{enumerate}
+
+GMRES(1): Ein Iterationsschritt (berechnet $M^{k+1}$ aus $M^k$ mit $R^k = I - AM^k$)
+lautet (s.\ Lemma~\ref{minimierungs_lem})
+$$M^{k+1} = M^k - \frac{\langle R^k,R^k \rangle}{\langle R^k,AR^k \rangle} R^k = M^k - \frac{tr((R^k)^HR^k)}{tr((AR^k)^HR^k)} R^k.$$
+
+Um die dünne Besetztheit zu erhalten, wenden wir wieder Nullregeln an.
+
+\begin{alg}[Globales MR für dünn besetzte approx.\ Inverse]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\label{algo_gmr}
+\begin{algorithm}
+  \begin{algorithmic}
+    \STATE w\"ahle $M^0$ (z.B. $M^0 = I,M^0 = A^H$ )
+    \FOR{$k = 0,1, \dots$ }
+      	\STATE $R^k = I-AM^k$
+        \STATE $\alpha_k = \frac{tr((R^k)^HR^k)}{tr((AR^k)^HR)}$
+        \STATE $\tilde{M}^{k+1} = M^k - \alpha_k R^k$
+        \STATE wende Nullregel auf $\tilde{M}^{k+1}$ an, ergibt $M^{k+1}$
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Steepest descent:
+
+\medskip
+
+Ben"otigt wird die Ableitung von $F(M)=\|I-AM\|_F^2$, $F:\cnn\rightarrow \co$,
+$F':\cnn\rightarrow L(\cnn,\co)$ \begin{align*} F(M+H)-F(M)=F'(M)\cdot H+o(\|H\|). \end{align*}
+Wir berechnen: \begin{align*} F(M+H)-F(M) =& tr((I-A(M+H))^H(I-A(M+H))) \\&- tr((I-AM)^H (I-AM)) \\
+=&2 \re \left( tr((I-AM)^H(AH)) \right)
+     +\underbrace{tr((AH)^H(AH))}_{O(\|H\|^2)}. \end{align*}
+Also ist \begin{align*} F'(M)\cdot H =& 2 \re \left( tr((I-AM)^H(AH)) \right) \\ =&2
+\re \left( \la AH,I-AM \ra \right) \\
+=&2 \re \left( \la H,A^H(I-AM)\ra\right) .
+\end{align*}
+Die Steepest-Descent-Richtung $G$ ist damit gegeben
+ \begin{align*}
+G=A^H(I-AM)=A^HR \end{align*}
+
+\begin{alg}[Glob. steepest desc. f"ur d"unnbes. approx. Inv.]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\label{algo_gsd}
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \STATE w"ahle $M^0$
+    \FOR{$k = 0,1, \dots$ }
+      \STATE $R^k = I-AM^k$
+	\STATE $G^k = A^HR^k$
+	\STATE $\alpha_k = \frac{tr((AG^k)^H R^k)}{tr((AG^k)^H(AG^k))}$
+	\STATE $M^{k+1} = M^k+\alpha_k G^k$
+	\STATE wende Nullregel auf $M^{k+1}$ an
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Es ist  f"ur $M = (m_1 | \ldots | m_n)$
+\begin{align*} F(M)=\sum_{i=1}^n \|e_i-Am_i\|_2^2.
+ \end{align*}
+Die Minimierung von $F$ zerf"allt also in $n$ unabh"angige Teile. Es ergeben sich damit lokale
+Versionen der Algorithmen~\ref{algo_gmr} und \ref{algo_gsd}.
+
+\begin{alg}[lokales MR f"ur d"unnbesetzte approx. Inv.]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\label{algo_lmr}
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \STATE w"ahle $M^0=(m_1,\ldots,m_n)$
+    \FOR{$k = 0,1, \dots$ }
+	\FOR{$i=1,\ldots,n$}
+        \STATE $r_i^k = e_i-Am_i^k$
+	  \STATE $\alpha_k = \frac{\la r_i^k,Ar_i^k \ra}{\la Ar_i^k,Ar_i^k \ra}$
+	  \STATE $m_i^{k+1} = m_i^k+\alpha_k r_i^k$
+	  \STATE wende Nullregel auf $m_i^{k+1}$ an
+      \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+Analog f"ur Algorithmus \ref{algo_gsd}.
+
+\begin{bem}
+\begin{itemize}
+\item[(i)] Schleife "uber $i$ ist parallelisierbar, da die $m_i$ unabh"angig voneinander
+berechnet werden.
+\item[(ii)] Es sind verbesserte Varianten m"oglich (`self preconditioning'), bei denen man
+        die bisher berechnete approximative Inverse als Pr"akonditionierer bei Bestimmung
+        der n"achsten approximativen Inverse verwendet.
+\end{itemize}
+\end{bem}
+
+Wir untersuchen jetzt die Frage,  wann  eine dünn besetzte approximierte Inverse $M$ "uberhaupt regul"ar ist.
+
+\begin{lem}
+Sei $A$ regulär und $\|I-AM\|<1$ in irgendeiner Operatornorm. Dann ist $M$ regul"ar. \end{lem}
+\begin{proof}
+$AM=I-(I-AM) \Rightarrow (AM)^{-1}=\sum_{i=0}^{\infty} (I-AM)^i$, da diese Reihe wegen $\|I-AM\|<1$
+konvergiert. Also ist mit $A$ auch $M$ regul"ar.
+\end{proof}
+
+\begin{bem} \begin{itemize}
+\item[a)] $M=0$ erreicht $\|I-AM\|=1$. In diesem Sinne ist $\|I-AM\|<1$ eine Minimalforderung.
+\item[b)] Wegen $\|I-AM\|_2 \leq  \|I-AM\|_F $ (s. Aufgabe \ref{fnorm_aufg}) ist auch im Falle $\|I-AM\|_F<1$ die Matrix $M$ regul"ar.
+\end{itemize} \end{bem}
+
+F"ur weitere Resultate betrachten wir jetzt die {\em 1-Normen} $\|e_i-Am_i\|_1$.
+
+Sei
+\begin{equation}
+ \label{tau} \|r_i\|=\|e_i-Am_i\|<\tau_i, \quad i=1,\ldots,n.
+ \end{equation}
+
+\begin{sa}
+Sei \eqref{tau} erf"ullt und es sei $B=(b_{ij})=A^{-1}$. Weiter gelte f"ur ein $i$ und ein $j$ \begin{align*}
+|b_{ij}|\geq \tau_j \max_{l=1,\ldots,n} |b_{il}| > 0. \end{align*} Dann ist $m_{ij}\not=0$.
+\end{sa}
+\begin{proof} Es ist 
+$AM=I-R, R=(e_1-Am_1 | \ldots| e_n-Am_n)$. Damit erhalten wir
+$ M =B-BR$, d.h.\ $ m_{ij} = b_{ij} -\sum_{k=1}^n b_{ik}r_{kj}$. Dies ergibt
+\begin{align*}
+ |m_{ij}|&\geq 
+|b_{ij}|-\sum_{k=1}^n |b_{ik}|\cdot |r_{kj}| \\ &\geq |b_{ij}|-\max_k |b_{ik}| \cdot \|r_j\|_1 \\
+& > |b_{ij}|-\max_k |b_{ik}| \cdot \tau_j >0 \end{align*}
+\end{proof}
+
+\begin{defn}
+$B\in \cnn$ hei"st \textsl{$\tau$-"aquimodular} $(\tau >0)$, falls gilt 
+\begin{align*}
+b_{ij}\not=0 \Rightarrow |b_{ij}|\geq \tau \cdot \max_{l,s=1,\ldots,n} |b_{ls}| .
+\end{align*}
+\end{defn}
+
+Interpretation:
+$b_{ij},b_{ls}\not=0 \Rightarrow |\frac{b_{ls} }{b_{ij}}|\leq \frac{1}{\tau }$
+
+\begin{cor} \label{kor_dbaI}
+Gilt f"ur eine d\"unn besetzte approximative Inverse, dass \begin{align*} \|e_i-Am_i\|_1<\tau \quad
+ \text{ f"ur } i=1,\ldots,n \end{align*} und ist $B$ $\tau$-"aquimodular, so folgt
+\begin{align*} b_{ij}\not=0 \Rightarrow m_{ij}\not=0. 
+\end{align*} \end{cor}
+
+Das Besetztheitsmuster von $M$ enth"alt also das von $B$. {\em Gute} d"unnbesetzte
+approximierte Inversen mit geringerem Muster als
+$B^{-1}$ sind also nur zu erwarten, wenn die Eintr"age in $B^{-1}$ stark variieren.
+
+\subsection{Faktorisierte d"unnbesetzte approximative Inverse}
+\begin{defn}
+Eine {\em faktorisierte \dbaI} ist eine Zerlegung der Gestalt \begin{align*} LAU=D+R \end{align*}
+mit $U$ rechte obere, $L$ linke untere Deiecksmatrix, $diag(U)=diag(L)=I$, $D$ Diagonalmatrix und
+$R$ "`klein"'.
+\end{defn}
+
+\begin{bem} 
+Faktorisierte \dbaI sind eine M"oglichkeit, Korollar \ref{kor_dbaI} "`auszutricksen"':
+
+\medskip
+
+$L,U$ k\"onnen d"unn besetzt sein, auch wenn $UD^{-1}L$ als approximative Inverse dicht
+(oder so dicht wie $A^{-1}$) besetzt ist.
+\end{bem}
+
+Konkrete Berechnung: Betrachte zun"achst Berechnung von $L,U,D$ mit \[LAU=D.\] Sei \begin{align*}
+A^k \in \mathbb{C}^{k\times k}, A^k=\left( \begin{array}{cccc}
+&&&\\ &A^{k-1}&&y^{k-1} \\ &&& \\ &x^{k-1}&&\alpha_k  \end{array} \right), A^n=A .\end{align*}
+Gilt $L^kA^kU^k=D^k$, dann gilt \begin{align*}
+&\left( \begin{array}{cccc} &&&\\ &L^k&&0 \\ &&& \\ &l^{k+1}&&1  \end{array} \right)
+\underbrace{\left( \begin{array}{cccc} &&&\\ &A^k&&y^k \\ &&& \\ &x^k&&\alpha_{k+1}  \end{array} \right)}_{=A^{k+1}}
+\left( \begin{array}{cccc} &&&\\ &U^k&&u^{k+1} \\ &&& \\ &0&&1  \end{array} \right) \\
+=&\left( \begin{array}{cccc} &&&\\ &L^kA^k&&L^ky^k \\ &&& \\ &l^{k+1}A^k+x^k&&l^{k+1}y^k+\alpha_{k+1}  \end{array} \right)
+\left( \begin{array}{cccc} &&&\\ &U^k&&u^{k+1} \\ &&& \\ &0&&1  \end{array} \right) \\
+=&\left( \begin{array}{cccc} &&&\\ &L^kA^kU^k&&L^kA^ku^{k+1}+L^ky^k \\ &&& \\
+&l^{k+1}A^kU^k+x^kU^k&&(l^{k+1}A^k+x^k)u^{k+1}+l^{k+1}y^k+\alpha_{k+1}   \end{array} \right) \;
+ = \; D^{k+1}
+\end{align*}
+mit \begin{align*}
+L^kA^ku^{k+1}=-L^ky^k &\Leftrightarrow D^k(U^k)^{-1}u^{k+1}=-L^ky^k, \\
+l^{k+1}A^kU^k=-x^kU^k &\Leftrightarrow (A^kU^k)^T(l^{k+1})^T=-(U^k)^T(x^k)^T \\
+& \Leftrightarrow [(L^k)^{-1}D^k]^T(l^{k+1})^T=-(U^k)^T(x^k)^T. \end{align*}
+Man erh"alt also: \begin{align*}
+u^{k+1}&=-U^k(D^k)^{-1}L^ky^k, \\ l^{k+1}&=-(L^k)^T((D^k)^{-1}(U^k)^T(x^k)^T), \\
+d^{k+1}&=(l^{k+1}A^k+x^k)u^{k+1}+l^{k+1}y^k+\alpha_{k+1}. \end{align*}
+
+\begin{bem}
+Es ist
+\begin{eqnarray} A^ku^{k+1}=&-y^k, \label{UdbaI} \\ l^{k+1}A^k=&-x^k, \label{LdbaI} \\
+d^{k+1}=&(l^{k+1}A^k+x^k)u^{k+1}+l^{k+1}y^k+\alpha_{k+1} \label{DdbaI} \\ =&l^{k+1}y^k+\alpha_{k+1} \notag \\ =&x^ku^{k+1}+\alpha_{k+1}. \notag
+\end{eqnarray}
+Da wir aber \eqref{UdbaI}, \eqref{LdbaI} nur approximativ l"osen, sollte $d^{k+1}$ nach \eqref{DdbaI}
+bestimmt werden.
+\end{bem}
+
+\begin{alg}[Berechnung der fakt. d"unnbes. approx. Inv.]
+~               % um "Algorithmus" aus dem Kasten rauszubekommen
+\label{algo_gsd2}
+\vspace*{-2\baselineskip}       % um den Leeraum zu entfernen
+\begin{algorithm}
+  \begin{algorithmic}
+    \FOR{$k = 1,2,\dots,n$ }
+      \STATE l"ose $A^ku^{k+1} = -y^k$ approximativ, z.B. mit
+             $(A^k)^{-1} \approx (U^k)(D^k)^{-1}(L^k)$
+	\STATE l"ose $(A^k)^T(l^{k+1})^T=-(x^k)^T$ approximativ
+	\STATE Berechne $d^{k+1}$ nach \eqref{DdbaI}
+	\STATE wende Nullregel auf $u^{k+1},l^{k+1}$ an
+    \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+Wann ist $d^{k+1}\not=0$ ?
+
+\begin{lem}
+Sei $A$ $hpd$, die Nullregel usw. sei so, dass $U=L^H$, also $(l^{k+1})^H=u^{k+1}$. Dann ist $d^{k+1}>0$
+f"ur alle $k$. \end{lem}
+\begin{proof}
+Es ist $L^kA^kU^k=D^k=L^kA^k(L^k)^H$ mit $L^kA^k(L^k)^H$ hpd. \end{proof}

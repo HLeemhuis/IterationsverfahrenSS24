@@ -1,0 +1,504 @@
+\section[Analyse von Tschebyscheff- und...]{Analyse von Tschebyscheff- und Ri\-chard\-son-Ver\-fahren}
+
+\begin{sa} \label{Tscheb_analyse_sa}
+  Sei $p_m$ das Polynom des Tschebyscheff-Verfahrens
+  bzgl.\ $E(f_1,f_2,\rho)\not\ni 0$ mit $\spek(A)\subseteq E(f_1,f_2,\rho)$.
+  Dann gilt
+  \begin{equation*}
+    r^m=p_m(A)r^0
+  \end{equation*}
+  und damit für jede Norm $\norm{\cdot}$
+  \begin{equation*}
+    \norm{r^m}\leq\norm{p_m(A)}\cdot\norm{r^0}.
+  \end{equation*}
+  \begin{enumerate}
+  \item
+    \label{TschVerf-analyse-satz1}
+    Es sei $A$ diagonalisierbar mit $A=SDS^{-1}$ (siehe \ref{Konvergenzdiag_kor})
+    und $\norm{}$ sei die Norm $\norm{}_S$.
+    Dann gilt
+    \begin{equation*}
+      \norm{p_m(A)}
+      \leq
+      \frac{\rho^m+\rho^{-m}}{\,\abs{w_\gamma^m+w_\gamma^{-m}}\,},
+    \end{equation*}
+    wobei $w_\gamma$ (betragsgrößte)
+    Lösung von $\frac{1}{2}(w+w^{-1})=-b/a$.
+  \item Ist in \ref{TschVerf-analyse-satz1}. sogar $S$ orthogonal
+    (z.B. weil $A$ normal ist), so gilt sogar
+    \begin{equation*}
+      \norm{p_m(A)}_2
+      \leq
+      \frac{\rho^m+\rho^{-m}}{\,\abs{w_\gamma^m+w_\gamma^{-m}}\,}.
+    \end{equation*}
+  \end{enumerate}
+\end{sa}
+
+\begin{proof}
+  Ist $q_m$ die approximative Optimallösung f"ur die Ellipse $E(-1,1,\rho)$ mit
+  $q_m(\gamma) = 1$, dann gilt nach Satz~\ref{cmschranke_sa}
+  \begin{equation*}
+    \max_{t\in E(-1,1,\bar{\rho})}\abs{q_m(t)}
+    =
+    \frac{\bar{\rho}^m+\bar{\rho}^{-m}}{\,\abs{w_\gamma^m+w_\gamma^{-m}}\,}.
+  \end{equation*}
+  Mit der affinen Transformation $z\mapsto az+b$ aus Lemma~\ref{ellipsentransf_lem},
+  welche $E(-1,1,\rho)$ auf
+  $E(f_1,f_2,\rho)$ abbildet, ergibt sich der Satz.
+\end{proof}
+\medskip
+
+Besonders wichtig ist der Fall $\spek(A)\subseteq[\xi,\Xi]\subseteq(0,+\infty)$
+und $A$ symmetrisch und positiv definit:
+
+\begin{cor} \label{Tscheb_pos_def_cor}
+  Ist $\spek(A)\subseteq[\xi,\Xi]\subseteq(0,+\infty)$
+  und $A$ spd, dann gilt für die Residuen des Tschebyscheff-Verfahrens
+  \begin{equation*}
+    \norm{r^m}_2\leq\norm{p_m(A)}_2\cdot\norm{r^0}_2
+  \end{equation*}
+  mit
+  \begin{equation*}
+    \norm{p_m(A)}_2
+    \leq
+     \frac{2c^m}{1+c^{2m}} \enspace
+     \mbox{ mit } c = \frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}, \,
+    \kappa = \frac{\Xi}{\xi}.
+  \end{equation*}
+\end{cor}
+
+\begin{proof}
+  Hier ist $f_1=\xi$, $f_2=\Xi$, $\rho = 1$, $a= \frac{1}{2}(\Xi - \xi), b = \frac{1}{2}(\Xi+\xi)$ und $\gamma = -b/a$. Aus
+Satz~\ref{Tscheb_analyse_sa} folgt so
+\[
+   \norm{p_m(A)}_2 \leq \frac{2}{\,\abs{w_\gamma^m+w_\gamma^{-m}}\,} 
+\]
+mit
+\begin{equation*}
+\frac{1}{2}(w_\gamma+w_\gamma^{-1})=-\frac{b}{a}=- \frac{\Xi+\xi}{\Xi-\xi}=
+    -\frac{\kappa+1}{\kappa-1}.
+\end{equation*}
+Auf\/lösen der quadratischen Gleichung ergibt
+\begin{eqnarray*}
+  w_\gamma &=& - \frac{\kappa+1}{\kappa-1} -          \sqrt{\left(\frac{\kappa+1}{\kappa-1}\right)^2-1} \\
+   &=& - \frac{\kappa+1}{\kappa-1} - \sqrt{\frac{4\kappa}{(\kappa-1)^2}} \\
+   &=& - \frac{\kappa+1}{\kappa-1} - \frac{2\sqrt{\kappa}}{\kappa-1} \\
+   &=& - \frac{\left(\sqrt{\kappa}+1\right)^2}{(\sqrt{\kappa}-1)(\sqrt{\kappa}+1)} \\
+   &=& -\frac{\sqrt{\kappa}+1}{\sqrt{\kappa}-1}.
+\end{eqnarray*}
+
+\end{proof}
+
+
+Zum Abschluss (und Vergleich) analysieren wir noch das Richardson-Ver\-fahr\-en
+2.~Ordnung. Dazu sei $A$ spd mit $\spek(A)\subseteq[\xi,\Xi]$.
+
+\begin{aufg}
+  Für das relaxierte Richardson-Verfahren 1.~Ordnung
+  \begin{equation*}
+    x^{m+1} = x^m+\alpha r^m
+  \end{equation*}
+  wird für die zugehörigen Polynome $p_m(z)=(1-\alpha z)^m$ die Größe
+  \begin{equation*}
+    \max_{z\in[\xi,\Xi]}\abs{p_m(z)}
+  \end{equation*}
+  minimal, wenn $\alpha=2/(\xi+\Xi)$.
+\end{aufg}
+
+\begin{bem}
+  Das relaxierte Richardson Verfahren 1.~Ordnung $Ax=b$ ist äquivalent zum
+  gewöhnlichen Richardson-Verfahren 1.~Ordnung f"ur
+  \begin{equation*}
+    (\alpha A)x = \alpha b,
+  \end{equation*}
+  also
+  \begin{equation*}
+    x^{m+1} = x^m+(\alpha b-\alpha A x^m).
+  \end{equation*}
+  Wir gehen ab jetzt davon aus, dass diese "`Skalierung"' des
+  LGS (mit $\alpha=\frac{2}{\xi+\Xi})$ bereits erfolgte, d.h.\ es gilt ab jetzt
+  \begin{equation*}
+    \spek(A) \subseteq [1-\gamma, 1+\gamma]
+    \text{ mit }
+    \gamma = \frac{\Xi-\xi}{\Xi+\xi} \in [0,1).
+  \end{equation*}
+\end{bem}
+
+Für das System
+\begin{equation*}
+  Ax=b
+\end{equation*}
+betrachten wir jetzt das Richardson-Verfahren 2.~Ordnung
+
+%%$$\norm{p_m(A)}_{s/2}\leq \max_{\lambda\in
+%%E(f_1,f_2,\rho)}\abs{p_m(\lambda)}
+%%=\frac{\rho^m+\pfrac{1}{s}^m}{\abs{w_\gamma^m+\pfrac{1}{w_\gamma}^m}}$$
+%%
+%%\begin{equation*}
+%%  \frac{1}{2}(w_\gamma+w_\gamma^{-1})=-\frac{b}{a}
+%%  \text{ mit }
+%%  \abs{w_\gamma} >\rho.
+%%\end{equation*}
+%%Diskussion der oberen Schranke:
+%%
+%%-----------------------------
+%%
+%%BILD 1
+%%
+%%Experimente mit falschem Intervall liefern: Es kann immer noch
+%%konvergieren. Die Konvergenz ist aber am schnellsten, wenn das
+%%richtige Intervall gewählt wird.
+%%
+%%
+%%
+%%\textbf{Richardson 1.~Ordnung}
+%%
+%%$$Ax=b$$
+%%
+%%$$(\alpha A)x=\alpha b$$
+%%
+%%$$\spek(A)\subseteq[1-\gamma,1+\gamma]$$
+%%$$x=(I-A)x+b$$
+%%%%$$x=Bx+b,\qquad \spek(B)\subseteq[-\gamma,+\gamma]$$
+
+\begin{align*}
+  x^{m+1}
+  &=
+  \omega\bigl((I-A)x^m+b\bigr)+(1-\omega)x^{m-1}\\
+  &=
+  \omega(x^m+r^m)+(1-\omega)x^{m-1}
+\end{align*}
+mit
+\begin{align*}
+  r^{m+1} &= \omega r^m-\omega Ar^m+(1-\omega)r^{m-1}, \\
+  p_{m+1} &= \omega(1-t)p_m(t)+(1-\omega)p_{m-1}(t).
+\end{align*}
+Daraus folgt
+
+\begin{equation*}
+  \begin{pmatrix}
+    p_{m+1}(t) \\ p_m(t)
+  \end{pmatrix}
+  =
+  \underbrace{
+    \begin{pmatrix}
+      \omega(1-t) & 1-\omega\\
+      1 & 0
+    \end{pmatrix}
+  }_{B_\omega(t)}
+  \begin{pmatrix}
+    p_{m}(t) \\ p_{m-1}(t)
+  \end{pmatrix} .
+\end{equation*}
+Wir wollen nun das \glqq{}optimale\grqq{} $\omega$ ermitteln,
+d.h.\ wir suchen die Lösung  $\omega$ von
+\begin{equation}
+  \label{Richardsonmin_eq}
+  \min_{\omega\in\rr\mathstrut}\,
+  \max_{t\in[1-\gamma,1+\gamma]}
+  \rho\bigl(B_\omega(t)\bigr).
+\end{equation}
+
+Zur besseren Darstellung machen wir den Übergang $t \to 1-t$, also
+\begin{eqnarray*}
+  1-t &\lr& t \in [-\gamma,\gamma],
+  \\
+  B_\omega(t)
+  &=&
+  \begin{pmatrix}
+    \omega(1-t) & 1-\omega\\
+    1 & 0
+  \end{pmatrix}
+  \lr
+  \begin{pmatrix}
+    \omega t & 1-\omega\\
+    1 & 0
+  \end{pmatrix}.
+\end{eqnarray*}
+Wir suchen damit die Lösung $\omega$ der Minimierungsaufgabe
+\begin{equation*}
+  \min_{\omega\in\rr\mathstrut}\,
+  \max_{t\in[-\gamma,\gamma]}
+    \rho\bigl(B_\omega(t)\bigr).
+\end{equation*}
+
+Nun bestimmen wir die Eigenwerte $\lambda$ von $B_\omega(t)$. Es gilt nämlich
+\begin{align*}
+  (\lambda-\omega t)\lambda-(1-\omega) &= 0 \\
+  \iff
+  \lambda^2-(\omega t)\lambda-(1-\omega) &= 0,
+\end{align*}
+d.h.\ wir erhalten
+\begin{align*}
+  \lambda_{1,2}
+  &=
+  \frac{\omega t}{2}
+  \pm
+  \sqrt{
+    \frac {\omega^2t^2} {4} + (1-\omega)
+  }
+  \,.
+\end{align*}
+
+Wir machen zunächst eine
+Fallunterscheidung zur Berechnung von $\rho\bigl(B_\omega(t)\bigr)$.
+
+\textit{Fall I}: $\dfrac{\omega^2t^2}{4}+(1-\omega) < 0$.
+Dann gilt
+\begin{align*}
+  \abs{\lambda_{1,2}}^2
+  &=
+  \frac{(\omega t)^2}{4}+\frac{(\omega t)^2}{4}+(1-\omega) \\
+  &=
+  \frac{(\omega t)^2}{2}+(1-\omega). \\
+\end{align*}
+Also gilt
+\begin{equation}
+  \label{Richardson:FallI_eq}
+  \rho\bigl(B_\omega(t)\bigr)
+  =
+  \biggl(
+  \frac {(\omega t)^2} {2} + (1-\omega)
+  \biggr)^{\!\! 1/2}.
+\end{equation}
+
+\textit{Fall II}: $\dfrac{\omega^2t^2}{4}+(1-\omega)\geq0$.
+
+(a) $\omega t\geq 0$: In diesem Fall haben wir
+\begin{equation*}
+  \rho\bigl(B_\omega(t)\bigr)
+  =
+  \frac{\omega t}{2}+\sqrt{\frac{\omega^2t^2}{4}+(1-\omega)}.
+\end{equation*}
+
+(b) $\omega t\leq 0$: Dann gilt
+\begin{equation*}
+  \rho\bigl(B_\omega(t)\bigr)
+  =
+  \abs{\frac{\omega t}{2}-\sqrt{\frac{\omega^2t^2}{4}+(1-\omega)}}.
+\end{equation*}
+
+In beiden Fällen (a) und (b) erhalten wir aber
+\begin{equation}
+  \label{Richardson:FallII_eq}
+  \rho\bigl(B_\omega(t)\bigr)
+  =
+  \frac {\abs{\omega t}} {2} + \sqrt{\frac{\omega^2t^2}{4}+(1-\omega)}.
+\end{equation}
+
+
+Sei nun $\omega$ fest. Wir bestimmen
+$\max\limits_{t\in[-\gamma,\gamma]}\rho\bigl(B_\omega(t)\bigr)=:\beta_\omega$.
+
+\textit{1.~Fall}: $\omega \leq 1$. Es kommt nur Fall~II vor.  Aus
+\eqref{Richardson:FallII_eq} erhalten wir, da $\rho\left(B_\omega(t)\right)$ eine
+gerade Funktion ist und monoton wachsend für $t\in[0,\gamma]$
+\begin{equation*}
+  \beta_\omega
+  =
+  \frac {\abs{\omega}\gamma} {2}
+  + \sqrt { \frac {\omega^2\gamma^2} {4} + (1-\omega) }.
+\end{equation*}
+
+\textit{2.~Fall}: $\omega>1$. Jetzt kommen Fall~I und Fall~II beide vor.
+Es gilt
+\begin{equation*}
+  \frac {\omega^2t^2} {4} + (1-\omega)
+  \geq 0
+  \iff
+  \abs{t} \geq \frac {2\sqrt{\omega-1}} {\omega}.
+\end{equation*}
+Dann ist
+\begin{equation*}
+  \rho\bigl(B_\omega(t)\bigr)
+  =
+  \frac {\omega \abs{t}} {2}
+  + \sqrt { \frac {\omega^2t^2} {4} + (1-\omega) }.
+\end{equation*}
+
+Im Fall $\abs{t}\leq \dfrac{2\sqrt{\omega-1}}{\omega}$ ist
+\begin{equation*}
+  \rho\bigl(B_\omega(t)\bigr)
+  =
+  \left(
+    \frac {(\omega t)^2} {2} + (1-\omega)
+  \right)^{\!\!\! 1/2}\negthickspace,
+\end{equation*}
+also ist
+\begin{multline*}
+  \beta_\omega
+  =
+  \max
+  \Biggl\{
+    \max_{\abs{t}\leq\frac{2\sqrt{\omega-1}}{\omega}}
+    \left(
+      \frac {(\omega t)^2} {2} + (1-\omega)
+    \right)^{\!\!\! 1/2}
+    \negthickspace,
+    \\
+    \max_{\frac{2\sqrt{\omega-1}}{\omega}\leq\abs{t}\leq\gamma}
+    \left(
+      \frac {\omega\abs{t}} {2}
+      + \sqrt { \frac {(\omega t)^2} {4} + (1-\omega) \! } \:
+    \right)
+  \Biggr\}.
+\end{multline*}
+
+Hierin kommt der erste Term nur vor, wenn $\gamma\geq
+\frac{2\sqrt{\omega-1}}{\omega}$. Aus Monotoniegründen folgt
+\begin{align*}
+  \max_{\abs{t}\leq\frac{2\sqrt{\omega-1}}{\omega}}
+  \left(\frac{(\omega t)^2}{2}+(1-\omega)\right)^{\!\!\! 1/2}
+  &=
+  \left(
+    \frac {\bigl( \omega \frac {2\sqrt{\omega-1}} {\omega} \bigr)^2} {2}
+    + (1-\omega)
+  \right)^{\!\!\! 1/2}
+  \\
+  &=
+  \sqrt{\omega-1}
+  ,
+  \\
+  \max_{\frac{2\sqrt{\omega-1}}{\omega}\leq\abs{t}\leq\gamma}
+  \left(
+    \frac {\omega\abs{t}} {2}
+    + \sqrt { \frac {(\omega t)^2} {4} + (1-\omega) \! } \:
+  \right)
+  &=
+  \frac{\omega\gamma}{2}
+  + \sqrt{ \frac {(\omega\gamma)^2} {4} + (1-\omega) }
+  .
+\end{align*}
+Für $\gamma\geq\frac{2\sqrt{\omega-1}}{\omega}$ gilt
+\begin{align*}
+  \frac{\omega\gamma}{2}
+  + \sqrt{ \frac {(\omega\gamma)^2} {4} + (1-\omega) }
+  &\geq
+  \frac {\,\omega\frac{2\sqrt{\omega-1}}{\omega}\,} {2}
+  +
+  \sqrt {
+    \frac {\bigl(\omega\frac{2\sqrt{\omega-1}}{\omega}\bigr)^2} {4}
+    + (1-\omega)
+  }
+  \\
+  &=
+  \sqrt{\omega-1}
+  .
+\end{align*}
+Damit gilt
+\begin{equation*}
+  \beta_\omega
+  =
+  \begin{cases}
+    \sqrt{\omega-1}
+    & \text{falls }
+    \gamma<\frac{2\sqrt{\omega-1}}{\omega},
+    \\
+    \dfrac{\omega\gamma}{2}+\sqrt{\dfrac{(\omega\gamma)^2}4{}+(1-\omega)}
+    & \text{falls }
+    \gamma \geq \frac{2\sqrt{\omega-1}}{\omega}.
+  \end{cases}
+\end{equation*}
+Unter Beachtung von
+\begin{align*}
+  &\gamma < \frac{2\sqrt{\omega-1}}{\omega} \\
+  \iff&
+  \omega^2\gamma^2 < 4(\omega-1) \\
+  \iff&
+  \frac{2-2\sqrt{1-\gamma^2}}{\gamma^2}
+  < \omega <
+  \frac{2+2\sqrt{1-\gamma^2}}{\gamma^2} \\
+  \iff&
+  \frac{2}{1+\sqrt{1-\gamma^2}}
+  < \omega <
+  \frac{2}{1-\sqrt{1-\gamma^2}}
+\end{align*}
+erhalten wir durch Zusammenfassen von "`1.~Fall"' und "`2.~Fall"'
+
+\begin{equation*}
+  \beta_\omega
+  =
+  \begin{cases}
+    \sqrt{\omega-1}
+    & \text{falls }
+    \frac {2} {1+\sqrt{1-\gamma^2}} < \omega < \frac {2} {1-\sqrt{1-\gamma^2}}
+    ,
+    \\
+    \frac{\omega\gamma}{2}+\sqrt{\frac{(\omega \gamma)^2}{4}+(1-\omega)}
+    & \text{sonst.}
+  \end{cases}
+\end{equation*}
+
+Für $\omega\geq 2/\bigl(1-\sqrt{1-\gamma^2\!}\:\bigr)\;(\geq2)$
+ist $\frac{\omega\gamma}{2}\geq \sqrt{\omega-1}\geq 1$, also
+$\beta_\omega\geq 1$.
+Für $\omega < 2/\bigl(1+\sqrt{1-\gamma^2\!}\:\bigr)$ ist
+\begin{equation*}
+  \beta_\omega
+  =
+  \frac{\omega\gamma}{2}
+  + \sqrt{\frac{(\omega\gamma)^2}{4}+(1-\omega)}
+\end{equation*}
+monoton fallend. Die Größe $\beta_\omega$ wird also minimal für
+$\omega=\omega_0=\frac{2}{1+\sqrt{1-\gamma^2}}$ und hat dann den Wert
+$\sqrt{\omega_0-1}$.
+
+Zusammenfassend erhalten wir also:
+\begin{sa}
+  Der optimale Parameter $\omega$ für das Richardson-Verfahren
+  2.~Ordnung, welcher die Minimierungsaufgabe \eqref{Richardsonmin_eq}
+  löst, ist
+  \begin{equation*}
+    \omega_0
+    =
+    \frac {2} {1+ \sqrt{1-\gamma^2}}
+    \,.
+  \end{equation*}
+\end{sa}
+
+Jetzt kann man f\"ur $ w = w_0 $ die Gr\"o\ss{}e
+
+\[
+\underset{t \in \left[ 1-\gamma , 1 + \gamma \right] }{\max} \left| p_m(t) \right|
+\]
+
+diskutieren unter Beachtung von $p_0 = 1$, $p_1(t) = 1-t$.
+
+\begin{aufg} Bestimme f\"ur alle $t \in \left[ 1 - \gamma, 1 + \gamma \right] $ die L\"osung der
+Differenzengleichung 2.~Ordnung
+\[
+p_{m+1}(t) = w_0 \cdot (1-t) p_m(t) + (1-w_0) p_{m-1}(t)
+\]
+unter den Anfangsbedingungen $ p_0 = 0$ und $ p_1(t) = 1-t $ und zeige damit
+\begin{enumerate}
+\item
+$
+\underset{t \in \left[ 1-\gamma , 1 + \gamma \right] }{\max} \left| p_m(t) \right| =
+\left( \sqrt{w_0 - 1} \right)^m (1+m\sqrt{1-\gamma^2}) =: \rho_m,
+$
+(Dies ist sehr aufwendig!\footnote{Man liest also besser bei den Meistern nach:
+G. Golub, R. Varga: Chebyshev semi-iterative methods, successive overrelaxation iterative
+methods and second-order Richardson iterative methods, Part I and II, Numer. Math. {\bf 3},
+ 147-168 (1961).})
+\item $ \rho_m $ f\"allt monoton in $m$,
+\item $ \rho_m > c_m $,  $c_m = \frac{2c^{m}}{1+c^{2m}}$
+aus dem Tschebyscheff Verfahren mit $c = \frac{\sqrt{\kappa} - 1}{\sqrt{\kappa}+1}$, $\kappa = \frac{1+\gamma}{1-\gamma} $,
+\item es gilt $ \limn \frac{\rho_m}{c_m} = 1 $.
+\end{enumerate}
+\end{aufg}
+
+\begin{bem}
+Aus $ r^m = p_m(A) r^0$ folgt $e^m =  p_m(A) e^0$ mit $e^m = A^{-1}b - x^m$ und damit
+\[
+\|e^m\| \leq \| p_m(A) \| \|e^0\|.
+\]
+\end{bem}
+Tschebyscheff- und Richardson-Verfahren machen eine Schranke
+f"ur $\|p_m(A)\|$ klein. Dies wirkt sich demnach in den  Absch"atzungen
+nicht nur f\"ur das Residuum, sondern auch
+f"ur den {\em Fehler} aus.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "Iterationsverfahren03"
+%%% End:

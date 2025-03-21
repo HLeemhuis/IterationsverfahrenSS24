@@ -1,0 +1,371 @@
+\section{Konvergenzanalyse für GMRES/MINRES}
+
+Gegeben sei $A\in\cnn,\ Ax=b,\ A$ regulär.
+
+\begin{defn}
+Der \emph{numerische Wertebereich} von $A$ ("`fields of value"') ist definiert durch
+\begin{align*}
+F(A)&=\left\{\frac{\langle Ax,x\rangle}{\langle x,x\rangle}:\ x\in \cn,\ x\ne 0 \right\}\\
+&=\left\{\langle Ax,x\rangle:\ \|x\|_2=1 \right\}.
+\end{align*}
+\end{defn}
+
+Mit elementarer Rechnung ergeben sich die folgenden Eigeschaften des numerischen Wertebereichs:
+\begin{lem}
+\begin{enumerate}
+\item Ist $A$ hermitesch mit spek$(A)=\{\lambda_1\le\ldots\le\lambda_n\}$, dann ist $F(A)=[\lambda_1,\lambda_n]$.
+\item spek$(A)\subseteq F(A)$.
+\item Ist $A$ normal, dann ist $F(A)=$co(spek$(A)$) (co$(M)$ = konvexe Hülle von $M$).
+\end{enumerate}
+\end{lem}
+
+\begin{sa}
+\begin{enumerate}
+\item Der numerische Wertebereich $F(A)$ ist kompakt, also ist der \emph{numerische Radius}
+\[
+r(A):=\sup \{|\lambda|:\ \lambda\in F(A)\}
+\]
+endlich (und das $\sup$ ist ein $\max$).
+\item $F(A)$ ist konvex.
+\end{enumerate}
+\end{sa}
+\begin{proof}
+\begin{enumerate}
+\item Klar.
+\item Das ist etwas weniger selbstverst\"andlich. Sei $\lambda, \mu \in F(A)$, $\lambda \neq \mu$. Wir zeigen, dass $\eta(t) =t\lambda +(1-t) \mu \in F(A)$ für alle $t \in [0,1]$. Man beachte, dass gilt
+\[
+\eta(t) \in F(A) \Leftrightarrow t \in F(\underbrace{\alpha I+\beta A}_{ =: S}) \text{ mit } \alpha = -\frac{\mu}{\lambda-\mu}, \beta = \frac{1}{\lambda-\mu}.
+\]
+Wir zeigen deshalb, dass $[0,1] \in F(S)$.
+Sei nun $\lambda = \langle Ax, x \rangle, \mu = \langle Ay, y \rangle$ with $\|x\|= \|y\|=1$.
+Eine einfache Rechnung ergibt
+\[
+\langle Sx, x \rangle =1, \langle Sy, y \rangle=0.
+\]
+Definiere $g:\mathbb{R} \to \mathbb{C}$ mit $\theta \mapsto g(\theta)= \langle Sy,x\rangle e^{-i\theta}+ \langle Sx,y \rangle e^{i\theta}$. Offensichtlich ist $\Im(g(0))= -\Im(g(\pi))$. Weil $g$ und damit $\Im(g)$ stetig ist, existiert $\theta_0 \in [0,\pi]$ mit $\Im(g(\theta_0))=0$.
+
+Wegen $\lambda \neq \mu$ sind die Vektoren $y$ und $\hat x = e^{i\theta_0}x$ linear unabh\"angig. Also gilt $z(t) = t \hat x + (1-t)y \neq 0$ f\"ur alle $t$ und wir bezeichnen mit $\hat z(t)$ ihre auf 1 normierte Versionen. Die Funktion $f(t) = \langle S \hat z(t), \hat z(t)$ is stetig und reellwertig (!) auf $[0,1]$ mit $f(0) = 0, f(1) =1$. Also gilt $[0,1] \in F(S)$. Dies war zu zeigen.
+\end{enumerate}
+\end{proof}
+\begin{bsp}Die Matrix $A$ aus Beispiel~\ref{stagnation_bsp} ist normal. Deshalb ist $F(A)$ die konvexe H"ulle der Eigenwerte, also hier ein (ausgef"ulltes) regelm"a"siges $n$-Eck im Einheitskreis.  \end{bsp}
+
+\begin{aufg}Zeigen Sie, dass f"ur die Matrix \[A=\left(\begin{array}{cc}0&2\\0&0\end{array}\right)\] der numerische Wertebereich gegeben ist durch $F(A)=\{z\in\co:\ |z|\le 1\}$.\end{aufg}
+\begin{lem}Sei $V_m\in\co^{n\times m},\ V_m^HV_m=I$. Dann gilt
+\[
+F(V_m^HAV_m)\subseteq F(A).
+\]
+\end{lem}
+Der Beweis ist wieder trivial.
+ 
+\begin{sa}\label{GMRES_NST_sa}
+Sei $p_m^{\text{GMRES}}$ das Residuen-Polynom aus dem GMRES-Verfahren, d.h. 
+\[
+r^m=p_m^{\text{GMRES}}(A)r^0, \quad p_m^{\text{GMRES}}\in\overline{\Pi} _m.
+\]
+Dann gilt 
+\[
+p_m^{\text{GMRES}}(\xi)=0\Rightarrow\frac{1}{\xi}\in F(W_m^HA^{-1}W_m)\subseteq F(A^{-1}).
+\]
+Dabei ist $W_m\in\co^{n\times m}$ eine Matrix, deren Spalten eine Orthonormalbasis von $A\cdot K_m(A,r^0)$ bilden.
+\end{sa}
+\begin{proof}
+Setze $p_m:=p_m^{\text{GMRES}}$. Es ist
+\begin{align*}
+p_m(t)&=\prod\limits_{j=1}^m\left(1-\frac{t}{\xi_j} \right).
+\intertext{Betrachte $\xi=\xi_m$:}
+p_m(t)&=\left(1-\frac{t}{\xi} \right)\cdot q_{m-1}(t)\text{ mit } q_{m-1}(t)=\prod\limits_{j=1}^{m-1}\left(1-\frac{t}{\xi_j} \right).
+\intertext{Damit ist}
+\|p_m(A)r^0\|_2&=\|(I-\frac{1}{\xi}A)\cdot \underbrace{q_{m-1}(A)\cdot r^0}_{w}\|_2
+\end{align*}
+minimal. Also ist $\xi$ so, dass $\|(I-\frac{1}{\xi}A)w\|_2$ minimal ist.
+Nach Lemma~\ref{minimierungs_lem} (s. unten) gilt deshalb
+\[
+\frac{1}{\xi}=\frac{\langle w,Aw\rangle}{\langle Aw,Aw\rangle}=\frac{\langle A^{-1}y ,y\rangle}{\langle y,y\rangle}
+\]
+mit $y=Aw\in A\cdot K_m(A,r^0)$.
+\end{proof}
+
+\begin{lem} \label{minimierungs_lem}
+Die L"osung von $\underset{\gamma}{\min}\|w-\gamma y\|_2$ ist
+\[
+\gamma^*=\frac{\langle w,y\rangle}{\langle y,y\rangle}
+\]
+\end{lem}
+%{\bf Beweis:}
+\begin{proof}
+Es ist
+\begin{align*}
+\langle w-\gamma y,w-\gamma y\rangle&=\langle w,w\rangle-\gamma \langle y,w\rangle
+						-\bar \gamma \langle w,y\rangle+\gamma\bar \gamma\langle y,y\rangle\\
+&=\langle w,w\rangle+\langle y,y\rangle\left(\gamma\bar\gamma-\frac{\langle y,w\rangle}{\langle y,y\rangle}\gamma 
+						-\frac{\langle w,y\rangle}{\langle y,y\rangle}\bar \gamma\right.\\
+&\hspace*{4cm}\left.				+\frac{\langle y,w\rangle\langle w,y\rangle}{\langle y,y\rangle^2}\right)
+						-\frac{\langle y,w\rangle\langle w,y\rangle}{\langle y,y\rangle}\\
+&=\langle w,w\rangle+\langle y,y\rangle\left(\gamma-\frac{\langle w,y\rangle}{\langle y,y\rangle} \right)
+					    \left(\bar \gamma-\frac{\langle y,w\rangle}{\langle y,y\rangle} \right)\\
+&\hspace*{7cm}	-\frac{\langle y,w\rangle\langle w,y\rangle}{\langle y,y\rangle}.
+\end{align*}
+Das Minimum wird also für
+\[
+\gamma ^*=\frac{\langle w,y\rangle}{\langle y,y\rangle}
+\]
+erreicht.
+%}
+\end{proof}
+
+Schränken wir $A\in\co^{n\times n}$ auf einen Unterraum $V \subseteq \co^n$ ein, so ist nicht
+notwendig $AV \subseteq V$. Möchte man einen Homomorphismus auf $V$, muss man $AV$ geeignet
+projizieren.
+
+\begin{defn}Die {\em orthogonale Projektion} von $A \in \co^{n \times n}$ auf den Unterraum
+ $V \subseteq \co^n$ entsteht durch
+orthogonale Projektion von $AV$ auf $V$. Bilden die Spalten von
+$ V_m\in\co^{m\times n}$ eine Orthonormalbasis von $V$  ($V_m^HV_m=I$), so ist
+$V_m^HAV_m$ die Darstellung der orthogonalen Projektion von $A$ auf $V$
+in der Basis "`Spalten von $V_m$"'.
+\end{defn}
+
+\begin{sa}\label{GMRESabschaetz_sa}
+Es sei $0\notin F(A)$ und $c:=\min\{|\lambda|:\ \lambda\in F(A)\}>0$. Dann ist $c \leq \|A\|_2$
+und es gilt
+\begin{equation} \label{gmres_konv_sa}
+\|p_m^{\text{GMRES}}(A)r^0\|_2\le \left(1-\textstyle\frac{c^2}{\|A\|_2^2} \right)^{\textstyle\frac{m}{2}}\cdot \|r^0\|_2.
+\end{equation}
+\end{sa}
+\begin{proof} Es ist
+\[
+c \le \frac{| \langle Aw,w\rangle|}{\langle w,w \rangle} \leq
+ \frac{ \|Aw\|_2 \cdot \|w\|_2}{\langle w,w \rangle} \leq
+\frac{ \|A\|_2  \cdot \|w\|_2^2}{\langle w,w \rangle} = \|A\|_2.
+\]
+
+Zum Beweis von \eqnref{gmres_konv_sa} starten wir mit einer
+Vorüberlegung.
+Nach Lemma~\ref{minimierungs_lem} gilt für $\frac{1}{\xi} =
+\frac{\langle w, Aw\rangle}{\langle Aw,Aw \rangle}$
+\[
+\langle w-\textstyle\frac{1}{\xi}Aw,w-\textstyle\frac{1}{\xi}Aw\rangle
+=\langle w,w\rangle-\textstyle\frac{\langle Aw,w\rangle\langle w,Aw\rangle}{\langle Aw,Aw\rangle} .
+\]
+Für $w\ne 0$ gilt außerdem
+\begin{align*}
+\langle Aw,Aw\rangle&=\|Aw\|_2^2\le \|A\|_2^2\cdot \langle w,w\rangle,\\
+|\langle Aw,w\rangle|^2&\ge \left|\textstyle\frac{\langle Aw,w\rangle}{\langle w,w\rangle} \right|^2\cdot \langle w,w\rangle^2\\
+&\ge c^2\cdot \langle w,w\rangle^2.
+\end{align*}
+Also ist für die angegebene Wahl von $\xi$
+\begin{equation} \label{absch1_eq}
+\langle w-\textstyle\frac{1}{\xi}Aw,w-\textstyle\frac{1}{\xi}Aw\rangle\le  \left(1-\textstyle\frac{c^2}{\|A\|_2^2} \right)\cdot \langle w,w\rangle,
+\end{equation}
+mit $ \left(1-\textstyle\frac{c^2}{\|A\|_2^2} \right)\in[0,1)$.
+
+\medskip
+Wir schreiben wieder $p_m$ statt $p_m^{\text{GMRES}}$
+und zeigen \eqnref{gmres_konv_sa} per Induktion.
+\begin{Blist}{$m-1\to m$}
+\item[\hfill $m=0$] klar.
+\item[$m-1\to m$] Für $w=p_{m-1}(A)r^0$ ist nach Induktionsvoraussetzung
+\[
+\|w\|_2\le \left(1-\textstyle\frac{c^2}{\|A\|_2^2} \right)^{\textstyle\frac{m-1}{2}}\cdot \|r^0\|_2.
+\]
+Auf Grund der Minimalitätseigenschaft ist für alle $\xi\in\co\backslash\{0\}$
+\[
+\|p_m(A)r^0\|_2\le \|(I-\textstyle\frac{1}{\xi}A) p_{m-1}(A)r^0\|_2 = \|(I-\textstyle\frac{1}{\xi}A)w\|_2.
+\]
+Speziell für die Wahl $\textstyle\frac{1}{\xi}=\textstyle\frac{\langle w,Aw\rangle}{\langle Aw,Aw\rangle}$ ergibt sich nach \eqnref{absch1_eq}
+\[
+\left \|\left(I-\textstyle\frac{1}{\xi}A\right)w \right\|_2^2\le \left(1-\textstyle\frac{c^2}{\|A\|^2} \right) \cdot \|w\|_2^2.
+\]
+\end{Blist}
+\end{proof}
+
+\begin{bem}Der Beweis hat gezeigt, dass unter den Voraussetzungen von Satz \ref{GMRESabschaetz_sa} sogar gilt, dass GMRES($k$) für alle Restartwerte
+$k$  mit der selben Abschätzung \eqnref{gmres_konv_sa} konvergiert.
+\end{bem}
+
+Wir diskutieren die Nullstellen der GMRES-Polynome jetzt noch genauer.
+
+\begin{lem}\label{GMRES_res_lem}
+Für die GMRES-Residuen
+\[
+r^m=p_m^{\text{GMRES}}(A)r^0
+\]
+gilt
+\[
+r^m\bot A\cdot K_m(A,r^0).
+\]
+(Zum Vergleich: Beim cg-Verfahren gilt $r^m \bot K_m(A,r^0)$.)
+\end{lem}
+\begin{proof}
+Es gilt
+\[
+r^m=b-Ax^m=r^0-AV_mz^m, \quad z^m\in\co^m\text{ mit } \|r^0-AV_mz^m\|_2\text{ minimal.}
+\]
+Also erfüllt $z^m$ die Normalengleichung (s.\ Numerik I)
+\[
+\underbrace{V_m^HA^HAV_m}_{M_m}z^m=V_m^HA_m^Hr^0
+\]
+mit $M_m$ hpd, da $V_m$ vollen Rang besitzt. Also ist
+\[
+z^m=M_m^{-1}V_m^HAr^0
+\]
+und es gilt für alle $y\in\co^{m}$
+\begin{align*}
+\langle r^m,AV_my\rangle
+&=\langle r^0-AV_mM_m^{-1}V_m^HA^Hr^0, AV_my\rangle\\
+&=\langle r^0,AV_my\rangle-\langle r^0,AV_m\underbrace{M_m^{-1}V_m^HA^HAV_m}_{=I} y\rangle\\
+&=0.
+\end{align*}
+\end{proof}
+
+\begin{sa}
+Die Nullstellen $\xi_i$ der GMRES-Polynome $p_m^{\text{GMRES}}$ sind Eigenwerte des verallgemeinerten
+Eigenwertproblems
+\begin{equation}
+(H_{m+1,m}^HH_{m+1,m})\cdot z=\xi H_m^H \cdot z,\label{verallg_ewprob_eq}
+\end{equation}
+wobei $H_m$ aus $H_{m+1,m}$ durch Streichen der letzten Zeile entsteht.
+\end{sa}
+\begin{proof}
+Man beachte, dass das Produkt $H_{m+1,m}^HH_{m+1,m}$  hpd ist, $H_m$ jedoch singulär sein kann.
+Sei 
+\[
+r^m=p_m(A)r^0=\left(I-\textstyle\frac{1}{\xi}A \right)\underbrace{q_{m-1}(A)r^0}_{= V_mz},\ p_m(\xi)=0.
+\]
+Nach Lemma \ref{GMRES_res_lem} gilt mit $AV_m = V_{m+1}H_{m+1,m}$
+\begin{align*}
+&r^m \bot AK_m(A,r^0)\\
+\iff&\langle r^m,AV_my\rangle=0 \quad \forall\ y,\\
+\iff&\langle (I-\xi^{-1}A)V_mz,AV_my\rangle =0 \quad \forall\ y, \\
+\iff&\langle V_mz-\xi^{-1}V_{m+1}H_{m+1,m}z,V_{m+1}H_{m+1,m}y\rangle=0 \quad \forall\ y, \\
+\iff&\langle V_mz,V_{m+1}H_{m+1,m}y\rangle-\xi^{-1}\langle V_{m+1}H_{m+1,m}z,V_{m+1}H_{m+1,m}y\rangle=0 \quad \forall\ y, \\
+\iff&y^HH_{m+1,m}^HV_{m+1}^HV_mz-\xi^{-1}y^HH_{m+1,m}^H\underbrace{V_{m+1}^HV_{m+1}}_{=I}H_{m+1,m}z=0 \quad \forall\ y. \\
+\intertext{Dabei ist $V_{m+1}^HV_m=\left(\begin{array}{c}
+I_m\\
+\begin{array}{ccc}
+0&\ldots&0
+\end{array}
+\end{array}\right)$ und damit $H_{m+1,m}^HV_{m+1}^HV_m=H_m^H$. Wir erhalten also}
+&r^m \bot AK_m(A,r^0)\\
+\iff&y^H(H_m^Hz-\xi^{-1}H_{m+1,m}^HH_{m+1,m}z)=0\\
+\iff&H_m^Hz-\xi^{-1}H_{m+1,m}^HH_{m+1,m}z=0.
+\end{align*}
+\end{proof}
+
+\textbf{Bedeutung von \eqnref{verallg_ewprob_eq}:} Betrachte die orthogonale Projektion von $A^{-1}$ auf
+$A\cdot K_m(A,r^0)$.
+Eine ONB von $AK_m(A,r^0)$ sind die Spalten von
+\[
+AV_mM_m^{-\textstyle\frac{1}{2}} \quad \text{mit } M_m=V_m^HA^HAV_m,
+\]
+denn (Basis ist klar)
+\[
+M_m^{-\textstyle\frac{1}{2}}\underbrace{V_m^HA^HAV_m}_{M_m}M_m^{-\textstyle\frac{1}{2}}=I.
+\]
+Die orthogonale Projektion von $A^{-1}$ auf $AK_m(A,r^0)$ wird repräsentiert durch
+\begin{align*}
+M_m^{-\textstyle\frac{1}{2}}V_m^H(A^HA^{-1}A)V_mM_m^{-\textstyle\frac{1}{2}}
+&=M_m^{-\textstyle\frac{1}{2}}(AV_m)^HV_mM_m^{-\textstyle\frac{1}{2}}\\
+&=M_m^{-\textstyle\frac{1}{2}}(V_{m+1}H_{m+1,m})^HV_mM_m^{-\textstyle\frac{1}{2}}\\
+&=M_m^{-\textstyle\frac{1}{2}}H_m^HM_m^{-\textstyle\frac{1}{2}}.
+\end{align*}
+Damit ist $\xi^{-1}$ Eigenwert dieser orthogonalen Projektion, wenn
+\begin{alignat*}{6}
+&&M_m^{-\textstyle\frac{1}{2}}H_m^HM_m^{-\textstyle\frac{1}{2}}z&=\xi^{-1} z &&\quad \text{mit } z\ne 0\\
+\iff&&H_m^Hy&=\xi^{-1}M_my &&\quad\text{mit } y=M_m^{-\textstyle\frac{1}{2}}z.
+\end{alignat*}
+
+\bigskip
+
+Wir halten fest
+\begin{sa}
+$\xi$ ist Nullstelle von $p_m^{\text{GMRES}}$ genau dann, wenn $\xi^{-1}$ Eigenwert der orthogonalen Projektion von
+$A^{-1}$ auf $A\cdot K_m(A,r^0)$ ist.
+\end{sa}
+
+Spezialfall: $A$ normal
+\begin{eqnarray*} \begin{array}{lcl}
+  \Rightarrow  A &=& Q^H \Lambda Q, \quad Q^H Q=I, \quad \Lambda =\diag(\lambda_1,\ldots,\lambda_n) \\
+  \Rightarrow  A^{-1} &=& Q^H \Lambda^{-1} Q
+\end{array} \end{eqnarray*}
+Damit ist die orthogonale Projektion von $A^{-1}$ auf $AK_m(A,r^0)$ die Matrix
+\begin{align*}
+W_m^H A^{-1} W_m = W_m^H Q^H \Lambda^{-1}\underbrace{QW_m}_{\text{orthonormal}} =:B \in \cmm
+\end{align*}
+mit $W_m^HW_m=I,W_m\in\cnm$.
+$B$ ist selbst normal, $B=P^HD_mP, P\in\cmm$ orthonormal, $D_m=\diag(d_1,\ldots,d_m)$. \\ Also
+\begin{eqnarray*}
+ & P^HD_mP &= W_m^HQ_m^H\Lambda^{-1}QW_m \\
+\Leftrightarrow & D_m &= (PW_m^HQ_m^H)\Lambda^{-1}(\underbrace{QW_mP^H}_{=:Y}) \\
+\Rightarrow & d_i &= \sum\limits_{j=1}^n \frac{1}{\lambda_i} |y_{ji}|^2  \quad \text{mit}
+\sum\limits_{j=1}^n |y_{ji}|^2 =1.\end{eqnarray*}
+$\frac{1}{\xi}$ ist einer der Eigenwerte $d_i$ von $B$. Also haben wir
+\begin{sa}
+Ist $A$ normal (z.B. $A=A^H$), so sind die Nullstellen der GMRES-Polynome gewichtete harmonische Mittel
+der Eigenwerte von $A$, d.h.
+$$ p_m^{\text{GMRES}}(\xi)=0 \Rightarrow \frac{1}{\xi}=\sum\limits_{j=1}^n\alpha_j \frac{1}{\lambda_j} $$
+mit $\alpha_j>0,\sum\alpha_j=1,\lambda_j$ Eigenwerte von A.
+\end{sa}
+Man nennt die $\xi$ deshalb auch {\em harmonische Ritz-Werte}.
+\begin{bem}
+$A$ sei hermitesch, $spek(A)\cap[-b,a]=\emptyset,a,b>0$. Dann folgt $\xi\notin[-b,a]$.
+\end{bem}
+Spezielle Resultate f"ur MINRES:
+\begin{sa}
+Sei $A=A^H \in\cnn$ regul"ar, $\lambda_1 \leq \lambda_2 \leq \ldots \leq \lambda_{n^*}$ seien die
+verschiedenen Eigenwerte von $A$, $n^*\leq n$.
+\begin{enumerate}
+\item Es gelte $\lambda_1 \leq \ldots \leq \lambda_k < 0$ und $\lambda_{k+1}>0$.
+      Dann gilt f"ur das Verfahren MINRES
+	\begin{eqnarray*}
+	\|r^{m+k}\|_2 \leq \frac{2c^m}{1+c^{2m}}\prod_{i=1}^k           \left(1-\frac{\lambda_{n^*}}{\lambda_i}\right)\|r^0\|_2
+      \end{eqnarray*}
+	mit $c=\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1} \text{ und } \kappa=\frac{\lambda_{n^*}}{\lambda_{k+1}}$
+\item Es gelte $\spek(A)\subseteq[-b,-a]\cup[a,b],0<a\leq b$. Dann gilt f"ur das Verfahren MINRES
+	\begin{eqnarray*}
+	\|r^{2m}\|_2 \leq \frac{2\tilde c^m}{1+\tilde c^{2m}}\|r^0\|_2
+	\end{eqnarray*}
+	mit $\tilde c=\frac{\tilde \kappa-1}{\tilde \kappa+1} \text{ und } \tilde \kappa=\frac{b}{a}$
+\end{enumerate}
+\end{sa}
+\begin{proof}
+Zu 1.: Nehme
+\begin{eqnarray*}
+p_{m+k}(t)=\prod_{i=1}^k \left(1-\frac{t}{\lambda_i}\right) \cdot T_m^{[\lambda_{k+1},\lambda_{n^*}]}(t)
+\end{eqnarray*}
+mit $T_m^{[\lambda_{k+1},\lambda_{n^*}]}$ Tschebyscheff-Polynom f"ur $[\lambda_{k+1},\lambda_{n^*}]$.
+Dann gilt mit Korollar~\ref{Tscheb_pos_def_cor}
+\begin{eqnarray*}
+\max_{t\in \spek(A)}|p_{m+k}(t)| &=& \max\limits_{t\in[\lambda_{k+1},\lambda_{n^*}]}|p_{m+k}(t)| \\
+ &\leq& \frac{2c^m}{1+c^{2m}}\prod\limits_{i=1}^k\left(1-\frac{\lambda_{n^*}}{\lambda_i}\right). \\
+\end{eqnarray*}
+Damit gilt
+\begin{eqnarray*}
+\|r^{m+k}\|_2 &=& \|p_{m+k}^{\text{MINRES}}(A)r^0\|_2 \\              & \leq & \|p_{m+k}(A)r^0\|_2 \\
+ &\leq& \|p_{m+k}(A)\|_2\cdot\|r^0\|_2 \\
+ &=& \max_{t\in \spek(A)}|p_{m+k}(t)|\cdot\|r^0\|_2 \\
+ &\leq&  \frac{2c^m}{1+c^{2m}}\cdot\prod_{i=1}^k\left(1-\frac{\lambda_{n^*}}{\lambda_i}\right)\cdot\|r^0\|_2.
+\end{eqnarray*}
+
+Zu 2.: Nehme $p_{2m}(t)=T_m^{[a^2,b^2]}(t^2)$. Dann gilt
+\begin{eqnarray*}
+\|r^{2m}\|_2 &\leq& \|T_m^{[a^2,b^2]}(A^2)\|_2\cdot\|r^0\|_2 \\
+ &\leq& \max_{s\in \spek(A^2)}|T_m^{[a^2,b^2]}(s)|\cdot\|r^0\|_2 \\
+ &\leq& \max_{s\in [a^2,b^2]}|T_m^{[a^2,b^2]}(s)|\cdot\|r^0\|_2 \\
+ &=& \frac{2 \tilde c^m}{1+\tilde c^{2m}}\cdot\|r^0\|_2
+\end{eqnarray*}
+\end{proof}
+\begin{bem}
+Im 1. Fall ist f"ur kleines $k$ die Konvergenz von MINRES also vergleichbar mit CG
+(auf $[\lambda_{k+1},\lambda_{n^*}]$). CG f"ur $A^HAx=A^Hb$ mit $A^HA$ hpd ben"otigt:
+2 MVM pro Schritt (A und $A^H$) und $$\kappa(A^HA)=
+\frac{\max\{\lambda_1^2,\lambda_{n^*}^2\}}{\min\{\lambda_k^2,\lambda_{k+1}^2\}}\geq \kappa^2.$$
+Wenn $k$ klein ist, ist CG f"ur $A^HA$ also 4-mal so aufwendig. \medskip
+
+Vergleich mit CG im 2. Fall, wobei $a$ und $b$ jetzt beide Eigenwerte von $A$ seien. \\
+Wegen $\kappa(A^HA)=\frac{b^2}{a^2}$ folgt dann: CG f"ur $A^HA$ ist gleich schnell wie MINRES.
+\end{bem}
+Der Fall $\spek(A)\subseteq[-b,-a]\cup[c,d]$ kann allgemein mit Orthogonalpolynomen bzgl.
+zueinander disjunkter Intervalle behandelt werden.\\
+Siehe dazu: Bernd Fischer - Polynomial Based Iteration Methods for Symmetric
+Linear Systems, Wiley (1995).

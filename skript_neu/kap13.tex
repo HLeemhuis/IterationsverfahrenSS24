@@ -1,0 +1,175 @@
+\section[Modellproblem IV]{Modellproblem IV: Overlap-Fermionen in der Gittereichtheorie}
+
+Die Gittereichtheorie befasst sich mit der Diskretisierung der
+Quantenchromodynamik (QCD). QCD ist die Theorie der starken
+Wechselwirkung zwischen den Quarks.
+
+\begin{defn}
+  Die \emph{Wilson-Fermi-Matrix} $M$ beschreibt eine
+  N\"achste-Nachbar-Kopplung auf einem \"aquidistanten
+  $4$-dimensionalen Gitter
+  \begin{equation*}
+    G=\bigl\{ x\in\{1,\dots,N\}^4\bigr\}
+    \qquad
+    e_1=(1,0,0,0),\ e_2=(0,1,0,0),\ \dots
+  \end{equation*}
+  durch
+  \begin{equation}
+    \label{eq:wilson-fermi-matrix}
+    \begin{aligned}
+      (M\psi)_x
+      =
+      \psi_x-\kappa\biggl(
+      & \sum_{\mu=1}^{4}
+      \bigl(U_{x}^\mu\otimes (I-\gamma_\mu)\bigr)
+      \psi_{x-e_\mu}
+      \\
+      +
+      & \sum_{\mu=^1}^{4}
+      \bigl(U_{x+e_\mu}^\mu\otimes(I+\gamma_\mu)\bigr)
+      \psi_{x+e_\mu}
+      \biggr)
+    \end{aligned}
+  \end{equation}
+  mit $\psi_x\in\co^{12}$ (12 Unbekannte pro Gitterpunkt),
+  $\gamma_\mu\in\co^{4\times 4}$,
+  $U_x^\mu\in\mathord{\mathrm{SU}}(3)$ (unit\"are Matrizen mit Determinante +1).
+   Dabei ist $\kappa\in(0,4)$ anpassbar und $U_x^\mu$
+  zuf\"allig erzeugt. Gleichung \eqref{eq:wilson-fermi-matrix} ist an den
+  R\"andern von $G$ periodisch zu verstehen.
+
+  Es ist also $M\in\cnn$ mit $n=12\cdot N^4$.
+  Heutzutage (Sommer 2024) liegt $N$ zwischen $32$ und $256$.
+  \begin{center}
+    \begin{tabular}{|r|l@{ }r|}\hline
+      $N$   & \multicolumn{2}{c|}{$n$} \\ \hline
+      $32$  & ca. & $1.2\cdot 10^7$ \\
+      $64$  & ca. & $  2\cdot 10^8$ \\
+      $128$ & ca. & $  3\cdot 10^9$ \\ \hline
+    \end{tabular}
+  \end{center}
+\end{defn}
+
+
+Beim sog.\ {\em Overlap-Fermionen-Modell} muss man
+Systeme der Gestalt
+\begin{equation}
+  \label{eq:overlap-fermionen}
+  \bigl(I+m\,\Gamma_{\!5} \sgn(Q)\bigr)\psi = \phi
+\end{equation}
+lösen mit
+\[
+\Gamma_5 = I_{\frac{n}{4}} \otimes \gamma_5, \enspace \gamma_5 = \diag(1,1,-1-1),
+\]
+$Q=\Gamma_{\!5}M$ hermitesch, $Q=V\Lambda V^H$ und $m\lesssim 1$.
+
+Dabei ist $\sgn(Q)$ definiert als $\sgn(Q)=V\sgn(\Lambda)V^H$ mit
+\[
+	\sgn(\Lambda)=\diag(\sgn(\lambda_i))
+\]
+f\"ur $\Lambda=\diag(\lambda_i)$.
+
+\begin{bem}
+  \begin{enumerate}
+  \item Es gilt $\Gamma_{\!5}=\Gamma_{\!5}^H=\Gamma_{\!5}^{-1}$
+    (siehe Physik) und $\sgn(Q)\cdot\sgn(Q)=I$ (falls $Q$ regul\"ar)
+    mit $\sgn(Q)=(\sgn(Q))^H$. Also sind $\Gamma_{\!5}$ und
+    $\sgn(Q)$ unit\"ar, also auch $\Gamma_{\!5}\cdot\sgn(Q)$.
+    Auf \eqref{eq:overlap-fermionen} kann also das Verfahren vom Ende
+    des letzten Abschnittes angewendet werden.
+  \item $\sgn(Q)$ kann man praktisch nicht explizit berechnen. Der
+    Aufwand w"are $O(n^3)$ f\"ur die Zeit und $O(n^2)$ f\"ur den
+    Speicher.  F\"ur ein KUV   zur L"osung von \eqnref{eq:overlap-fermionen}
+    gen\"ugt es aber, wenn man in jedem
+    Schritt $\sgn(Q)y$ berechnen kann.
+  \end{enumerate}
+\end{bem}
+
+
+$\sgn(Q)y$ kann man mit Hilfe des Lanczos-Verfahrens berechnen:
+
+Es ist
+\begin{align*}
+  \sgn(Q)  &= (Q^2)^{-1/2}Q \\
+  \sgn(Q)y &= (Q^2)^{-1/2}Qy .
+\end{align*}
+Sei $V_m=(v^1|\dots|v^m)$ die Matrix mit den Lanczos-Vektoren f\"ur $Q^2$
+mit Start $v^1=Qy$ und $\norm{Qy}=1$. Dann gilt
+\begin{equation*}
+  Q^2V_m = V_{m+1}T_{m+1,m}.
+\end{equation*}
+Daraus folgt $V_m^HQ^2V_m = T_{m,m}$ (tridiagonal).
+
+\smallskip
+
+\textbf{Idee:} Approximiere
+\begin{align*}
+  \sgn(Q)y
+  &= (Q^2)^{-1/2}Qy
+  \\
+  &\approx V_m(T_{m,m}^{-1/2})\underbrace{V_m^HQy}_{=e^1}
+\end{align*}
+Dabei kann man $T_{m,m}^{-1/2}$ f\"ur moderates $m$ explizit durch
+Berechnung der vollst\"andigen Basis aus Eigenvektoren bestimmt werden.
+
+\begin{sa}
+  Es gilt
+  \begin{equation*}
+    \norm{\sgn(Q)y-V_m(T_{m,m}^{-1/2})V_m^HQy}_2
+    \leq
+    \norm{r^m}_2
+  \end{equation*}
+  mit $r^m={}$Residuum von CG f\"ur $Q^2x=y$, Startwert $x^0=0$.
+\end{sa}
+
+\begin{proof}
+  Man verwendet
+  \begin{enumerate}
+  \item
+    \begin{align*}
+      a^{-1/2}
+      &=
+      \frac{2}{\pi}\int_0^{\infty}(a+t^2)^{-1}\;dt
+      \\
+      \Longrightarrow\;(Q^2)^{-1/2}
+      &=
+      \frac{2}{\pi}\int_0^\infty (Q^2+t^2I)^{-1}\;dt
+    \end{align*}
+  \item Ist $r_t^m$ das Residuum von CG f\"ur $(Q^2+t^2I)x=y$, so gilt
+    $\norm{r_t^m}_2\leq\norm{r_0^m}_2$.\\
+    Es gilt sogar: $r_t^m=\psi_{t,m}r_0^m$ mit $\abs{\psi_{t,m}}<1$.
+  \end{enumerate}
+
+  Der Beweis wird nur skizziert.
+Wir leiten zuerst die Abschätzung für die Residuen her:
+$$r_i^k=p_{i,k}(Q^2+ t^2 I)b \perp K_k(Q^2). $$
+Damit gibt es also ein Polynom $p_{k,0}$ mit
+$$p_{k,i}(Q^2+t^2 I)b = \Phi_{k,t} p_{k,0}(Q^2)b .$$
+Wenn man das Polynom nun in $t$ betrachtet ergibt dies
+\begin{align*}
+p_{k,t} ( s + t^2) &= \Phi_{k,t} p_k(s) \\
+p_{k,t} ( s ) &= \Phi_{k,t} p_k(s-t^2)\\
+\end{align*}
+und da $p_{k,t}(0) = 1$, ist $\Phi_{k,t} = (p_k(-t^2))^{-1}$. Die Nullstellen der
+Polynome sind die Ritz-Werte und daher $>0$.  Wegen $p(0) =1$ folgt so $p(s) > 1 $
+für $s < 0$ und damit $|\Phi_{k,t}| < 1$. \medskip
+
+Nun ist noch die Abschätzung zu beweisen. Dazu betrachtet man
+\begin{eqnarray*}
+\lefteqn{\sgn(Q)b - Q V_m T_m^{-\frac 12} V_m^H b} \\
+  &=& \frac{2}{\pi} \int_0^{\infty} Q(Q^2 + t^2I)^{-1}b - Q V_m(t^2I+T_m)^{-1}V_m^H b \; dt\\
+  &=& \frac{2}{\pi} \int_0^{\infty} Q(Q^2 + t^2I)^{-1} \underbrace{\left[ b - (Q^2+t^2I) V_m(t^2I+T_m)^{-1}V_m^Hb\right]}_{= \psi_{t,m}r^m} \; dt.
+\end{eqnarray*}
+Weiter folgt wegen $| \psi_{t,m} \leq 1|$, dass alle Eigenwerte der hermiteschen Matrix
+$$
+\frac{2}{\pi} \int_0^{\infty} \psi_{t,m} Q(Q^2 + t^2I)^{-1} \, dt
+$$
+den Betrag $\leq 1$ haben. Damit ist auch die 2-Norm $\leq 1$.
+\end{proof}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "Iterationsverfahren03"
+%%% End:

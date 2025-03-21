@@ -1,0 +1,128 @@
+\section{Das Tschebyscheff - Verfahren}
+
+\begin{defn}
+Mit $E(f_1,f_2,\rho)$ bezeichnen wir die Ellipse mit den Brennpunkten $f_1$, $f_2$ und den Halbachsen $
+\frac{1}{4}\left|f_1-f_2\right|\left(\rho + \frac{1}{\rho}\right)$
+und  $\frac{1}{4}\left|f_1-f_2\right|\left(\rho - \frac{1}{\rho}\right)$,
+$\rho \ge 1$.
+\end{defn}
+
+Wir betrachten nun folgende Situation:
+
+\medskip
+
+\emph{Gegeben: } $Ax = b$, $A$ regul"ar.
+
+\emph{Bekannt sei:} $\spek(A) \subseteq E(f_1,f_2,\rho)$ mit $0 \not \in E(f_1,f_2,\hat{\rho})$.
+
+\begin{figure}[h!]
+\begin{center}
+
+\begin{tikzpicture}
+
+ \draw[->]        (0,50pt)   -- (200pt,50pt);
+ \draw[->]        (60pt,0)   -- (60pt,100pt);
+ 
+ \draw [rotate=30] (160pt, -25pt) ellipse (50pt and 25pt);
+ \fill [rotate=30] (185pt, -25pt) circle ( 2pt);
+ \fill [rotate=30] (135pt, -25pt) circle ( 2pt);
+\end{tikzpicture}
+
+\end{center}
+\caption{$\spek(A)$ liegt in einer Ellipse, welche 0 nicht enth"alt}
+\end{figure}
+
+Mit Hilfe der Tschebyscheff-Polynome werden wir (asymptotisch optimale) N"aherungsl"osungen
+f"ur die MinMax-Aufgabe
+\begin{equation} \label{minmaxell2_eq}
+\underset{p_m \in \overline{\Pi}_m \quad}{\min}\underset{\lambda \in E(f_1,f_2,\rho)}{\max}\left| p_m(\lambda)\right|
+\end{equation}
+finden. Daf"ur ben"otigen wir zun"achst die affine Transformation, welche
+unsere Standard-Ellipse $E_{\rho} = E(-1,1,\rho)$ auf $E(f_1,f_2,\hat{\rho})$ mit $\hat{\rho} = \frac{|f_2 - f_1|}{2} \rho$  abbildet.
+
+Wir betrachten hierzu die affinen Grundabbildungen
+\begin{align*}
+D_{ \phi}&: z \mapsto e^{i \phi}z, \phi \in \rr \enspace (\text{Drehung})\\
+T_a&:z \mapsto z + a, a \in \co \enspace (\text{Translation})\\
+S_c&: z \mapsto cz, c >0 \enspace (\text{Skalierung})
+\end{align*}
+
+\begin{lem}\label{ellipsentransf_lem} 
+Die Abbildung
+\begin{eqnarray*}
+\varphi &=& T_{\frac{1}{2}(f_1+f_2)} \circ D_{\arg(f_2-f_1)} \circ S_{\frac{1}{2}\left| f_1
+- f_2 \right|} \\
+\varphi&:& z \mapsto e^{i \arg(f_2-f_1)}\frac{1}{2} \left| f_2-f_1 \right| z +
+    \frac{f_1+f_2}{2} = \underbrace{\frac{f_2-f_1}{2}}_{\alpha} z + \underbrace{\frac{f_1+f_2}{2}}_{\beta}
+\end{eqnarray*}
+bildet die Ellipse $E(-1,1,\rho)$ ab auf $E(f_1,f_2,\hat{\rho})$. 
+\end{lem}
+
+Damit k"onnen wir nun Tschebyscheff Polynome  bez"uglich allgemeiner
+Ellipsen $E(f_1,f_2,\hat{\rho})$ definieren.
+
+\begin{defn}
+Sei $E=E(f_1,f_2,\hat{\rho})$ eine Ellipse mit $0 \not \in E$. Dann ist
+\[
+T_m^E(z) = T_m \left( \frac{1}{\alpha}(z- \beta) \right)
+\]
+mit $\alpha = \frac{1}{2}\left( f_2 - f_1 \right) $ und 
+$ \beta = \frac{1}{2} \left( f_1 + f_2 \right)$ das
+\emph{Tschebyscheff-Polynom} vom Grad $m$ bzgl. $E$. 
+\end{defn}
+
+Nach Satz \nref{cmschranke_sa} ist damit klar, dass
+\[
+p_m(z)=\frac{T_m^E(z)}{T_m^E(0)}
+\]
+eine approximative, asymptotisch optimale, L"osung f"ur die MinMax-Aufgabe
+\eqnref{minmaxell2_eq} ist.
+
+\begin{defn}
+Das zu $p_m$ geh"orige KUV hei"st \emph{Tschebyscheff-Verfahren}.
+\end{defn}
+
+Wir werden nun dieses Verfahren konkret herleiten. Hierf"ur betrachten wir den Fall 
+einer allgemeinen 3-Term-Rekursion
+\[
+p_{m+1}(t) = \alpha_{m+1}(t+\beta_{m+1})p_{m}(t) + \gamma_{m+1}p_{m-1}(t) \text{, } m \ge 1.
+\]
+Wegen $p_m(0) = 1,\; \forall\ m,$ folgt $\gamma_m = 1- \alpha_m \beta_m$
+und insbesondere
+\[
+ p_0(t) = 1, \enspace p_1(t) = \alpha_1 \left (t+ \frac{1}{\alpha_1} \right ).
+\]
+Es gilt also f"ur die Residuen $r^m = b - Ax^m = p_m(A)r^0$
+\begin{align*}
+r^{m+1} &= \alpha_{m+1}(A + \beta_{m+1} I) r^m+(1- \alpha_{m+1} \beta_{m+1})r^{m-1} \text{, } m \ge 1, \\
+r^0 &= r^0, \\
+r^1 &= \alpha_1\left(A + \frac{1}{\alpha_1} I\right) r^0 = \alpha_1 A r^0 + r^0.
+\end{align*}
+Damit erhalten wir f"ur die Iterierten unter Einsetzen von $r^m = b-Ax^m$ die Rekursion
+\begin{align*}
+x^0 &= x^0, \\
+x^1 &= x^0 - \alpha_1 r^0 ,\\
+x^{m+1} &= \alpha_{m+1} \beta_{m+1} x^m + (1- \alpha_{m+1} \beta_{m+1})x^{m-1} - \alpha_{m+1} r^m.
+\end{align*}
+
+Damit erhalten wir als allgemeine Struktur f"ur ein KUV mit 3-Term-Re\-kur\-sion f"ur die Residuen den folgenden Algorithmus:
+\clearpage
+\begin{alg} \label{3Term_alg}
+~  				% um "3.4 Algorithmus" aus dem Kasten rauszubekommen
+\vspace*{-2\baselineskip}	% um den Leeraum zu entfernen
+\begin{algorithm}
+\begin{algorithmic}
+\STATE w"ahle $x^0$, setze $r^0 = b -Ax^0$
+\STATE $x^1 = x^0 - \alpha_1 r^0$
+\STATE $r^1 = \alpha_1 A r^0 + r^0$ 
+\FOR{$m=1,2,...$}
+\STATE $x^{m+1}= \alpha_{m+1} \beta_{m+1} x^m + (1 - \alpha_{m+1} \beta_{m+1}) x^{m-1} - 
+      \alpha_{m+1} r^m$
+\STATE $r^{m+1}=b-Ax^{m+1}$ 
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{alg}
+
+(Alternativ k"onnte man $r^{m+1}$ auch aus der 3-Term-Rekursion bestimmen)
+
